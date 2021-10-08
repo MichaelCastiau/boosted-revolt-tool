@@ -1,1 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+html, body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11pt;
+}
+h1, h2, h3 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
+}

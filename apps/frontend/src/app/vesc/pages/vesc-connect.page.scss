@@ -1,0 +1,36 @@
+@use "../../../assets/styles/variables";
+
+:host-context {
+  background: red;
+  display: flex;
+  position: fixed;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: variables.$brand-primary; /* fallback for old browsers */
+  background: linear-gradient(to bottom, variables.$brand-primary,  darken(variables.$brand-primary, 5%));
+  background-size: cover;
+  text-align: center;
+}
+
+.m-connect-wrapper {
+  background: #eee;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 5px 1px #333;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 600px;
+  img {
+    max-width: 150px;
+  }
+
+  boosted-revolt-tool-spinner {
+    margin: variables.$spacer-xxl;
+  }
+  p{
+    color: #333;
+    font-size: 10pt;
+  }
+}
