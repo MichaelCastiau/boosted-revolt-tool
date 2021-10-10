@@ -23,7 +23,9 @@
     padding: 0;
 
     li {
-      padding: variables.$spacer-xxl;
+      padding-top: variables.$spacer-xxl;
+      padding-bottom: variables.$spacer-xxl;
+      padding-left: variables.$spacer;
       height: 4em;
       display: flex;
       align-items: center;
@@ -31,6 +33,15 @@
       font-family: variables.$font-title;
       border-bottom: 1px solid #ddd;
       border-left: 5px solid transparent;
+
+      img {
+        max-height: 2em;
+        margin-right: variables.$spacer;
+      }
+
+      span {
+        flex: 1;
+      }
 
 
       &.active {

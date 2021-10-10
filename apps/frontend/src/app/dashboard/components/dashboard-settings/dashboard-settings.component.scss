@@ -1,0 +1,28 @@
+.o-dashboard-settings {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.m-connect {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 400px;
+
+  .a-no-vesc {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .a-looking-for-dash {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    img {
+      max-width: 100px;
+    }
+  }
+}

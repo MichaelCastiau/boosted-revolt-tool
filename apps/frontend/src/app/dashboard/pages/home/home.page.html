@@ -1,13 +1,16 @@
 <div class='o-home'>
- <!--- <app-menu-bar></app-menu-bar>-->
+  <!--- <app-menu-bar></app-menu-bar>-->
   <div class='o-main-screen'>
     <div class='m-sidebar'>
       <nav>
         <ul>
           <li [class.active]='(tab$ | async) === "dashboard"'>
-            ReVOLT! Dashboard
+            <img src='assets/images/dashboard.svg' alt='dashboard'/>
+            <span>
+               ReVOLT! Dashboard
             <br />
             1st generation
+            </span>
           </li>
           <li class='inactive'>
             ReVOLT BMS
@@ -17,7 +20,7 @@
       <app-status-bar></app-status-bar>
     </div>
     <main>
-
+      <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
     </main>
   </div>
 </div>
