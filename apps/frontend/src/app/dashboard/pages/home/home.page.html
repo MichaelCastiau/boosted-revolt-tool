@@ -1,23 +1,31 @@
-<div class='o-menu-bar'>
-
-</div>
 <div class='o-home'>
-  <div class='m-sidebar'>
-    <nav>
-      <ul>
-        <li [class.active]='(tab$ | async) === "dashboard"'>
-          ReVOLT! Dashboard
-          <br />
-          1st generation
-        </li>
-        <li class='inactive'>
-          ReVOLT BMS
-        </li>
-      </ul>
-    </nav>
-    <app-status-bar></app-status-bar>
-  </div>
-  <main>
+ <!--- <app-menu-bar></app-menu-bar>-->
+  <div class='o-main-screen'>
+    <div class='m-sidebar'>
+      <nav>
+        <ul>
+          <li [class.active]='(tab$ | async) === "dashboard"'>
+            ReVOLT! Dashboard
+            <br />
+            1st generation
+          </li>
+          <li class='inactive'>
+            ReVOLT BMS
+          </li>
+        </ul>
+      </nav>
+      <app-status-bar></app-status-bar>
+    </div>
+    <main>
 
-  </main>
+    </main>
+  </div>
 </div>
+
+<app-modal [visible]='isConnecting$ | async'>
+  <span modal-title>Connecting to VESC...</span>
+  <p>
+    We are attempting to connect to your VESC. Please make sure the VESC is switched on
+    and connected through USB to this device.
+  </p>
+</app-modal>

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
@@ -6,16 +6,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
 })
-export class ModalComponent implements OnInit, OnChanges {
-
-  isVisible$: Observable<boolean> = new BehaviorSubject(null);
-
+export class ModalComponent implements OnChanges {
   @Input()
-  visible: boolean = false;
-
-  ngOnInit(): void {
-
-  }
+  visible = false;
+  isVisible$: Observable<boolean> = new BehaviorSubject(null);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.visible.previousValue != changes.visible.currentValue) {

@@ -6,6 +6,7 @@ $font-title: 'Open Sans', sans-serif;
 
 $spacer: 15px;
 $spacer-sm: math.div($spacer, 1.2);
+$spacer-xs: math.div($spacer, 2);
 $spacer-xl: $spacer*2;
 $spacer-xxl: $spacer* 3;
 
@@ -13,3 +14,4 @@ $layer-behind-top: 90;
 $layer-top: 100;
 
 $button-min-width: 150px;
+$menu-bar-height: 30px;

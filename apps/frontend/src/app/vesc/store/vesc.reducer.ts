@@ -5,5 +5,5 @@ import { connectToVESC, connectToVESCFail, connectToVESCSuccess } from './vesc.a
 export const vescReducer = createReducer<IVESCState>({ isConnecting: false },
   on(connectToVESC, (state) => ({ ...state, isConnecting: true, errorConnecting: null })),
   on(connectToVESCFail, (state, { error }) => ({ ...state, isConnecting: false, errorConnecting: error })),
-  on(connectToVESCSuccess, (state, {port}) => ({...state, portInfo: port}))
+  on(connectToVESCSuccess, (state, {port}) => ({...state, portInfo: port, isConnecting: false}))
 );

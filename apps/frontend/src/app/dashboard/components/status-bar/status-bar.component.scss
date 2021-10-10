@@ -1,10 +1,24 @@
 @use "../../../../assets/styles/variables";
 
 .m-status-bar {
-  background: #18e178;
+  background: variables.$brand-primary;
   padding: variables.$spacer-xl;
   color: white;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
+  flex-direction: column;
+
+  .a-status {
+    font-family: variables.$font-title;
+
+    & + button {
+      margin-top: 1em;
+    }
+  }
+
+  &.is-connected {
+    background: #18e178;
+  }
 }

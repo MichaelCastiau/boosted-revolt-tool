@@ -1,5 +1,6 @@
-<div class='m-status-bar'>
+<div class='m-status-bar' [class.is-connected]='isConnected$ | async'>
   <span class='a-status'>
    {{ (isConnected$ | async) ? "Connected to VESC" : "Disconnected" }}
   </span>
+  <button class='a-button light' *ngIf='!(isConnected$ | async)' (click)='connect()'>Retry connecting</button>
 </div>
