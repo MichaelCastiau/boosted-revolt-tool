@@ -1,0 +1,19 @@
+@use "variables";
+
+.a-button {
+  color: white;
+  background: variables.$brand-primary;
+  font-family: variables.$font-title;
+  border: none;
+  padding: variables.$spacer-sm;
+  text-transform: uppercase;
+  min-width: variables.$button-min-width;
+
+  &:hover {
+    cursor: pointer;
+  }
+  &:active {
+    outline: none;
+    background: darken(variables.$brand-primary, 15%);
+  }
+}

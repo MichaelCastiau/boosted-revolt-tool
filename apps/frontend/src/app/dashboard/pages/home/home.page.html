@@ -1,0 +1,23 @@
+<div class='o-menu-bar'>
+
+</div>
+<div class='o-home'>
+  <div class='m-sidebar'>
+    <nav>
+      <ul>
+        <li [class.active]='(tab$ | async) === "dashboard"'>
+          ReVOLT! Dashboard
+          <br />
+          1st generation
+        </li>
+        <li class='inactive'>
+          ReVOLT BMS
+        </li>
+      </ul>
+    </nav>
+    <app-status-bar></app-status-bar>
+  </div>
+  <main>
+
+  </main>
+</div>

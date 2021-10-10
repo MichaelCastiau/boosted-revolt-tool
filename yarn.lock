@@ -1828,6 +1828,27 @@
     optional "0.1.4"
     tslib "2.2.0"
 
+"@ngrx/effects@^12.4.0":
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-12.4.0.tgz#b96a5cd397ee00e4d52e476ba13f4be2affb90f1"
+  integrity sha512-9N6c+Oj3Rghoi4JnVxqgZ581BYNCLxHK20CVX3WiiEkMXL1cyYNuXVB9+hQHJ6OSME0Jo5YoXzjsIrzFsnMZCw==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store-devtools@^12.4.0":
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-12.4.0.tgz#dc07ab468c6943d5e4a84a3d4321d14026e8112c"
+  integrity sha512-mzT/R2gD4WaTgo1CJzRCiBeJrAcDphjqWDfIrB0Ny+Bd7OGVUsbf1jIN9dRJAA9iDXJewDiLUjKIAn/emnwg9Q==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store@^12.4.0":
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-12.4.0.tgz#5c3fb2d6fcc600db6914e955deff01a5bb9f934b"
+  integrity sha512-+kC2Ro2BmsxghHQhq4u+9HGE4BPy739werimspuqz37yUG1G3CdxMp0wuoD2M5371spUTFsXOtjKzpifOYbWbg==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@12.2.9":
   version "12.2.9"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-12.2.9.tgz#e13d815d35e155bea6e2b13f6f54bc3275ed0670"

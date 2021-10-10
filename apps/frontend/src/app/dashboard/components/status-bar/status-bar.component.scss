@@ -1,0 +1,10 @@
+@use "../../../../assets/styles/variables";
+
+.m-status-bar {
+  background: #18e178;
+  padding: variables.$spacer-xl;
+  color: white;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
