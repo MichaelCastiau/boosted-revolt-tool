@@ -1,16 +1,17 @@
+@use "../../../../assets/styles/variables";
+
 .o-dashboard-settings {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
+
 .m-connect {
   display: flex;
   flex: 1;
-  align-items: center;
   justify-content: center;
   flex-direction: column;
-  max-width: 400px;
+  width: 100%;
 
   .a-no-vesc {
     display: flex;
@@ -21,8 +22,18 @@
     align-items: center;
     display: flex;
     flex-direction: column;
+
     img {
       max-width: 100px;
     }
+  }
+
+  .m-settings-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: variables.$sidebar-item-height +  variables.$spacer variables.$spacer-xxl variables.$spacer-xxl;
+    width: 100%;
   }
 }

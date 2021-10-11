@@ -2,6 +2,7 @@
   <div class='m-vesc-not-connected'>
   </div>
   <div class='m-connect'>
+    <!--
     <div class='a-no-vesc' *ngIf="!(isConnected$ | async)">
       <h2>VESC Disconnected</h2>
       <p>
@@ -9,6 +10,8 @@
       </p>
       <button class='a-button' (click)='connect()'>Connect To VESC</button>
     </div>
+    -->
+    <!--
     <div class='a-looking-for-dash' *ngIf='(isConnected$ | async)'>
       <img src='assets/images/dashboard.svg' alt='Dashboard'/>
       <boosted-revolt-tool-spinner>
@@ -18,6 +21,29 @@
         Make sure your dashboard is switched on and wired correctly to the CAN bus
         of the VESC. We will attempt to automatically find your dashboard on your scooter.
       </p>
+    </div>
+    -->
+
+    <div class='m-settings-wrapper'>
+      <h2>Metric System</h2>
+      <div class='u-columns'>
+        <p>
+          Use the buttons to select which metric system you would like to use on your dashboard.
+        </p>
+        <div class='u-button-bar'>
+          <button class='a-button'>Mph</button>
+          <button class='a-button'>Kmh</button>
+        </div>
+      </div>
+      <h2>Battery Configuration</h2>
+      <div class='u-columns'>
+        <p>
+          Which battery configuration are u using?
+        </p>
+        <div class='u-button-bar is-small'>
+          <button class='a-button' *ngFor='let b of batteryConfigurations' (click)='setConfiguration(b)'>{{b}}S</button>
+        </div>
+      </div>
     </div>
 
   </div>

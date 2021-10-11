@@ -3,7 +3,7 @@ import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
 import { Observable, Subject } from 'rxjs';
-import { crc16 } from 'crc';
+import { crc16xmodem } from 'crc';
 
 @Injectable()
 export class SerialPortService {
@@ -36,7 +36,10 @@ export class SerialPortService {
     return new Promise<Observable<Buffer>>(async (resolve, reject) => {
       this.port.on('open', async () => {
 
-        this.port.on('data', data => this.socket.next(this.parseResponse(data)));
+        this.port.on('data', data => {
+          console.log(data);
+          this.socket.next(this.parseResponse(data));
+        });
         this.port.on('error', error => this.socket.error(error));
         this.port.on('close', () => this.socket.complete());
 
@@ -47,19 +50,22 @@ export class SerialPortService {
     });
   }
 
-  async write(payload: Buffer): Promise<void> {
+  async write(command: number, payload: Buffer = Buffer.alloc(0)): Promise<void> {
     if (!this.port || !this.port.isOpen) {
       throw new BadRequestException('Cannot write to serial port, port not open');
     }
-    const crcByte = crc16(Buffer.from(payload)).toString(16);
+    console.log(payload);
+    const crcByte = crc16xmodem(Buffer.from([command, ...payload]));
     const data = Buffer.from([
       SerialPortService.SHORT_PACKET,
-      payload.length,
+      payload.length + 1,
+      command,
       ...payload,
-      crcByte === '0' ? 0 : parseInt(crcByte.substr(0, 3)),
-      crcByte === '0' ? 0 : parseInt(crcByte.substr(4, 7)),
+      (crcByte) >> 8,
+      (crcByte) & 0xff,
       SerialPortService.STOP_BYTE
     ]);
+    console.log('writing', data);
     await new Promise<void>((resolve, reject) => this.port.write(data, (err?) => err ? reject(err) : resolve()));
   }
 
@@ -72,7 +78,7 @@ export class SerialPortService {
     }
   }
 
-  isConnected(){
+  isConnected() {
     return this.port && this.port.isOpen;
   }
 }

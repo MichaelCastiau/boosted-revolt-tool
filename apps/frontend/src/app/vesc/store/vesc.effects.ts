@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { connectToVESC, connectToVESCFail, connectToVESCSuccess } from './vesc.actions';
+import { connectToVESC, connectToVESCFail, connectToVESCSuccess, setBatteryConfiguration } from './vesc.actions';
 import { catchError, delay, map, switchMap } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { of } from 'rxjs';
@@ -13,6 +13,13 @@ export class VESCEffects {
     switchMap(() => this.api.connect().pipe(
       map((info) => connectToVESCSuccess({ info })),
       catchError(error => of(connectToVESCFail({ error })))
+    ))
+  ));
+
+  setBatteryConfiguration = createEffect(() => this.actions$.pipe(
+    ofType(setBatteryConfiguration),
+    switchMap((action) => this.api.setBatteryConfiguration(action.configuration).pipe(
+      map(() => ({ type: 'no action' }))
     ))
   ));
 
