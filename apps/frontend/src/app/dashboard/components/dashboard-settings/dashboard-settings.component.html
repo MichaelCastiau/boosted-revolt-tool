@@ -31,8 +31,8 @@
           Use the buttons to select which metric system you would like to use on your dashboard.
         </p>
         <div class='u-button-bar'>
-          <button class='a-button'>Mph</button>
-          <button class='a-button'>Kmh</button>
+          <button class='a-button' [class.active]='(metricSystem$ | async) === "mph"' (click)='setMilesPerHour()'>Mph</button>
+          <button class='a-button' [class.active]='(metricSystem$ | async) === "kmh"' (click)='setKilometersPerHour()'>Kmh</button>
         </div>
       </div>
       <h2>Battery Configuration</h2>
@@ -41,9 +41,13 @@
           Which battery configuration are u using?
         </p>
         <div class='u-button-bar is-small'>
-          <button class='a-button' *ngFor='let b of batteryConfigurations' (click)='setConfiguration(b)'>{{b}}S</button>
+          <button class='a-button' *ngFor='let b of batteryConfigurations' [class.active]='(activeConfiguration$ | async) === b' (click)='setConfiguration(b)'>{{b}}S</button>
         </div>
       </div>
+      <h2>Software Updates</h2>
+      <p class='u-light'>
+        Software updates yet to come :)
+      </p>
     </div>
 
   </div>

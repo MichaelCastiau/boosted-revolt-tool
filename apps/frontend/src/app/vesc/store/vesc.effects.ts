@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { connectToVESC, connectToVESCFail, connectToVESCSuccess, setBatteryConfiguration } from './vesc.actions';
+import {
+  connectToVESC,
+  connectToVESCFail,
+  connectToVESCSuccess,
+  setBatteryConfiguration,
+  setBatteryConfigurationSuccess,
+  setMetricSystem,
+  setMetricSystemSuccess
+} from './vesc.actions';
 import { catchError, delay, map, switchMap } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { of } from 'rxjs';
@@ -19,7 +27,14 @@ export class VESCEffects {
   setBatteryConfiguration = createEffect(() => this.actions$.pipe(
     ofType(setBatteryConfiguration),
     switchMap((action) => this.api.setBatteryConfiguration(action.configuration).pipe(
-      map(() => ({ type: 'no action' }))
+      map(() => setBatteryConfigurationSuccess({ configuration: action.configuration }))
+    ))
+  ));
+
+  setMetricSystem = createEffect(() => this.actions$.pipe(
+    ofType(setMetricSystem),
+    switchMap(action => this.api.setMetricSystem({ system: action.system }).pipe(
+      map(() => setMetricSystemSuccess({ system: action.system }))
     ))
   ));
 

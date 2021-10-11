@@ -48,9 +48,6 @@ h1, h2, h3 {
       color: white;
       background: variables.$brand-primary;
 
-      &:not(:last-of-type) {
-        border-right: 1px solid white;
-      }
     }
 
     &:active {
@@ -62,4 +59,7 @@ h1, h2, h3 {
   &.is-small button {
     min-width: 2em;
   }
+}
+.u-light {
+  color: #aaa;
 }

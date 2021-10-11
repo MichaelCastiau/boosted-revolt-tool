@@ -17,4 +17,10 @@ export class VESCService {
       configuration
     });
   }
+
+  setMetricSystem({ system }) {
+    return this.http.post('/api/vesc/metric-system', {
+      system
+    });
+  }
 }

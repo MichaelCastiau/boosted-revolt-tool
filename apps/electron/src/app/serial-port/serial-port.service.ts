@@ -37,7 +37,6 @@ export class SerialPortService {
       this.port.on('open', async () => {
 
         this.port.on('data', data => {
-          console.log(data);
           this.socket.next(this.parseResponse(data));
         });
         this.port.on('error', error => this.socket.error(error));
@@ -54,7 +53,6 @@ export class SerialPortService {
     if (!this.port || !this.port.isOpen) {
       throw new BadRequestException('Cannot write to serial port, port not open');
     }
-    console.log(payload);
     const crcByte = crc16xmodem(Buffer.from([command, ...payload]));
     const data = Buffer.from([
       SerialPortService.SHORT_PACKET,
@@ -65,7 +63,6 @@ export class SerialPortService {
       (crcByte) & 0xff,
       SerialPortService.STOP_BYTE
     ]);
-    console.log('writing', data);
     await new Promise<void>((resolve, reject) => this.port.write(data, (err?) => err ? reject(err) : resolve()));
   }
 

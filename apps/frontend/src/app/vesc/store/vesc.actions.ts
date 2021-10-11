@@ -7,3 +7,7 @@ export const connectToVESCFail = createAction('[VESC] Connect Fail', props<{ err
 export const connectToVESCSuccess = createAction('[VESC] Connect Success', props<{ info: IVESCInfo }>());
 
 export const setBatteryConfiguration = createAction('[Dashboard] Set battery configuration', props<{ configuration: number }>());
+export const setBatteryConfigurationSuccess = createAction('[Dashboard] set battery configuration success', props<{ configuration: number }>());
+
+export const setMetricSystem = createAction('[Dashboard] Set metric system', props<{ system: 'kmh' | 'mph' }>());
+export const setMetricSystemSuccess = createAction('[Dashboard] Set metric system success', props<{ system: 'kmh' | 'mph' }>());
