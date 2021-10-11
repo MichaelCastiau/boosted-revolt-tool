@@ -4,6 +4,7 @@ import { PortNotFoundException } from '../../exceptions/port-not-found.exception
 import { IVESCFirmwareInfo, VESCCommands } from '../models/commands';
 import { filter, first, map, timeout } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class VESCService {
@@ -51,9 +52,7 @@ export class VESCService {
     extended id (4 bytes)
     is extended? (1 byte)
      */
-    const command = Buffer.from([0, 0, 0, 0x40, 1, ...config.data]);
-    // command.writeInt32LE(0x40, 0);
-
+    const command = Buffer.from([0, 0, 0, environment.CAN.extendedId, 1, ...config.data]);
     return this.serial.write(VESCCommands.COMM_CAN_FWD_FRAME, command);
   }
 }
