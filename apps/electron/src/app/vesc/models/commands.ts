@@ -121,4 +121,5 @@ export enum VESCCommands {
 
 export interface IVESCFirmwareInfo {
   version: string;
+  name: string;
 }

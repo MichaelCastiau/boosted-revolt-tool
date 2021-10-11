@@ -35,7 +35,8 @@ export class VESCService {
       map(data => data.slice(1, data.length - 1)),
       map(data => {
         return {
-          version: `${data.readInt8(0)}.${data.readInt8(1)}`
+          version: `${data.readInt8(0)}.${data.readInt8(1)}`,
+          name: Buffer.from(data.slice(2, 14)).toString('utf-8')
         };
       }),
       timeout(500),

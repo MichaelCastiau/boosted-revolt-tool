@@ -17,13 +17,16 @@
 
   .a-info {
     display: block;
-
-    & + button {
-      margin-top: 1em;
-    }
+    font-size: variables.$font-small;
   }
 
   &.is-connected {
     background: #18e178;
   }
+
+  button {
+    margin-top: 1em;
+  }
 }
+
+

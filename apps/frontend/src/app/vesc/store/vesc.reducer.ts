@@ -10,5 +10,5 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
     isConnected: false,
     errorConnecting: error
   })),
-  on(connectToVESCSuccess, (state, { info }) => ({ ...state, portInfo: info, isConnected: true, isConnecting: false }))
+  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false }))
 );

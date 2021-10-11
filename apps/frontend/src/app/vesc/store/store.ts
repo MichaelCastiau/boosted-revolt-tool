@@ -7,7 +7,7 @@ export interface IVESCState {
   isConnecting?: boolean;
   errorConnecting?: HttpErrorResponse;
   isConnected: boolean;
-  portInfo?: IVESCInfo
+  vescInfo?: IVESCInfo
 }
 
 export const selectVESCState = createFeatureSelector<IVESCState>('vesc');
