@@ -71,7 +71,7 @@ export class SerialPortService {
       case SerialPortService.SHORT_PACKET:
         return data.slice(2, 2 + data.readInt8(1));
       case SerialPortService.LONG_PACKET:
-        return data.slice(3, 3 + data.readInt16LE(1));
+        return data.slice(3, 3 + data.readInt16BE(1));
     }
   }
 
