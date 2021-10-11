@@ -21,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "boosted-revolt-tool",
+            "prefix": "app",
             "style": "kebab-case"
           }
         ]

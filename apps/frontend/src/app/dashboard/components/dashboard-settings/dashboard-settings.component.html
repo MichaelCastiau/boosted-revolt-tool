@@ -1,0 +1,24 @@
+<div class='o-dashboard-settings'>
+  <div class='m-vesc-not-connected'>
+  </div>
+  <div class='m-connect'>
+    <div class='a-no-vesc' *ngIf="!(isConnected$ | async)">
+      <h2>VESC Disconnected</h2>
+      <p>
+        In order to find your dashboard, please connect to your VESC first.
+      </p>
+      <button class='a-button' (click)='connect()'>Connect To VESC</button>
+    </div>
+    <div class='a-looking-for-dash' *ngIf='(isConnected$ | async)'>
+      <img src='assets/images/dashboard.svg' alt='Dashboard'/>
+      <boosted-revolt-tool-spinner>
+        Searching for your dash
+      </boosted-revolt-tool-spinner>
+      <p>
+        Make sure your dashboard is switched on and wired correctly to the CAN bus
+        of the VESC. We will attempt to automatically find your dashboard on your scooter.
+      </p>
+    </div>
+
+  </div>
+</div>

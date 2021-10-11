@@ -1,0 +1,89 @@
+@use "../../../../assets/styles/variables";
+
+
+.o-home {
+  background: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.o-main-screen {
+  display: flex;
+  flex: 1;
+}
+
+.m-sidebar {
+  width: 300px;
+  background: darken(#fff, 3%);
+  position: relative;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding-top: variables.$spacer-xxl;
+      padding-bottom: variables.$spacer-xxl;
+      padding-left: variables.$spacer;
+      height: 4em;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-family: variables.$font-title;
+      border-bottom: 1px solid #ddd;
+      border-left: 5px solid transparent;
+
+      img {
+        max-height: 2em;
+        margin-right: variables.$spacer;
+      }
+
+      span {
+        flex: 1;
+      }
+
+
+      &.active {
+        border-left-color: #ccc;
+        background: white;
+        position: relative;
+        width: 301px;
+        border-bottom: none;
+        box-shadow: -5px 2px 5px 1px #ccc;
+
+        & + li {
+          border-top: 1px solid #ddd;
+        }
+      }
+
+      &.inactive {
+        color: #aaa;
+      }
+    }
+  }
+
+  app-status-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+main {
+  border-left: 1px solid #ddd;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  app-dashboard-settings {
+    flex: 1;
+  }
+
+  .a-copyright {
+    text-align: center;
+    width: 100%;
+    padding: variables.$spacer;
+    font-size: 8pt;
+    color: #333;
+  }
+}

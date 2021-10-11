@@ -1,0 +1,126 @@
+@use "../../../../assets/styles/variables";
+
+.o-modal {
+  .a-backdrop {
+    position: fixed;
+    z-index: variables.$layer-behind-top;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .m-modal {
+    width: 400px;
+    min-height: 250px;
+    background: #fff;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: variables.$layer-top;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    border-radius: variables.$spacer;
+    box-shadow: 0 2px 5px 1px #222;
+    padding: variables.$spacer-xl;
+    text-align: left;
+    visibility: hidden;
+  }
+
+  .m-header {
+    .a-title {
+      font-size: 1.8em;
+      font-family: variables.$font-title;
+    }
+  }
+
+  .m-cta {
+    position: absolute;
+    bottom: variables.$spacer-xl;
+    left: variables.$spacer-xl;
+  }
+
+  &.is-visible {
+    .a-backdrop {
+      animation: make-backdrop-visible 500ms ease forwards;
+    }
+
+    .m-modal {
+      animation: make-modal-visible 500ms ease forwards;
+    }
+  }
+
+  &.is-hidden {
+    .a-backdrop {
+      animation: hide-backdrop 500ms ease forwards;
+    }
+
+    .m-modal {
+      animation: hide-modal 500ms ease forwards;
+    }
+  }
+}
+
+@keyframes hide-backdrop {
+  0% {
+    visibility: visible;
+    opacity: 0.8;
+  }
+  99% {
+    visibility: visible;
+    opacity: 0;
+  }
+  100% {
+    visibility: hidden;
+  }
+}
+
+@keyframes hide-modal {
+  0% {
+    visibility: visible;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes make-modal-visible {
+  0% {
+    opacity: 0;
+    top: -100%;
+  }
+  50% {
+    opacity: 1;
+    top: 0;
+    visibility: visible;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+
+@keyframes make-backdrop-visible {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  1% {
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0.8;
+    visibility: visible;
+  }
+}

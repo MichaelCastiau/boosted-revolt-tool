@@ -1,0 +1,39 @@
+<div class='o-home'>
+  <!--- <app-menu-bar></app-menu-bar>-->
+  <div class='o-main-screen'>
+    <div class='m-sidebar'>
+      <nav>
+        <ul>
+          <li [class.active]='(tab$ | async) === "dashboard"'>
+            <img src='assets/images/dashboard.svg' alt='dashboard'/>
+            <span>
+               ReVOLT! Dashboard
+            <br />
+            1st generation
+            </span>
+          </li>
+          <li class='inactive'>
+            ReVOLT! BMS
+            <br/>
+            Under Development
+          </li>
+        </ul>
+      </nav>
+      <app-status-bar></app-status-bar>
+    </div>
+    <main>
+      <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
+      <span class='a-copyright'>
+        &copy; 2021 Michael Castiau
+      </span>
+    </main>
+  </div>
+</div>
+
+<app-modal [visible]='isConnecting$ | async'>
+  <span modal-title>Connecting to VESC...</span>
+  <p>
+    We are attempting to connect to your VESC. Please make sure the VESC is switched on
+    and connected through USB to this device.
+  </p>
+</app-modal>

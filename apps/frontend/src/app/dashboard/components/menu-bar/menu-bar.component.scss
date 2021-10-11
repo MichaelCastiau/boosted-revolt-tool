@@ -1,0 +1,47 @@
+@use "../../../../assets/styles/variables";
+
+.o-menu-bar {
+  position: relative;
+  z-index: 20;
+  background: #ddd;
+  font-weight: bold;
+  height: variables.$menu-bar-height;
+
+  ul:first-child {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li:first-child {
+      padding: variables.$spacer;
+      padding-top: variables.$spacer-xs;
+      padding-bottom: variables.$spacer-xs;
+      position: relative;
+
+      ul {
+        min-width: 300px;
+        display: none;
+        position: absolute;
+        left: 0;
+        background: white;
+        top: variables.$menu-bar-height;
+        box-shadow: 0 4px 5px 1px #222;
+         li {
+           padding: variables.$spacer;
+
+           &:hover {
+             background: #eee;
+           }
+         }
+      }
+
+      &:hover {
+        cursor: pointer;
+        ul {
+          display: block;
+        }
+      }
+    }
+
+  }
+}

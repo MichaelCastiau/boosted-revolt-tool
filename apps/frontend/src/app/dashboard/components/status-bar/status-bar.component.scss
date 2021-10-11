@@ -1,0 +1,32 @@
+@use "../../../../assets/styles/variables";
+
+.m-status-bar {
+  background: variables.$brand-primary;
+  padding: variables.$spacer-xl;
+  color: white;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+
+  .a-status {
+    display: block;
+    font-family: variables.$font-title;
+  }
+
+  .a-info {
+    display: block;
+    font-size: variables.$font-small;
+  }
+
+  &.is-connected {
+    background: #18e178;
+  }
+
+  button {
+    margin-top: 1em;
+  }
+}
+
+

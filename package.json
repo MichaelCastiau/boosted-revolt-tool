@@ -9,7 +9,8 @@
     "start:app": "nx run electron:serve",
     "build": "nx build",
     "test": "nx test",
-    "install": "electron-rebuild"
+    "install": "electron-rebuild",
+    "rebuild": "electron-rebuild -f -w serialport"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +25,12 @@
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@ngrx/effects": "^12.4.0",
+    "@ngrx/store": "^12.4.0",
+    "@ngrx/store-devtools": "^12.4.0",
     "@nrwl/angular": "12.9.0",
+    "@types/crc": "^3.4.0",
+    "crc": "^3.8.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.6.0",
     "serialport": "^9.2.4",

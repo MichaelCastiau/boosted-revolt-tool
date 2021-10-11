@@ -10,3 +10,12 @@
   </div>
 
 </div>
+<app-modal [visible]='!!(connectionError$ | async)'>
+  <span modal-title>Could not connect</span>
+  <p>
+    We couldn't find your VESC Motor Controller. Make sure your VESC is switched on and connected via USB to this device.
+  </p>
+  <div cta>
+    <button class='a-button' (click)='retry()'>Retry</button>
+  </div>
+</app-modal>
