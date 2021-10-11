@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  dashExtendedId: 0x40
 };
 
 /*

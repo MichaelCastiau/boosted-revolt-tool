@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use "assets/styles/variables";
 @import "assets/styles/button.scss";
 
 
@@ -16,4 +17,49 @@ h1, h2, h3 {
 
 * {
   box-sizing: border-box;
+}
+
+.u-columns {
+  display: flex;
+  width: 100%;
+
+  p {
+    flex: 1;
+    display: block;
+  }
+}
+
+.u-button-bar {
+  display: flex;
+  margin: variables.$spacer;
+  flex-wrap: wrap;
+
+  button {
+    margin: 0;
+    border: 1px solid variables.$brand-primary;
+    background: white;
+    color: variables.$brand-primary;
+
+    &:not(:last-of-type) {
+      border-right: none;
+    }
+
+    &.active {
+      color: white;
+      background: variables.$brand-primary;
+
+    }
+
+    &:active {
+      background: variables.$brand-primary;
+      color: white;
+    }
+  }
+
+  &.is-small button {
+    min-width: 2em;
+  }
+}
+.u-light {
+  color: #aaa;
 }

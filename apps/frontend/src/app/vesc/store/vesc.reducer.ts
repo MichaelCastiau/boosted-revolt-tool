@@ -1,8 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { IVESCState } from './store';
-import { connectToVESC, connectToVESCFail, connectToVESCSuccess } from './vesc.actions';
+import {
+  connectToVESC,
+  connectToVESCFail,
+  connectToVESCSuccess,
+  setBatteryConfigurationSuccess,
+  setMetricSystemSuccess
+} from './vesc.actions';
 
-export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isConnected: false },
+export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isConnected: false, dashboardConfig: {} },
   on(connectToVESC, (state) => ({ ...state, isConnecting: true, errorConnecting: null })),
   on(connectToVESCFail, (state, { error }) => ({
     ...state,
@@ -10,5 +16,23 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
     isConnected: false,
     errorConnecting: error
   })),
-  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false }))
+  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false })),
+  on(setBatteryConfigurationSuccess, (state, { configuration }) => {
+    return {
+      ...state,
+      dashboardConfig: {
+        ...state.dashboardConfig,
+        batteryConfiguration: configuration
+      }
+    };
+  }),
+  on(setMetricSystemSuccess, (state, { system }) => {
+    return {
+      ...state,
+      dashboardConfig: {
+        ...state.dashboardConfig,
+        metricSystem: system
+      }
+    };
+  })
 );

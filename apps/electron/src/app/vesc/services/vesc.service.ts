@@ -2,8 +2,9 @@ import { SerialPortService } from '../../serial-port/serial-port.service';
 import { Injectable } from '@nestjs/common';
 import { PortNotFoundException } from '../../exceptions/port-not-found.exception';
 import { IVESCFirmwareInfo, VESCCommands } from '../models/commands';
-import { filter, first, map, share, tap, timeout } from 'rxjs/operators';
+import { filter, first, map, timeout } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class VESCService {
@@ -27,8 +28,7 @@ export class VESCService {
   }
 
   getFirmwareVersion(): Observable<IVESCFirmwareInfo> {
-    const data = Buffer.from([VESCCommands.COMM_FW_VERSION]);
-    this.serial.write(data);
+    this.serial.write(VESCCommands.COMM_FW_VERSION);
     return this.socket.pipe(
       filter(data => data.readInt8(0) === VESCCommands.COMM_FW_VERSION),
       first(),
@@ -39,8 +39,20 @@ export class VESCService {
           name: Buffer.from(data.slice(2, 14)).toString('utf-8')
         };
       }),
-      timeout(500),
-      tap(console.log),
+      timeout(500)
     );
+  }
+
+  async forwardCANMessage(config: {
+    extendedId: number,
+    data: Buffer
+  }) {
+    /*
+    CAN COMMAND,
+    extended id (4 bytes)
+    is extended? (1 byte)
+     */
+    const command = Buffer.from([0, 0, 0, environment.CAN.extendedId, 1, ...config.data]);
+    return this.serial.write(VESCCommands.COMM_CAN_FWD_FRAME, command);
   }
 }

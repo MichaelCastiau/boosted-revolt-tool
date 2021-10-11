@@ -5,9 +5,11 @@
   background: variables.$brand-primary;
   font-family: variables.$font-title;
   border: none;
-  padding: variables.$spacer-sm;
   text-transform: uppercase;
   min-width: variables.$button-min-width;
+  height: variables.$spacer * 2;
+  padding: variables.$spacer-xs;
+  box-sizing: content-box;
 
   &:hover {
     cursor: pointer;
