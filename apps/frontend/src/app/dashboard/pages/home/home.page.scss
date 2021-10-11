@@ -73,4 +73,17 @@
 main {
   border-left: 1px solid #ddd;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  app-dashboard-settings {
+    flex: 1;
+  }
+
+  .a-copyright {
+    text-align: center;
+    width: 100%;
+    padding: variables.$spacer;
+    font-size: 8pt;
+    color: #333;
+  }
 }

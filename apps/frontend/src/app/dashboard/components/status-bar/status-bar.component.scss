@@ -11,7 +11,12 @@
   flex-direction: column;
 
   .a-status {
+    display: block;
     font-family: variables.$font-title;
+  }
+
+  .a-info {
+    display: block;
 
     & + button {
       margin-top: 1em;

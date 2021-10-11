@@ -11,7 +11,7 @@ export class VESCEffects {
     ofType(connectToVESC),
     delay(700),
     switchMap(() => this.api.connect().pipe(
-      map((port) => connectToVESCSuccess({ port })),
+      map((info) => connectToVESCSuccess({ info })),
       catchError(error => of(connectToVESCFail({ error })))
     ))
   ));

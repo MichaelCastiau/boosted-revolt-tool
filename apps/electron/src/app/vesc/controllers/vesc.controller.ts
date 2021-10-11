@@ -1,6 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
 import { VESCService } from '../services/vesc.service';
-import { PortInfo } from 'serialport';
 
 @Controller('vesc')
 export class VESCController {
@@ -8,7 +7,7 @@ export class VESCController {
   }
 
   @Get('connect')
-  connectToVESC(): Promise<PortInfo> {
+  async connectToVESC() {
     return this.vesc.connect();
   }
 }

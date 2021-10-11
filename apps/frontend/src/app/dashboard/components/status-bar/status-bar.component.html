@@ -2,5 +2,8 @@
   <span class='a-status'>
    {{ (isConnected$ | async) ? "Connected to VESC" : "Disconnected" }}
   </span>
+  <span class='a-info'>
+    Firmware Version {{ version$ | async }}
+  </span>
   <button class='a-button light' *ngIf='!(isConnected$ | async)' (click)='connect()'>Retry connecting</button>
 </div>

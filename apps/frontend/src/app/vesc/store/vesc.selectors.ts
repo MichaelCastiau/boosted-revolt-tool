@@ -3,7 +3,6 @@ import { IAppState } from '../../store/store';
 import { selectVESCState } from './store';
 import { select } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 
 export const selectIsConnecting: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
@@ -17,6 +16,10 @@ export const selectConnectionError: OperatorFunction<IAppState, HttpErrorRespons
 
 export const selectIsConnected: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
-  select(state => state.portInfo),
-  map(info => !!(info && info.path))
+  select(state => state.isConnected)
+);
+
+export const selectVESCFWVersion: OperatorFunction<IAppState, string> = state$ => state$.pipe(
+  select(selectVESCState),
+  select(state => state.portInfo && state.portInfo.version)
 );

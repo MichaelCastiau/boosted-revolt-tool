@@ -13,7 +13,9 @@
             </span>
           </li>
           <li class='inactive'>
-            ReVOLT BMS
+            ReVOLT! BMS
+            <br/>
+            Under Development
           </li>
         </ul>
       </nav>
@@ -21,6 +23,9 @@
     </div>
     <main>
       <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
+      <span class='a-copyright'>
+        &copy; 2021 Michael Castiau
+      </span>
     </main>
   </div>
 </div>
