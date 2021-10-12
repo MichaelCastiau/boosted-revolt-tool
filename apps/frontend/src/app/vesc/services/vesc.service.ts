@@ -5,6 +5,7 @@ import { IVESCInfo } from '../vesc-types';
 
 @Injectable()
 export class VESCService {
+
   constructor(private http: HttpClient) {
   }
 

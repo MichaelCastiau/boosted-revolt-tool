@@ -5,7 +5,7 @@ import { connectToVESC } from '../store/vesc.actions';
 import { Observable, Subject } from 'rxjs';
 import { selectConnectionError, selectIsConnected, selectIsConnecting } from '../store/vesc.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
-import { take, takeUntil, tap } from 'rxjs/operators';
+import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,8 +30,9 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
     this.isConnected$ = this.store.pipe(selectIsConnected);
 
     this.isConnected$.pipe(
-      take(1),
       takeUntil(this.destroy$),
+      filter(isConnected => isConnected),
+      take(1),
       tap(() => this.router.navigate(['/', 'home']))
     ).subscribe();
 

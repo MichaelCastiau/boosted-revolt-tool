@@ -28,7 +28,7 @@
       <h2>Metric System</h2>
       <div class='u-columns'>
         <p>
-          Use the buttons to select which metric system you would like to use on your dashboard.
+          Which speed indication would you like to use?
         </p>
         <div class='u-button-bar'>
           <button class='a-button' [class.active]='(metricSystem$ | async) === "mph"' (click)='setMilesPerHour()'>Mph</button>
@@ -38,7 +38,7 @@
       <h2>Battery Configuration</h2>
       <div class='u-columns'>
         <p>
-          Which battery configuration are u using?
+          Which battery configuration are you using?
         </p>
         <div class='u-button-bar is-small'>
           <button class='a-button' *ngFor='let b of batteryConfigurations' [class.active]='(activeConfiguration$ | async) === b' (click)='setConfiguration(b)'>{{b}}S</button>

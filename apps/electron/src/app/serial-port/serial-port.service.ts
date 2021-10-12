@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
@@ -14,7 +15,8 @@ export class SerialPortService {
   public static readonly SHORT_PACKET = 2;
   public static readonly LONG_PACKET = 3;
 
-  constructor(@Inject(serialPortToken) private serial) {
+  constructor(@Inject(serialPortToken) private serial,
+              private eventEmitter: EventEmitter2) {
   }
 
   async findVESCPort(): Promise<PortInfo> {
@@ -35,12 +37,15 @@ export class SerialPortService {
 
     return new Promise<Observable<Buffer>>(async (resolve, reject) => {
       this.port.on('open', async () => {
-
         this.port.on('data', data => {
           this.socket.next(this.parseResponse(data));
         });
         this.port.on('error', error => this.socket.error(error));
-        this.port.on('close', () => this.socket.complete());
+        this.port.on('close', () => {
+          console.log('Serial port closed');
+          this.eventEmitter.emit('serial:closed');
+          this.socket.complete();
+        });
 
         console.log('Serial port opened');
         resolve(this.socket);
@@ -67,6 +72,9 @@ export class SerialPortService {
   }
 
   parseResponse(data: Buffer): Buffer {
+    if (data.length === 0) {
+      return data;
+    }
     switch (data.readInt8(0)) {
       case SerialPortService.SHORT_PACKET:
         return data.slice(2, 2 + data.readInt8(1));

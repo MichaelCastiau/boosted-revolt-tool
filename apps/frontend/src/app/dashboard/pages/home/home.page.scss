@@ -45,7 +45,7 @@
 
 
       &.active {
-        border-left-color: #ccc;
+        border-left-color: variables.$brand-primary;
         background: white;
         position: relative;
         width: 301px;
