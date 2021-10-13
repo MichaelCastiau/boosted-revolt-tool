@@ -5,7 +5,7 @@
       <nav>
         <ul>
           <li [class.active]='(tab$ | async) === "dashboard"'>
-            <img src='assets/images/dashboard-light.svg' alt='dashboard'/>
+
             <span>
                ReVOLT! Dashboard
             <br />
@@ -22,6 +22,7 @@
       <app-status-bar></app-status-bar>
     </div>
     <main>
+      <app-loading></app-loading>
       <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
       <span class='a-copyright'>
         &copy; 2021 Michael Castiau
@@ -30,10 +31,13 @@
   </div>
 </div>
 
-<app-modal [visible]='isConnecting$ | async'>
-  <span modal-title>Connecting to VESC...</span>
+<app-modal [visible]='!!(errorConnecting$ | async)'>
+  <span modal-title>Connection Failed</span>
   <p>
-    We are attempting to connect to your VESC. Please make sure the VESC is switched on
-    and connected through USB to this device.
+    We attempted to connect to your VESC but couldn't find it.
+    Please make sure your VESC is switched on and connected through USB to this device.
   </p>
+  <div cta>
+    <button (click)='retry()' class='a-button'>Retry Connecting</button>
+  </div>
 </app-modal>

@@ -1,0 +1,31 @@
+@use "../../../../assets/styles/variables";
+
+.o-loading{
+  position: absolute;
+  background: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: translateY(-100%);
+  transition: all ease-in-out 300ms;
+  opacity: 0;
+
+  &.is-visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.a-app-name {
+  font-size: 2em;
+  font-family: variables.$font-title;
+}
+p {
+  text-align: center;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: variables.$spacer-xl;
+}

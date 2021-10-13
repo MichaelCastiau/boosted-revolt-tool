@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class VescConnectPageComponent implements OnInit, OnDestroy {
   isConnecting$: Observable<boolean>;
-  connectionError$: Observable<HttpErrorResponse>;
+  connectionError$: Observable<Error>;
   isConnected$: Observable<boolean>;
 
   private destroy$ = new Subject();

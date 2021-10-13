@@ -1,0 +1,11 @@
+<div class='o-loading' [class.is-visible]='isLoading$ | async'>
+  <span class='a-app-name'>
+    Boosted ReVOLT!
+  </span>
+  <p>
+    Keeping Revs on the road!
+  </p>
+  <boosted-revolt-tool-spinner>
+    {{ (loadingMessage$ | async) || 'Loading...' }}
+  </boosted-revolt-tool-spinner>
+</div>
