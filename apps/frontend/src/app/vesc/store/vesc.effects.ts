@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
-  connectionLost,
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
@@ -10,7 +9,7 @@ import {
   setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
-import { catchError, delay, finalize, map, switchMap, take } from 'rxjs/operators';
+import { catchError, delay, map, switchMap } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
@@ -27,8 +26,7 @@ export class VESCEffects {
       socket.next({ event: 'connect' });
       return socket.pipe(
         map(info => connectToVESCSuccess({ info })),
-        catchError(error => of(connectToVESCFail({ error }))),
-        finalize(() => connectionLost({}))
+        catchError(error => of(connectToVESCFail({ error })))
       );
     })
   ));
