@@ -4,6 +4,8 @@ This repository contains the source code and downloadable executables for the Bo
 
 It also provides firmware updates for Boosted ReVOLT! products.
 
+![screenshot](https://raw.githubusercontent.com/MichaelCastiau/boosted-revolt-tool/master/screenshots/home.png)
+
 ## Download
 
 Under construction, come back later!
