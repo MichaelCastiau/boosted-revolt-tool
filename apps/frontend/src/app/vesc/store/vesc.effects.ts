@@ -11,17 +11,24 @@ import {
 } from './vesc.actions';
 import { catchError, delay, map, switchMap } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { WebsocketService } from '../services/websocket.service';
+import { Action } from '@ngrx/store';
+import { WebSocketSubject } from 'rxjs/webSocket';
 
 @Injectable()
 export class VESCEffects {
   connectToVESC$ = createEffect(() => this.actions$.pipe(
     ofType(connectToVESC),
     delay(700),
-    switchMap(() => this.api.connect().pipe(
-      map((info) => connectToVESCSuccess({ info })),
-      catchError(error => of(connectToVESCFail({ error })))
-    ))
+    map(() => this.socket.openSocket()),
+    switchMap((socket: WebSocketSubject<any>): Observable<Action> => {
+      socket.next({ event: 'connect' });
+      return socket.pipe(
+        map(info => connectToVESCSuccess({ info })),
+        catchError(error => of(connectToVESCFail({ error })))
+      );
+    })
   ));
 
   setBatteryConfiguration = createEffect(() => this.actions$.pipe(
@@ -38,6 +45,6 @@ export class VESCEffects {
     ))
   ));
 
-  constructor(private actions$: Actions, private api: VESCService) {
+  constructor(private actions$: Actions, private api: VESCService, private socket: WebsocketService) {
   }
 }

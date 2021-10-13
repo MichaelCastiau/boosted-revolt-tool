@@ -8,6 +8,7 @@ import { VESCService } from './services/vesc.service';
 import { HttpClientModule } from '@angular/common/http';
 import { vescReducer } from './store/vesc.reducer';
 import { CommonModule } from '@angular/common';
+import { WebsocketService } from './services/websocket.service';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     VescConnectPageComponent
   ],
   providers: [
-    VESCService
+    VESCService,
+    WebsocketService
   ]
 })
 export class VESCModule {

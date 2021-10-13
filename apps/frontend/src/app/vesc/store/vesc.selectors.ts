@@ -11,7 +11,7 @@ export const selectIsConnecting: OperatorFunction<IAppState, boolean> = state$ =
   select(state => state.isConnecting)
 );
 
-export const selectConnectionError: OperatorFunction<IAppState, HttpErrorResponse> = state$ => state$.pipe(
+export const selectConnectionError: OperatorFunction<IAppState, Error> = state$ => state$.pipe(
   select(selectVESCState),
   select(state => state.errorConnecting)
 );

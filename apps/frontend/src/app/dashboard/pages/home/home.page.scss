@@ -17,15 +17,15 @@
   width: 300px;
   background: darken(#fff, 3%);
   position: relative;
+  border-right: 1px solid #ddd;
+
 
   ul {
     margin: 0;
     padding: 0;
 
     li {
-      padding-top: variables.$spacer-xxl;
-      padding-bottom: variables.$spacer-xxl;
-      padding-left: variables.$spacer;
+      padding-left: variables.$spacer-xl;
       height: variables.$sidebar-item-height;
       display: flex;
       align-items: center;
@@ -45,7 +45,7 @@
 
 
       &.active {
-        border-left-color: #ccc;
+        border-left-color: variables.$brand-primary;
         background: white;
         position: relative;
         width: 301px;
@@ -71,10 +71,11 @@
 }
 
 main {
-  border-left: 1px solid #ddd;
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+
   app-dashboard-settings {
     flex: 1;
   }

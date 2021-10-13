@@ -1,20 +1,21 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { crc16xmodem } from 'crc';
 
 @Injectable()
 export class SerialPortService {
   private port: SerialPort;
-  private socket: Subject<Buffer> = new Subject();
 
   public static readonly STOP_BYTE = 3;
   public static readonly SHORT_PACKET = 2;
   public static readonly LONG_PACKET = 3;
 
-  constructor(@Inject(serialPortToken) private serial) {
+  constructor(@Inject(serialPortToken) private serial,
+              private eventEmitter: EventEmitter2) {
   }
 
   async findVESCPort(): Promise<PortInfo> {
@@ -34,18 +35,20 @@ export class SerialPortService {
     });
 
     return new Promise<Observable<Buffer>>(async (resolve, reject) => {
-      this.port.on('open', async () => {
-
-        this.port.on('data', data => {
-          this.socket.next(this.parseResponse(data));
+      const observable = new Observable<Buffer>((observer: Observer<Buffer>) => {
+        this.port.on('data', data => observer.next(this.parseResponse(data)));
+        this.port.on('error', error => {
+          reject(error);
+          observer.error(error);
         });
-        this.port.on('error', error => this.socket.error(error));
-        this.port.on('close', () => this.socket.complete());
-
-        console.log('Serial port opened');
-        resolve(this.socket);
+        this.port.on('close', () => {
+          console.log('Serial port closed');
+          this.eventEmitter.emit('serial:closed');
+          observer.complete();
+        });
       });
-      this.port.on('error', reject);
+
+      this.port.on('open', () => resolve(observable));
     });
   }
 
@@ -67,6 +70,9 @@ export class SerialPortService {
   }
 
   parseResponse(data: Buffer): Buffer {
+    if (data.length < 3) {
+      return data;
+    }
     switch (data.readInt8(0)) {
       case SerialPortService.SHORT_PACKET:
         return data.slice(2, 2 + data.readInt8(1));

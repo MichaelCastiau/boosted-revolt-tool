@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
-import { selectIsConnecting } from '../../../vesc/store/vesc.selectors';
+import { selectConnectionError } from '../../../vesc/store/vesc.selectors';
+import { connectToVESC } from '../../../vesc/store/vesc.actions';
 
 @Component({
   selector: 'app-home-page',
@@ -11,12 +12,16 @@ import { selectIsConnecting } from '../../../vesc/store/vesc.selectors';
 })
 export class HomePageComponent implements OnInit {
   tab$: Observable<'dashboard'> = of('dashboard');
-  isConnecting$: Observable<boolean>;
+  errorConnecting$: Observable<Error>;
 
   constructor(private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.isConnecting$ = this.store.pipe(selectIsConnecting);
+    this.errorConnecting$ = this.store.pipe(selectConnectionError);
+  }
+
+  retry(){
+    this.store.dispatch(connectToVESC());
   }
 }

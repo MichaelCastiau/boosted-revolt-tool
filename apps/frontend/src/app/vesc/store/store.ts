@@ -5,7 +5,7 @@ import { IDashboardConfig, IVESCInfo } from '../vesc-types';
 
 export interface IVESCState {
   isConnecting?: boolean;
-  errorConnecting?: HttpErrorResponse;
+  errorConnecting?: HttpErrorResponse | Error;
   isConnected: boolean;
   vescInfo?: IVESCInfo;
   dashboardConfig?: IDashboardConfig;
