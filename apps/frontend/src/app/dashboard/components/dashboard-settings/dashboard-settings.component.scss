@@ -1,4 +1,5 @@
 @use "../../../../assets/styles/variables";
+@use "sass:math";
 
 .o-dashboard-settings {
   height: 100%;
@@ -33,7 +34,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: variables.$sidebar-item-height +  variables.$spacer variables.$spacer-xxl variables.$spacer-xxl;
+    padding: math.div(variables.$sidebar-item-height, 4) variables.$spacer-xxl variables.$spacer-xxl;
     width: 100%;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
 import { selectConnectionError } from '../../../vesc/store/vesc.selectors';
@@ -11,7 +11,7 @@ import { connectToVESC } from '../../../vesc/store/vesc.actions';
   styleUrls: ['./home.page.scss']
 })
 export class HomePageComponent implements OnInit {
-  tab$: Observable<'dashboard'> = of('dashboard');
+  tab$: Subject<'dashboard' | 'vesc'> = new BehaviorSubject('vesc');
   errorConnecting$: Observable<Error>;
 
   constructor(private store: Store<IAppState>) {

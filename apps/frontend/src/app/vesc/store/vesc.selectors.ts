@@ -2,9 +2,9 @@ import { OperatorFunction } from 'rxjs';
 import { IAppState } from '../../store/store';
 import { selectVESCState } from './store';
 import { select } from '@ngrx/store';
-import { HttpErrorResponse } from '@angular/common/http';
 import { IVESCInfo } from '../vesc-types';
 import { map } from 'rxjs/operators';
+import { IAppData } from '../app-data';
 
 export const selectIsConnecting: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
@@ -34,4 +34,9 @@ export const selectDashboardBatteryConfiguration: OperatorFunction<IAppState, nu
 export const selectDashboardMetricSystem: OperatorFunction<IAppState, 'kmh' | 'mph'> = state$ => state$.pipe(
   select(selectVESCState),
   map(state => state?.dashboardConfig?.metricSystem)
+);
+
+export const selectAppSettings: OperatorFunction<IAppState, IAppData> = state$ => state$.pipe(
+  select(selectVESCState),
+  map(state => state.vescInfo?.app)
 );

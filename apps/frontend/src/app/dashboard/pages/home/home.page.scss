@@ -33,6 +33,11 @@
       font-family: variables.$font-title;
       border-bottom: 1px solid #ddd;
       border-left: 5px solid transparent;
+      color: #aaa;
+
+      &:not([disabled]) {
+        cursor: pointer;
+      }
 
       img {
         max-height: 2em;
@@ -51,14 +56,16 @@
         width: 301px;
         border-bottom: none;
         box-shadow: -5px 2px 5px 1px #ccc;
+        color: black;
 
         & + li {
           border-top: 1px solid #ddd;
         }
       }
 
-      &.inactive {
+      &[disabled]{
         color: #aaa;
+        cursor: not-allowed;
       }
     }
   }
@@ -75,6 +82,8 @@ main {
   display: flex;
   flex-direction: column;
   position: relative;
+  max-height: 100vh;
+  overflow: scroll;
 
   app-dashboard-settings {
     flex: 1;

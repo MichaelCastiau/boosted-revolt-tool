@@ -5,6 +5,7 @@ import {
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
+  getAppSettingsSuccess,
   setBatteryConfigurationSuccess,
   setMetricSystemSuccess
 } from './vesc.actions';
@@ -41,6 +42,15 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
       dashboardConfig: {
         ...state.dashboardConfig,
         metricSystem: system
+      }
+    };
+  }),
+  on(getAppSettingsSuccess, (state, { appSettings }) => {
+    return {
+      ...state,
+      vescInfo: {
+        ...state.vescInfo,
+        app: appSettings
       }
     };
   })
