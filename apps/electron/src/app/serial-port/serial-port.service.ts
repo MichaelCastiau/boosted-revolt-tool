@@ -3,8 +3,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
 import { crc16xmodem } from 'crc';
+import { AnonymousSubject } from 'rxjs/internal-compatibility';
+import { filter, share } from 'rxjs/operators';
 
 @Injectable()
 export class SerialPortService {
@@ -23,7 +25,7 @@ export class SerialPortService {
     return (ports || []).find((port: PortInfo) => port.vendorId === '0483' && port.productId === '5740');
   }
 
-  async openPort(info: PortInfo): Promise<Observable<Buffer>> {
+  async openPort(info: PortInfo): Promise<Subject<Buffer>> {
     if (this.port && this.port.isOpen) {
       await this.port.close();
     }
@@ -34,10 +36,11 @@ export class SerialPortService {
       stopBits: 1
     });
 
-    return new Promise<Observable<Buffer>>(async (resolve, reject) => {
+
+    return new Promise<Subject<Buffer>>(async (resolve, reject) => {
       const observable = new Observable<Buffer>((observer: Observer<Buffer>) => {
         this.port.on('data', data => {
-          observer.next(this.parseResponse(data));
+          observer.next(data);
         });
         this.port.on('error', error => {
           reject(error);
@@ -50,39 +53,38 @@ export class SerialPortService {
         });
       });
 
-      this.port.on('open', () => resolve(observable));
+      this.port.on('open', () => resolve(new AnonymousSubject({
+        error: (error) => {
+          console.error(error);
+          this.port?.close();
+        },
+        complete: () => {
+          this.port?.close();
+        },
+        next: async (data: Buffer) => {
+          await this.write(data);
+        }
+      }, observable.pipe(
+        filter(b => !!b),
+        share()
+      ))));
     });
   }
 
-  async write(command: number, payload: Buffer = Buffer.alloc(0)): Promise<void> {
+  private async write(payload: Buffer = Buffer.alloc(0)): Promise<void> {
     if (!this.port || !this.port.isOpen) {
       throw new BadRequestException('Cannot write to serial port, port not open');
     }
-    const crcByte = crc16xmodem(Buffer.from([command, ...payload]));
+    const crcByte = crc16xmodem(Buffer.from([...payload]));
     const data = Buffer.from([
       SerialPortService.SHORT_PACKET,
-      payload.length + 1,
-      command,
+      payload.length,
       ...payload,
       (crcByte) >> 8,
       (crcByte) & 0xff,
       SerialPortService.STOP_BYTE
     ]);
     await new Promise<void>((resolve, reject) => this.port.write(data, (err?) => err ? reject(err) : resolve()));
-  }
-
-  parseResponse(data: Buffer): Buffer {
-    if (data.length < 3) {
-      return data;
-    }
-
-    const packetLength = data.readUInt8(0);
-    switch (packetLength) {
-      case SerialPortService.SHORT_PACKET:
-        return data.slice(2);
-      case SerialPortService.LONG_PACKET:
-        return data.slice(3);
-    }
   }
 
   isConnected() {
