@@ -16,3 +16,7 @@ Available settings:
 - battery configuration
 
 Firmware updates of the dashboard are made available through this tool.
+
+## Contributing
+
+This project uses Electron and Angular to build a cross-platform desktop application. Backend is running a Nodejs server with NestJs. To contribute, create a merge request and add @MichaelCastiau as reviewer.
