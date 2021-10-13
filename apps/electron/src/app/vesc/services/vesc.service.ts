@@ -1,11 +1,12 @@
 import { SerialPortService } from '../../serial-port/serial-port.service';
 import { Injectable } from '@nestjs/common';
 import { PortNotFoundException } from '../../exceptions/port-not-found.exception';
-import { IVESCFirmwareInfo, VESCCommands } from '../models/commands';
-import { filter, first, map, scan } from 'rxjs/operators';
+import { IVESCFirmwareInfo, VESCCommands } from '../models/datatypes';
+import { filter, first, map, scan, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
+import { deserializeAppData } from '../../helpers/serializer.helper';
 
 @Injectable()
 export class VESCService {
@@ -69,33 +70,8 @@ export class VESCService {
         return buffer.length === (totalNumberOfBytes + 6);
       }),
       first(),
-      map(buffer => {
-        let index = 3;
-        return {
-          signature: buffer.readUInt32BE(++index),
-          controllerId: buffer.readUInt8(index += 4),
-          timeoutMs: buffer.readUInt32BE(++index),
-          timeoutBrakeCurrent: buffer.readFloatBE(index += 4),
-          canStatus: buffer.readUInt8(index += 4),
-          canStatusRateHz: buffer.readUInt16BE(++index),
-          canBaudRate: buffer.readUInt8(index += 2),
-          pairingDone: buffer.readUInt8(++index),
-          permanentUartEnabled: buffer.readUInt8(++index),
-          shutdownMode: buffer.readUInt8(++index),
-          canMode: buffer.readUInt8(++index),
-          uavCanEscIndex: buffer.readUInt8(++index),
-          uavCanRawMode: buffer.readUInt8(++index),
-          appToUse: buffer.readUInt8(++index),
-          ppm: {
-            controlType: buffer.readUInt8(++index),
-            maxErpm: buffer.readFloatBE(++index),
-            hyst: buffer.readFloatBE(index += 4),
-            pulseStart: buffer.readFloatBE(index += 4),
-            pulseEnd: buffer.readFloatBE(index += 4),
-            pulseCenter: buffer.readFloatBE(index += 4)
-          }
-        };
-      })
+      map(buffer => deserializeAppData(buffer)),
+      tap(console.log)
     );
   }
 }

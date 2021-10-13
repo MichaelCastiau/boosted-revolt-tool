@@ -15,5 +15,5 @@ export const setMetricSystem = createAction('[Dashboard] Set metric system', pro
 export const setMetricSystemSuccess = createAction('[Dashboard] Set metric system success', props<{ system: 'kmh' | 'mph' }>());
 
 export const getAppSettings = createAction('[VESC] Get app settings');
-export const getAppSettingsFail = createAction('[VESC] Get app settings success', props<{ error: HttpErrorResponse }>());
-export const getAppSettingsSuccess = createAction('[VESC] Get app settings fail', props<{ appSettings }>());
+export const getAppSettingsFail = createAction('[VESC] Get app settings fail', props<{ error: HttpErrorResponse }>());
+export const getAppSettingsSuccess = createAction('[VESC] Get app settings success', props<{ appSettings }>());

@@ -5,6 +5,7 @@ import {
   connectToVESCFail,
   connectToVESCSuccess,
   getAppSettings,
+  getAppSettingsFail,
   getAppSettingsSuccess,
   setBatteryConfiguration,
   setBatteryConfigurationSuccess,
@@ -41,7 +42,8 @@ export class VESCEffects {
   getAppSettings$ = createEffect(() => this.actions$.pipe(
     ofType(getAppSettings),
     switchMap(() => this.api.getAppSettings().pipe(
-      map(appSettings => getAppSettingsSuccess({ appSettings }))
+      map(appSettings => getAppSettingsSuccess({ appSettings })),
+      catchError(error => of(getAppSettingsFail({ error })))
     ))
   ));
 

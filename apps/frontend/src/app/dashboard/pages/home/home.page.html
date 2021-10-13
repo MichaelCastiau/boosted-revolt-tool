@@ -4,15 +4,21 @@
     <div class='m-sidebar'>
       <nav>
         <ul>
-          <li [class.active]='(tab$ | async) === "dashboard"'>
-
+          <li [class.active]='(tab$ | async) === "vesc"' (click)='tab$.next("vesc")'>
+            <span>
+              VESC
+              <BR/>
+              Electronics Speed Controller
+            </span>
+          </li>
+          <li [class.active]='(tab$ | async) === "dashboard"' (click)='tab$.next("dashboard")'>
             <span>
                ReVOLT! Dashboard
             <br />
             1st generation
             </span>
           </li>
-          <li class='inactive'>
+          <li disabled>
             ReVOLT! BMS
             <br/>
             Under Development
