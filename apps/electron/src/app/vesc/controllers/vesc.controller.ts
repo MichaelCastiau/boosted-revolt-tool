@@ -8,9 +8,9 @@ export class VESCController {
   constructor(private vesc: VESCService) {
   }
 
-  @Get('connect')
-  async connectToVESC() {
-    return this.vesc.connect();
+  @Get('app-settings')
+  getAppSettings(){
+    return this.vesc.getAppSettings();
   }
 
   @Post('battery')

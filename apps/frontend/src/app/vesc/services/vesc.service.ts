@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { IVESCInfo } from '../vesc-types';
 
 @Injectable()
 export class VESCService {
 
   constructor(private http: HttpClient) {
-  }
-
-  connect(): Observable<IVESCInfo> {
-    return this.http.get<IVESCInfo>('/api/vesc/connect', {});
   }
 
   setBatteryConfiguration(configuration: number) {
@@ -23,5 +17,9 @@ export class VESCService {
     return this.http.post('/api/vesc/metric-system', {
       system
     });
+  }
+
+  getAppSettings() {
+    return this.http.get('/api/vesc/app-settings');
   }
 }

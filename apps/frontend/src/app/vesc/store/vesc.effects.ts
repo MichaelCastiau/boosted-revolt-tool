@@ -4,12 +4,14 @@ import {
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
+  getAppSettings,
+  getAppSettingsSuccess,
   setBatteryConfiguration,
   setBatteryConfigurationSuccess,
   setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, mapTo, switchMap } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
@@ -29,6 +31,18 @@ export class VESCEffects {
         catchError(error => of(connectToVESCFail({ error })))
       );
     })
+  ));
+
+  getAppSettingsOnConnection$ = createEffect(() => this.actions$.pipe(
+    ofType(connectToVESCSuccess),
+    mapTo(getAppSettings())
+  ));
+
+  getAppSettings$ = createEffect(() => this.actions$.pipe(
+    ofType(getAppSettings),
+    switchMap(() => this.api.getAppSettings().pipe(
+      map(appSettings => getAppSettingsSuccess({ appSettings }))
+    ))
   ));
 
   setBatteryConfiguration = createEffect(() => this.actions$.pipe(

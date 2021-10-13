@@ -36,7 +36,9 @@ export class SerialPortService {
 
     return new Promise<Observable<Buffer>>(async (resolve, reject) => {
       const observable = new Observable<Buffer>((observer: Observer<Buffer>) => {
-        this.port.on('data', data => observer.next(this.parseResponse(data)));
+        this.port.on('data', data => {
+          observer.next(this.parseResponse(data));
+        });
         this.port.on('error', error => {
           reject(error);
           observer.error(error);
@@ -73,11 +75,13 @@ export class SerialPortService {
     if (data.length < 3) {
       return data;
     }
-    switch (data.readInt8(0)) {
+
+    const packetLength = data.readUInt8(0);
+    switch (packetLength) {
       case SerialPortService.SHORT_PACKET:
-        return data.slice(2, 2 + data.readInt8(1));
+        return data.slice(2);
       case SerialPortService.LONG_PACKET:
-        return data.slice(3, 3 + data.readInt16BE(1));
+        return data.slice(3);
     }
   }
 

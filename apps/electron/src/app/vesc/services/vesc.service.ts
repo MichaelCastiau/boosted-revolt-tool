@@ -2,7 +2,7 @@ import { SerialPortService } from '../../serial-port/serial-port.service';
 import { Injectable } from '@nestjs/common';
 import { PortNotFoundException } from '../../exceptions/port-not-found.exception';
 import { IVESCFirmwareInfo, VESCCommands } from '../models/commands';
-import { filter, map } from 'rxjs/operators';
+import { filter, first, map, take, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
@@ -30,11 +30,11 @@ export class VESCService {
 
   getFirmwareVersion(): Observable<IVESCFirmwareInfo> {
     return this.socket.pipe(
-      filter((data: Buffer) => data && data.length > 0 && data?.readInt8(0) === VESCCommands.COMM_FW_VERSION),
+      filter((data: Buffer) => data && data.length > 0 && data?.readUInt8(0) === VESCCommands.COMM_FW_VERSION),
       map(data => data.slice(1, data.length - 1)),
       map(data => {
         return {
-          version: `${data.readInt8(0)}.${data.readInt8(1)}`,
+          version: `${data.readUInt8(0)}.${data.readUInt8(1)}`,
           name: Buffer.from(data.slice(2, 14)).toString('utf-8')
         };
       }),
@@ -53,5 +53,41 @@ export class VESCService {
      */
     const command = Buffer.from([0, 0, 0, environment.CAN.extendedId, 1, ...config.data]);
     return this.serial.write(VESCCommands.COMM_CAN_FWD_FRAME, command);
+  }
+
+  getAppSettings() {
+    return this.socket.pipe(
+      doOnSubscribe(() => this.serial.write(VESCCommands.COMM_GET_APPCONF)),
+      filter(b => !!b),
+      take(3),
+      map(buffer => {
+        console.log('buffer', buffer);
+        /*let index = 0;
+        return {
+          signature: buffer.readUInt32BE(++index),
+          controllerId: buffer.readUInt8(index += 4),
+          timeoutMs: buffer.readUInt32BE(++index),
+          timeoutBrakeCurrent: buffer.readFloatBE(index += 4),
+          canStatus: buffer.readUInt8(index += 4),
+          canStatusRateHz: buffer.readUInt16BE(++index),
+          canBaudRate: buffer.readUInt8(index += 2),
+          pairingDone: buffer.readUInt8(++index),
+          permanentUartEnabled: buffer.readUInt8(++index),
+          shutdownMode: buffer.readUInt8(++index),
+          canMode: buffer.readUInt8(++index),
+          uavCanEscIndex: buffer.readUInt8(++index),
+          uavCanRawMode: buffer.readUInt8(++index),
+          appToUse: buffer.readUInt8(++index),
+          ppm :{
+            controlType: buffer.readUInt8(++index),
+            maxErpm: buffer.readFloatBE(++index),
+            hyst: buffer.readFloatBE(index+=4),*/
+         /*   pulseStart: buffer.readFloatBE(index+=4),
+            pulseEnd: buffer.readFloatBE(index+=4),
+            pulseCenter: buffer.readFloatBE(index+=4),*/
+        return {
+        };
+      })
+    );
   }
 }
