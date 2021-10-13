@@ -27,6 +27,7 @@ h1, h2, h3 {
   p {
     flex: 1;
     display: block;
+    margin-right: variables.$spacer;
   }
 }
 

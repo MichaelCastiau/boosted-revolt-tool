@@ -1,0 +1,57 @@
+@use "../../../../assets/styles/variables";
+@use "sass:math";
+
+:host-context {
+  flex: 1;
+}
+
+.o-vesc-settings {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: math.div(variables.$sidebar-item-height, 4) variables.$spacer-xxl variables.$spacer-xxl;
+
+  & > div {
+    margin-bottom: variables.$spacer;
+  }
+}
+
+.a-wrong-settings {
+  h3 {
+    margin-top: 0;
+  }
+
+  padding: variables.$spacer;
+  margin: -(variables.$spacer);
+  margin-top: variables.$spacer;
+  margin-bottom: variables.$spacer * 2;
+  background: variables.$brand-primary;
+  border-radius: variables.$spacer;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border: 0;
+  display: block;
+  margin: variables.$spacer 0 0;
+
+  tr {
+    display: flex;
+    justify-content: space-between;
+    margin: -2px; // For the border, align adjustment
+
+    &:not(:first-of-type) {
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  th {
+    font-family: variables.$font-title;
+  }
+
+  td {
+    padding-top: variables.$spacer-xl;
+    padding-bottom: variables.$spacer-xl;
+  }
+}

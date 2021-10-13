@@ -9,6 +9,7 @@ import { DashboardSettingsComponent } from './components/dashboard-settings/dash
 import { LoadingComponent } from './components/loading/loading.component';
 import { StoreModule } from '@ngrx/store';
 import { dashboardReducer } from './store/dashboard.reducer';
+import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { dashboardReducer } from './store/dashboard.reducer';
     StatusBarComponent,
     MenuBarComponent,
     DashboardSettingsComponent,
-    LoadingComponent
+    LoadingComponent,
+    VescSettingsComponent
   ],
   imports: [
     RouterModule.forChild([{
