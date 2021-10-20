@@ -1,4 +1,4 @@
-import { AppUse, CANBaud, CANMode, CANStatusMode, ShutdownMode } from './datatypes';
+import { ADCControlType, AppUse, CANBaud, CANMode, CANStatusMode, ShutdownMode } from './datatypes';
 
 export interface IAppData {
   signature: number,
@@ -39,7 +39,7 @@ export interface IAppData {
     smartRevRampTime,
   },
   adc: {
-    controlType,
+    controlType: ADCControlType,
     hyst,
     voltageStart,
     voltageEnd,

@@ -1,11 +1,22 @@
-<div class='o-loading' [class.is-visible]='isLoading$ | async'>
-  <span class='a-app-name'>
-    Boosted ReVOLT!
-  </span>
-  <p>
-    Keeping Revs on the road!
-  </p>
-  <boosted-revolt-tool-spinner>
-    {{ (loadingMessage$ | async) || 'Loading...' }}
-  </boosted-revolt-tool-spinner>
+<div class='o-loading' [class.is-visible]='(isLoading$ | async) || !(isConnected$ | async)'>
+  <div *ngIf='isLoading$ | async'>
+    <img src='assets/images/dashboard.svg' alt='Dashboard' />
+    <span class='a-app-name'>
+      Boosted ReVOLT!
+    </span>
+    <boosted-revolt-tool-spinner>
+      {{ (loadingMessage$ | async) || 'Loading...' }}
+    </boosted-revolt-tool-spinner>
+  </div>
+
+  <div *ngIf='!(isConnected$ | async) && !(isLoading$ | async)'>
+    <img src='assets/images/compass.svg' alt='Compass' />
+    <span class='a-app-name'>
+      Not Connected
+    </span>
+    <p>
+      Please make sure your VESC is switched on and connected through USB to this device.
+      The ReVOLT! dashboard should be switched on and connected through the CAN bus to the VESC.
+    </p>
+  </div>
 </div>

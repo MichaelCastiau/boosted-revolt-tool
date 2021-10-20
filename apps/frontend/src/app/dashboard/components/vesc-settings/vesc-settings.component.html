@@ -1,6 +1,6 @@
 <div class='o-vesc-settings'>
-  <h2>VESC Settings</h2>
-  <div class='a-wrong-settings'>
+  <h2>VESC Settingss</h2>
+  <div class='a-wrong-settings' *ngIf='!(configurationValid$ | async)'>
     <h3>Configuration Problem</h3>
     We've detected that your VESC is not properly configured to make use of the Boosted ReVOLT! Dashboard.
   </div>
@@ -8,31 +8,6 @@
     <p>
       Would you like us to automatically configure your VESC for the use of the ReVOLT! Dashboard?
     </p>
-    <button class='a-button'>Configure Automatically</button>
-  </div>
-  <div>
-    <h2>Application Settings</h2>
-    <table>
-      <tr>
-        <th>Setting</th>
-        <th>Value</th>
-      </tr>
-      <tr>
-        <td>CAN ID</td>
-        <td>{{ (appSettings$ | async)?.general?.controllerId }}</td>
-      </tr>
-      <tr>
-        <td>CAN Baud Rate</td>
-        <td>{{ (appSettings$ | async)?.general?.canBaudRate }}</td>
-      </tr>
-      <tr>
-        <td>CAN Status Messages</td>
-        <td>{{ (appSettings$ | async)?.general?.sendCanStatus }}</td>
-      </tr>
-      <tr>
-        <td>CAN Mode</td>
-        <td> {{ (appSettings$ | async)?.general?.canMode }}</td>
-      </tr>
-    </table>
+    <button class='a-button' (click)='configure()'>Configure Automatically</button>
   </div>
 </div>

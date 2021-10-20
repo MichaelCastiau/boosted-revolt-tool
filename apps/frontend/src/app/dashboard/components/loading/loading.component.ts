@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectIsLoading, selectLoadingMessage } from '../../store/dashboard.selectors';
-import { selectIsConnecting } from '../../../vesc/store/vesc.selectors';
+import { selectIsConnected, selectIsConnecting } from '../../../vesc/store/vesc.selectors';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 })
 export class LoadingComponent implements OnInit {
   isLoading$: Observable<boolean>;
+  isConnected$: Observable<boolean>;
   loadingMessage$: Observable<string>;
 
   constructor(private store: Store) {
@@ -25,6 +26,7 @@ export class LoadingComponent implements OnInit {
       map(([a, b]) => a || b)
     );
     this.loadingMessage$ = this.store.pipe(selectLoadingMessage);
+    this.isConnected$ = this.store.pipe(selectIsConnected);
   }
 
 }

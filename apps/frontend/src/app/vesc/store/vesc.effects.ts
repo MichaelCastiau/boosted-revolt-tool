@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
+  configureVESC,
+  configureVESCFail,
+  configureVESCSuccess,
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
@@ -18,6 +21,7 @@ import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
 import { Action } from '@ngrx/store';
 import { WebSocketSubject } from 'rxjs/webSocket';
+import { IAppData } from '../app-data';
 
 @Injectable()
 export class VESCEffects {
@@ -58,6 +62,14 @@ export class VESCEffects {
     ofType(setMetricSystem),
     switchMap(action => this.api.setMetricSystem({ system: action.system }).pipe(
       map(() => setMetricSystemSuccess({ system: action.system }))
+    ))
+  ));
+
+  configureVESC$ = createEffect(() => this.actions$.pipe(
+    ofType(configureVESC),
+    switchMap(() => this.api.configureVESC().pipe(
+      map((appSettings: IAppData) => configureVESCSuccess({ appSettings })),
+      catchError(error => of(configureVESCFail({ error })))
     ))
   ));
 

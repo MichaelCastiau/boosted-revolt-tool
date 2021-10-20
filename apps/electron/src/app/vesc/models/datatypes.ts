@@ -174,6 +174,39 @@ export enum CANBaud {
   CAN_BAUD_100K
 };
 
+export enum ADCControlType {
+  ADC_CTRL_TYPE_NONE = 0,
+  ADC_CTRL_TYPE_CURRENT,
+  ADC_CTRL_TYPE_CURRENT_REV_CENTER,
+  ADC_CTRL_TYPE_CURRENT_REV_BUTTON,
+  ADC_CTRL_TYPE_CURRENT_REV_BUTTON_BRAKE_ADC,
+  ADC_CTRL_TYPE_CURRENT_REV_BUTTON_BRAKE_CENTER,
+  ADC_CTRL_TYPE_CURRENT_NOREV_BRAKE_CENTER,
+  ADC_CTRL_TYPE_CURRENT_NOREV_BRAKE_BUTTON,
+  ADC_CTRL_TYPE_CURRENT_NOREV_BRAKE_ADC,
+  ADC_CTRL_TYPE_DUTY,
+  ADC_CTRL_TYPE_DUTY_REV_CENTER,
+  ADC_CTRL_TYPE_DUTY_REV_BUTTON,
+  ADC_CTRL_TYPE_PID,
+  ADC_CTRL_TYPE_PID_REV_CENTER,
+  ADC_CTRL_TYPE_PID_REV_BUTTON
+};
+
+export interface ICustomVESCConfig {
+  appToUse: AppUse,
+  controllerId: number,
+  canBaudRate: CANBaud,
+  canStatusMode: CANStatusMode,
+  canMode: CANMode,
+  canStatusRateHz: number,
+  adc: {
+    controlType: number,
+    minVoltage: number,
+    centerVoltage: number,
+    maxVoltage: number
+  }
+}
+
 export interface IVESCFirmwareInfo {
   version: string;
   name: string;

@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { VESCService } from '../services/vesc.service';
 import { CanMessageDto, MetricSystemDto } from '../dto/can-message.dto';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
+import { IAppData } from '../models/app-data';
 
 @Controller('vesc')
 export class VESCController {
@@ -9,7 +11,7 @@ export class VESCController {
   }
 
   @Get('app-settings')
-  getAppSettings(){
+  getAppSettings() {
     return this.vesc.getAppSettings();
   }
 
@@ -27,5 +29,10 @@ export class VESCController {
       extendedId: environment.CAN.extendedId,
       data: Buffer.from([body.system === 'kmh' ? 2 : 1])
     });
+  }
+
+  @Post('/configure')
+  configureAutomatically(): Observable<IAppData> {
+    return this.vesc.configureForDashboard();
   }
 }

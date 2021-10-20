@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { IAppData } from '../app-data';
 
 @Injectable()
 export class VESCService {
@@ -19,7 +21,11 @@ export class VESCService {
     });
   }
 
-  getAppSettings() {
-    return this.http.get('/api/vesc/app-settings');
+  getAppSettings(): Observable<IAppData> {
+    return this.http.get<IAppData>('/api/vesc/app-settings');
+  }
+
+  configureVESC(): Observable<IAppData> {
+    return this.http.post<IAppData>('/api/vesc/configure', {});
   }
 }

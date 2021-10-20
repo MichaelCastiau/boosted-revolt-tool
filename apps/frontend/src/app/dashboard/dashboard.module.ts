@@ -18,7 +18,7 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
     MenuBarComponent,
     DashboardSettingsComponent,
     LoadingComponent,
-    VescSettingsComponent
+    VescSettingsComponent,
   ],
   imports: [
     RouterModule.forChild([{
@@ -27,7 +27,8 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
     }]),
     StoreModule.forFeature('dashboard', dashboardReducer),
     CommonModule,
-    SharedModule
+    SharedModule,
+    CommonModule
   ]
 })
 export class DashboardModule {

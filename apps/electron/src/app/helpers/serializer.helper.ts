@@ -1,7 +1,8 @@
 import { IAppData } from '../vesc/models/app-data';
+import { ICustomVESCConfig } from '../vesc/models/datatypes';
 
 export function deserializeAppData(buffer: Buffer): IAppData {
-  let index = 3;
+  let index = -1;
   return {
     signature: buffer.readUInt32BE(++index),
     general: {
@@ -180,4 +181,21 @@ export function deserializeAppData(buffer: Buffer): IAppData {
       gyroOffsetCompClamp: buffer.readFloatBE(index += 4)
     }
   };
+}
+
+export function setVescConfig(signature: number, config: ICustomVESCConfig, data: Buffer): Buffer {
+  data.writeUInt32BE(signature, 0);
+  data.writeUInt8(config.controllerId, 4);
+  data.writeUInt8(config.canStatusMode, 13);
+  data.writeInt16BE(config.canStatusRateHz, 14);
+  data.writeInt8(config.canBaudRate, 16);
+  data.writeInt8(config.canMode, 20);
+  data.writeInt8(config.appToUse, 23);
+
+
+  data.writeUInt8(config.adc.controlType, 82);
+  data.writeFloatBE(config.adc.minVoltage, 91);
+  data.writeFloatBE(config.adc.maxVoltage, 95);
+  data.writeFloatBE(config.adc.centerVoltage, 99);
+  return data;
 }

@@ -26,7 +26,7 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
       errorConnecting: new Error('serial port is closed')
     };
   }),
-  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false })),
+  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false, errorConnecting: null })),
   on(setBatteryConfigurationSuccess, (state, { configuration }) => {
     return {
       ...state,

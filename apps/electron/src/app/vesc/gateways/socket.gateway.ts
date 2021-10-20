@@ -1,7 +1,7 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { VESCService } from '../services/vesc.service';
-import { from, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { OnEvent } from '@nestjs/event-emitter';
 
 @WebSocketGateway()
@@ -22,8 +22,17 @@ export class SocketGateway {
   handleEvent(@MessageBody() data: string,
               @ConnectedSocket() client): Observable<any> {
     this.socket = client;
+
+    if(this.vesc.isConnected()){
+      return this.vesc.getFirmwareVersion();
+    }
+
     return from(this.vesc.connect()).pipe(
-      switchMap(() => this.vesc.getFirmwareVersion())
+      switchMap(() => this.vesc.getFirmwareVersion()),
+      catchError(err => {
+        client.close();
+        return of(undefined);
+      })
     );
   }
 }

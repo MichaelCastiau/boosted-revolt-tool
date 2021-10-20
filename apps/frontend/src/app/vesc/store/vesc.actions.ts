@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IVESCInfo } from '../vesc-types';
+import { IAppData } from '../app-data';
 
 export const connectToVESC = createAction('[VESC] Connect');
 export const connectToVESCFail = createAction('[VESC] Connect Fail', props<{ error: HttpErrorResponse }>());
@@ -16,4 +17,8 @@ export const setMetricSystemSuccess = createAction('[Dashboard] Set metric syste
 
 export const getAppSettings = createAction('[VESC] Get app settings');
 export const getAppSettingsFail = createAction('[VESC] Get app settings fail', props<{ error: HttpErrorResponse }>());
-export const getAppSettingsSuccess = createAction('[VESC] Get app settings success', props<{ appSettings }>());
+export const getAppSettingsSuccess = createAction('[VESC] Get app settings success', props<{ appSettings: IAppData }>());
+
+export const configureVESC = createAction('[VESC] Configure');
+export const configureVESCSuccess = createAction('[VESC] Configure Success', props<{ appSettings: IAppData }>());
+export const configureVESCFail = createAction('[VESC] Configure fail', props<{ error: Error }>());
