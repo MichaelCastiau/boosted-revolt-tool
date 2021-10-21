@@ -11,7 +11,7 @@ import { connectToVESC } from '../../../vesc/store/vesc.actions';
   styleUrls: ['./home.page.scss']
 })
 export class HomePageComponent implements OnInit {
-  tab$: Subject<'dashboard' | 'vesc'> = new BehaviorSubject('vesc');
+  tab$: Subject<'dashboard' | 'vesc'> = new BehaviorSubject('dashboard');
   errorConnecting$: Observable<Error>;
 
   constructor(private store: Store<IAppState>) {
