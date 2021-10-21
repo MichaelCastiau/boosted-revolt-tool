@@ -3,10 +3,14 @@
   "productName": "Boosted ReVOLT!",
   "copyright": "Copyright © 2021 Michael Castiau",
   "mac": {
-    "icon": "assets/icons/mac/icon.ico",
     "target": "dmg",
     "darkModeSupport": false,
-    "type": "distribution"
+    "type": "distribution",
+    "icon": "apps/electron/src/assets/icons/icon.png"
+  },
+  "win": {
+    "target": "exe",
+    "icon": "apps/electron/src/assets/icons/icon.ico"
   },
   "npmRebuild": true,
   "buildDependenciesFromSource": true

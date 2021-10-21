@@ -13,7 +13,8 @@
     "test": "nx test",
     "install": "electron-rebuild",
     "rebuild": "electron-rebuild -f -w serialport",
-    "package:mac-intel": "nx run electron:package --platform=mac"
+    "package:mac-intel": "yarn build && nx run electron:package --platform=mac",
+    "package:win": "yarn build && nx run electron:package --platform=windows"
   },
   "private": true,
   "dependencies": {

@@ -11,23 +11,23 @@ export class VESCService {
   }
 
   setBatteryConfiguration(configuration: number) {
-    return this.http.post<void>('/api/vesc/battery', {
+    return this.http.post<void>('http://localhost:3333/api/vesc/battery', {
       configuration
     });
   }
 
   setMetricSystem({ system }) {
-    return this.http.post('/api/vesc/metric-system', {
+    return this.http.post('http://localhost:3333/api/vesc/metric-system', {
       system
     });
   }
 
   getAppSettings(): Observable<IAppData> {
-    return this.http.get<IAppData>('/api/vesc/app-settings');
+    return this.http.get<IAppData>('http://localhost:3333/api/vesc/app-settings');
   }
 
   configureVESC(): Observable<IAppData> {
-    return this.http.post<void>('/api/vesc/configure', {}).pipe(
+    return this.http.post<void>('http://localhost:3333/api/vesc/configure', {}).pipe(
       switchMap(() => this.getAppSettings())
     );
   }
