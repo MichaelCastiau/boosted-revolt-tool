@@ -11,7 +11,7 @@ import {
   IVESCFirmwareInfo,
   VESCCommands
 } from '../models/datatypes';
-import { delay, filter, first, map, scan, switchMap } from 'rxjs/operators';
+import { filter, first, map, mapTo, scan, switchMap, timeout } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
@@ -108,14 +108,16 @@ export class VESCService {
     );
   }
 
-  configureForDashboard(): Observable<IAppData> {
+  configureForDashboard(): Observable<void> {
     return this.getAppSettingsRawBuffer().pipe(
-      map(data => data.map(i => 0)),
       map((data: Buffer) => setVescConfig(3264926020, VESCService.VESC_DEFAULT_CONFIG, data)),
       map(data => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data]))),
-      delay(250),  //Wait for VESC processing
-      switchMap(() => this.getAppSettings()),
-      first()
+      switchMap(() => this.socket),
+      //Wait for response, response meaning write was successful
+      filter(buffer => buffer.readUInt8(2) === VESCCommands.COMM_SET_APPCONF),
+      first(),
+      mapTo(undefined),
+      timeout(700)
     );
   }
 }

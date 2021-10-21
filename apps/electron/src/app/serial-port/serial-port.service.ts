@@ -76,9 +76,12 @@ export class SerialPortService {
       throw new BadRequestException('Cannot write to serial port, port not open');
     }
     const crcByte = crc16xmodem(Buffer.from([...payload]));
+    const lengthBytes = payload.length > 255 ? Buffer.alloc(2)
+      : Buffer.alloc(1);
+    payload.length > 255 ? lengthBytes.writeUInt16BE(payload.length) : lengthBytes.writeUInt8(payload.length);
     const data = Buffer.from([
-      SerialPortService.SHORT_PACKET,
-      payload.length,
+      payload.length > 255 ? SerialPortService.LONG_PACKET : SerialPortService.SHORT_PACKET,
+      ...lengthBytes,
       ...payload,
       (crcByte) >> 8,
       (crcByte) & 0xff,

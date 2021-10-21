@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IAppData } from '../app-data';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class VESCService {
@@ -26,6 +27,8 @@ export class VESCService {
   }
 
   configureVESC(): Observable<IAppData> {
-    return this.http.post<IAppData>('/api/vesc/configure', {});
+    return this.http.post<void>('/api/vesc/configure', {}).pipe(
+      switchMap(() => this.getAppSettings())
+    );
   }
 }

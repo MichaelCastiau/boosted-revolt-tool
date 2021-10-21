@@ -3,7 +3,6 @@ import { VESCService } from '../services/vesc.service';
 import { CanMessageDto, MetricSystemDto } from '../dto/can-message.dto';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { IAppData } from '../models/app-data';
 
 @Controller('vesc')
 export class VESCController {
@@ -32,7 +31,7 @@ export class VESCController {
   }
 
   @Post('/configure')
-  configureAutomatically(): Observable<IAppData> {
+  configureAutomatically(): Observable<void> {
     return this.vesc.configureForDashboard();
   }
 }

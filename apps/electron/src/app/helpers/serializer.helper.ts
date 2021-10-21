@@ -194,8 +194,8 @@ export function setVescConfig(signature: number, config: ICustomVESCConfig, data
 
 
   data.writeUInt8(config.adc.controlType, 82);
-  data.writeFloatBE(config.adc.minVoltage, 91);
-  data.writeFloatBE(config.adc.maxVoltage, 95);
-  data.writeFloatBE(config.adc.centerVoltage, 99);
+  data.writeFloatBE(config.adc.minVoltage, 87);
+  data.writeFloatBE(config.adc.maxVoltage, 91);
+  data.writeFloatBE(config.adc.centerVoltage, 95);
   return data;
 }
