@@ -9,9 +9,13 @@
     "icon": "apps/electron/src/assets/icons/icon.png"
   },
   "win": {
-    "target": "exe",
-    "icon": "apps/electron/src/assets/icons/icon.ico"
+    "target": "nsis",
+    "icon": "apps/electron/src/assets/icons/icon.ico",
   },
   "npmRebuild": true,
-  "buildDependenciesFromSource": true
+  "buildDependenciesFromSource": true,
+  "publish": {
+    "provider": "github",
+    "owner": "MichaelCastiau"
+  }
 }

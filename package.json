@@ -1,9 +1,10 @@
 {
   "name": "boosted-revolt-tool",
-  "version": "0.0.0",
+  "version": "v0.0.1",
   "author": "Michael Castiau",
   "license": "proprietary",
-  "description": "Boosted ReVOLT! Firmware configuration and update tool",
+  "description": "Boosted ReVOLT! Firmware conf iguration and update tool",
+  "repository": "https://github.com/MichaelCastiau/boosted-revolt-tool.git",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && exitzero electron-builder install-app-deps",
@@ -13,8 +14,8 @@
     "test": "nx test",
     "install": "electron-rebuild",
     "rebuild": "electron-rebuild -f -w serialport",
-    "package:mac-intel": "yarn build && nx run electron:package --platform=mac",
-    "package:win": "yarn build && nx run electron:package --platform=windows"
+    "package:mac-intel": "nx run electron:make --platform=mac",
+    "package:win": "nx run electron:make --platform=windows"
   },
   "private": true,
   "dependencies": {
