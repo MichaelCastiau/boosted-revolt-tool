@@ -14,7 +14,7 @@
     "icon": "apps/electron/src/assets/icons/icon.ico"
   },
   "nsis": {
-    "artifactName":  "${productName}.${ext}",
+    "artifactName":  "${productName} Setup.${ext}",
     "createDesktopShortcut": true
   },
   "publish": {
