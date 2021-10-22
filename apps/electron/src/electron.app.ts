@@ -73,6 +73,7 @@ export default class App {
         backgroundThrottling: false,
         preload: join(__dirname, 'preload.js'),
       },
+      icon: path.join(__dirname, 'app/icon.ico')
     });
     App.mainWindow.setMenu(null);
     App.mainWindow.center();
