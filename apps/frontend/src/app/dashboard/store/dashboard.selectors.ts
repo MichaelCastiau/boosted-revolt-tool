@@ -3,7 +3,7 @@ import { IAppState } from '../../store/store';
 import { select } from '@ngrx/store';
 import { selectDashboardState } from './store';
 import { selectAppSettings } from '../../vesc/store/vesc.selectors';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { IAppData } from '../../vesc/app-data';
 import { AppUse, CANBaud, CANMode, CANStatusMode } from '../../../../../electron/src/app/vesc/models/datatypes';
 
