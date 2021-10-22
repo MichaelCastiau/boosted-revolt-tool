@@ -13,11 +13,15 @@
     "target": "nsis",
     "icon": "apps/electron/src/assets/icons/icon.ico"
   },
+  "nsis": {
+    "artifactName":  "${productName}.${ext}",
+    "createDesktopShortcut": true
+  },
   "npmRebuild": true,
   "buildDependenciesFromSource": true,
   "publish": {
     "provider": "github",
-    "owner": "MichaelCastiau"
-  },
-  "artifactName": "${productName}.${ext}"
+    "owner": "MichaelCastiau",
+    "vPrefixedTagName": false
+  }
 }

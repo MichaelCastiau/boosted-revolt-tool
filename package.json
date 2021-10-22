@@ -15,8 +15,8 @@
     "rebuild": "electron-rebuild -f -w serialport",
     "package:mac-intel": "nx run electron:make --platform=mac",
     "package:win": "nx run electron:make --platform=windows",
-    "publish:minor": "",
-    "publish:major": ""
+    "release:mac": "",
+    "release:win": "nx run electron:make --platform=windows --publishPolicy=always"
   },
   "private": true,
   "dependencies": {
@@ -72,6 +72,7 @@
     "@typescript-eslint/eslint-plugin": "~4.28.3",
     "@typescript-eslint/parser": "~4.28.3",
     "cypress": "^8.3.0",
+    "dotenv-cli": "^4.0.0",
     "electron": "^11.3.0",
     "electron-rebuild": "^3.2.3",
     "eslint": "7.22.0",
