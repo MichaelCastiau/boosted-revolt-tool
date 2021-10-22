@@ -1,5 +1,6 @@
 {
   "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
+  "appId": "com.michaelcastiau.boosted-revolt-tool",
   "productName": "Boosted ReVOLT!",
   "copyright": "Copyright © 2021 Michael Castiau",
   "mac": {
@@ -10,12 +11,13 @@
   },
   "win": {
     "target": "nsis",
-    "icon": "apps/electron/src/assets/icons/icon.ico",
+    "icon": "apps/electron/src/assets/icons/icon.ico"
   },
   "npmRebuild": true,
   "buildDependenciesFromSource": true,
   "publish": {
     "provider": "github",
     "owner": "MichaelCastiau"
-  }
+  },
+  "artifactName": "${productName}.${ext}"
 }
