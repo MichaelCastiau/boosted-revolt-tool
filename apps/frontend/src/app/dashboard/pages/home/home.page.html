@@ -18,17 +18,21 @@
             1st generation
             </span>
           </li>
+          <!--
           <li disabled>
             ReVOLT! BMS
             <br/>
             Under Development
           </li>
+          -->
         </ul>
       </nav>
       <app-status-bar></app-status-bar>
     </div>
     <main>
+      <!--
       <app-loading></app-loading>
+      -->
       <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
       <app-vesc-settings *ngIf='(tab$ | async) === "vesc"'></app-vesc-settings>
       <span class='a-copyright'>

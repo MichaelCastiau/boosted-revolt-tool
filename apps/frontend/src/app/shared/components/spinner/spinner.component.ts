@@ -1,14 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'boosted-revolt-tool-spinner',
+  selector: 'app-spinner',
   templateUrl: './spinner.component.html',
   styleUrls: ['./spinner.component.scss']
 })
-export class SpinnerComponent implements OnInit {
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class SpinnerComponent {
+  @Input()
+  theme: 'default' | 'light' = 'default';
 }

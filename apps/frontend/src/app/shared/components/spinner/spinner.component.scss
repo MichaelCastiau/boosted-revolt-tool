@@ -11,14 +11,23 @@
   align-items: center;
   justify-content: center;
   margin: variables.$spacer;
+  position: relative;
+  left: 4px;
 
   span {
     display: block;
     font-family: variables.$font-title;
   }
+
+  &.light {
+    .lds-ellipsis div {
+      background: white;
+    }
+  }
 }
 
-$height: 2em;
+$height: 40px;
+$bullet-size: 10px;
 
 .lds-ellipsis {
   display: inline-block;
@@ -29,10 +38,10 @@ $height: 2em;
 
 .lds-ellipsis div {
   position: absolute;
-  top: math.div($height, 2);
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
+  top: math.div($height, 2) - ($bullet-size / 2);
+  width: $bullet-size;
+  height: $bullet-size;
+  border-radius: $bullet-size;
   background: variables.$brand-primary;
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }

@@ -8,6 +8,24 @@
     <p>
       Would you like us to automatically configure your VESC for the use of the ReVOLT! Dashboard?
     </p>
-    <button class='a-button' (click)='configure()'>Configure Automatically</button>
+    <button class='a-button' (click)='configure()'>
+      <app-spinner theme='light' *ngIf='isWritingAppSettings$ | async'></app-spinner>
+      <span *ngIf='!(isWritingAppSettings$ | async)'>Configure Automatically</span>
+    </button>
+  </div>
+  <div class='u-light u-small'>
+    <h3>Which settings are changed?</h3>
+    <p>
+      This tool can configure your VESC to interact with the Boosted ReVOLT! dashboard without having to configure your VESC through the official VESC Tool.
+      This tool does not change motor configuration. App configuration that is updated:
+      Controller Id: 22,
+      CAN Status Mode: status messages 1 through 5, Status messages rate: 5Hz,
+      CAN Baud rate: 500k, CAN Mode: VESC,
+      App to use: ADC and UART,
+      ADC control type: current reverse center,
+      ADC min voltage: 1.7V,
+      ADC max voltage: 3.1V,
+      ADC center voltage: 2.3V
+    </p>
   </div>
 </div>

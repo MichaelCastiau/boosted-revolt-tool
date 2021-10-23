@@ -4,9 +4,9 @@
     <span class='a-app-name'>
       Boosted ReVOLT!
     </span>
-    <boosted-revolt-tool-spinner>
+    <app-spinner>
       {{ (loadingMessage$ | async) || 'Loading...' }}
-    </boosted-revolt-tool-spinner>
+    </app-spinner>
   </div>
 
   <div *ngIf='!(isConnected$ | async) && !(isLoading$ | async)'>

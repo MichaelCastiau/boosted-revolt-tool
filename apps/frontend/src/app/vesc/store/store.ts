@@ -9,6 +9,7 @@ export interface IVESCState {
   isConnected: boolean;
   vescInfo?: IVESCInfo;
   dashboardConfig?: IDashboardConfig;
+  writingAppSettings?: boolean;
 }
 
 export const selectVESCState = createFeatureSelector<IVESCState>('vesc');

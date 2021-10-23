@@ -40,3 +40,7 @@ export const selectAppSettings: OperatorFunction<IAppState, IAppData> = state$ =
   select(selectVESCState),
   map(state => state.vescInfo?.app)
 );
+export const selectWritingAppSettings: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
+  select(selectVESCState),
+  select(state => state.writingAppSettings)
+);

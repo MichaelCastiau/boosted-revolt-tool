@@ -10,6 +10,10 @@
   height: variables.$spacer * 2;
   padding: variables.$spacer-xs;
   box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 500ms ease-in-out;
 
   &:hover {
     cursor: pointer;

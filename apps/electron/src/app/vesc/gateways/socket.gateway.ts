@@ -1,7 +1,7 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { VESCService } from '../services/vesc.service';
 import { from, Observable, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { OnEvent } from '@nestjs/event-emitter';
 
 @WebSocketGateway()
@@ -28,6 +28,7 @@ export class SocketGateway {
     }
 
     return from(this.vesc.connect()).pipe(
+      timeout(2000),
       switchMap(() => this.vesc.getFirmwareVersion()),
       catchError(err => {
         client.close();

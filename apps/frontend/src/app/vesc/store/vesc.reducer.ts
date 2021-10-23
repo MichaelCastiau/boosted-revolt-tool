@@ -1,6 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { IVESCState } from './store';
 import {
+  configureVESC,
+  configureVESCFail,
+  configureVESCSuccess,
   connectionLost,
   connectToVESC,
   connectToVESCFail,
@@ -26,7 +29,13 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
       errorConnecting: new Error('serial port is closed')
     };
   }),
-  on(connectToVESCSuccess, (state, { info }) => ({ ...state, vescInfo: info, isConnected: true, isConnecting: false, errorConnecting: null })),
+  on(connectToVESCSuccess, (state, { info }) => ({
+    ...state,
+    vescInfo: info,
+    isConnected: true,
+    isConnecting: false,
+    errorConnecting: null
+  })),
   on(setBatteryConfigurationSuccess, (state, { configuration }) => {
     return {
       ...state,
@@ -53,5 +62,8 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
         app: appSettings
       }
     };
-  })
+  }),
+  on(configureVESC, (state) => ({ ...state, writingAppSettings: true })),
+  on(configureVESCFail, (state, { error }) => ({ ...state, writingAppSettings: false })),
+  on(configureVESCSuccess, (state) => ({ ...state, writingAppSettings: false }))
 );

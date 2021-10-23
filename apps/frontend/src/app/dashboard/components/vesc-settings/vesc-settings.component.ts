@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IAppData } from '../../../vesc/app-data';
 import { Store } from '@ngrx/store';
-import { selectAppSettings } from '../../../vesc/store/vesc.selectors';
+import { selectAppSettings, selectWritingAppSettings } from '../../../vesc/store/vesc.selectors';
 import { IAppState } from '../../../store/store';
 import { selectVESCIsConfiguredForDashboard } from '../../store/dashboard.selectors';
 import { configureVESC } from '../../../vesc/store/vesc.actions';
@@ -15,6 +15,7 @@ import { configureVESC } from '../../../vesc/store/vesc.actions';
 export class VescSettingsComponent implements OnInit {
   appSettings$: Observable<IAppData>;
   configurationValid$: Observable<boolean>;
+  isWritingAppSettings$: Observable<boolean>;
 
   constructor(private store: Store<IAppState>) {
   }
@@ -24,6 +25,7 @@ export class VescSettingsComponent implements OnInit {
     this.configurationValid$ = this.store.pipe(
       selectVESCIsConfiguredForDashboard
     );
+    this.isWritingAppSettings$ = this.store.pipe(selectWritingAppSettings);
   }
 
   configure() {
