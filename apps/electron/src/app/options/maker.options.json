@@ -17,8 +17,6 @@
     "artifactName":  "${productName} Setup.${ext}",
     "createDesktopShortcut": true
   },
-  "npmRebuild": true,
-  "buildDependenciesFromSource": true,
   "publish": {
     "provider": "github",
     "owner": "MichaelCastiau",
