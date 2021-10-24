@@ -14,9 +14,11 @@
     "test": "nx test",
     "rebuild": "electron-rebuild -f -w serialport",
     "package:mac": "nx run electron:make --platform=mac",
+    "release:mac": "nx run electron:make --platform=mac --publishPolicy=always",
+    "package:win": "nx run electron:make --platform=windows",
+    "release:win": "nx run electron:make --platform=windows --publishPolicy=always",
     "package": "nx run electron:make --platform=windows,mac",
-    "release:mac": "",
-    "release:win": "nx run electron:make --platform=windows --publishPolicy=always"
+    "release": "nx run electron:make --platform=windows,mac --publishPolicy=always"
   },
   "private": true,
   "dependencies": {
