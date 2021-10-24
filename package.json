@@ -1,6 +1,6 @@
 {
   "name": "boosted-revolt-tool",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "Michael Castiau",
   "license": "proprietary",
   "description": "Boosted ReVOLT! Firmware conf iguration and update tool",
@@ -13,12 +13,10 @@
     "build": "nx build",
     "test": "nx test",
     "rebuild": "electron-rebuild -f -w serialport",
-    "package:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac",
-    "release:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --publishPolicy=always",
+    "package:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --buildDependenciesFromSource=true",
+    "release:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --publishPolicy=always buildDependenciesFromSource=true",
     "package:win": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows",
-    "release:win": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows --publishPolicy=always",
-    "package": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows,mac",
-    "release": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows,mac --publishPolicy=always"
+    "release:win": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows --publishPolicy=always"
   },
   "private": true,
   "dependencies": {

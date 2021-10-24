@@ -23,6 +23,5 @@
     "vPrefixedTagName": false,
     "private": false
   },
-  "npmRebuild": true,
-  "buildDependenciesFromSource": true
+  "npmRebuild": true
 }
