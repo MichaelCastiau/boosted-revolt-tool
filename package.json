@@ -13,8 +13,8 @@
     "build": "nx build",
     "test": "nx test",
     "rebuild": "electron-rebuild -f -w serialport",
-    "package:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --buildDependenciesFromSource=true",
-    "release:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --publishPolicy=always buildDependenciesFromSource=true",
+    "package:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac",
+    "release:mac": "dotenv -e .env -- yarn build && nx run electron:make --platform=mac --publishPolicy=always",
     "package:win": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows",
     "release:win": "dotenv -e .env -- yarn build && nx run electron:make --platform=windows --publishPolicy=always"
   },
