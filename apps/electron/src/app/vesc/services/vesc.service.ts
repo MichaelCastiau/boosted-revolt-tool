@@ -95,21 +95,20 @@ export class VESCService {
       doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_GET_APPCONF]))),
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
-      map(buffer => buffer.slice(1)),
+      map(buffer => buffer.slice(1)), //Command is removed
       timeout(700)
     );
   }
 
-  configureForDashboard(): Observable<void> {
+  configureForDashboard(): Observable<IAppData> {
     return this.getAppSettingsRawBuffer().pipe(
       map((data: Buffer) => setVescConfig(3264926020, VESCService.VESC_DEFAULT_CONFIG, data)),
       map(data => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data]))),
       switchMap(() => this.socket),
       //Wait for response, response meaning write was successful
-      tap(console.log),
-      filter(buffer => buffer.readUInt8(1) === VESCCommands.COMM_SET_APPCONF),
+      filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
-      mapTo(undefined),
+      map(buffer => deserializeAppData(buffer.slice(1))),
       timeout(2500)
     );
   }

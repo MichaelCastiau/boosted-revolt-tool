@@ -16,7 +16,7 @@
   }
 }
 
-.a-wrong-settings {
+.a-wrong-settings, .a-right-settings {
   h3 {
     margin-top: 0;
   }
@@ -24,17 +24,26 @@
   padding: variables.$spacer;
   margin-top: variables.$spacer;
   margin-bottom: variables.$spacer * 2;
-  background: variables.$brand-primary;
   border-radius: 2px;
   color: white;
 
   & > div {
     display: flex;
     align-items: center;
+
     img {
       max-width: variables.$icon-size;
+      margin-right: variables.$spacer;
     }
   }
+}
+
+.a-wrong-settings {
+  background: variables.$brand-primary;
+}
+
+.a-right-settings {
+  background: variables.$green;
 }
 
 table {

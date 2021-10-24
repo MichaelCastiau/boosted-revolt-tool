@@ -1,5 +1,13 @@
 <div class='o-vesc-settings'>
   <h2>VESC Settingss</h2>
+  <div class='a-right-settings' *ngIf='configurationValid$ | async'>
+    <h3>Configuration Set!</h3>
+    <div>
+      <img src='assets/images/cogs.svg' alt='Cogs'/>
+      <span>We've detected that your VESC is properly setup to use your Boosted ReVOLT! dashboard. Please note that you will still have
+      to setup motor configuration manually.</span>
+    </div>
+  </div>
   <div class='a-wrong-settings' *ngIf='!(configurationValid$ | async)'>
     <h3>Configuration Problem</h3>
     <div>

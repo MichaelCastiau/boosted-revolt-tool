@@ -34,7 +34,7 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
   }),
   on(connectToVESCSuccess, (state, { info }) => ({
     ...state,
-    vescInfo: info,
+    VESCInfo: info,
     isConnected: true,
     isConnecting: false,
     errorConnecting: null
@@ -80,5 +80,12 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
   }),
   on(configureVESC, (state) => ({ ...state, writingAppSettings: true, errorConfiguringVESC: null })),
   on(configureVESCFail, (state, { error }) => ({ ...state, writingAppSettings: false, errorConfiguringVESC: error })),
-  on(configureVESCSuccess, (state) => ({ ...state, writingAppSettings: false }))
+  on(configureVESCSuccess, (state, { appSettings }) => ({
+    ...state,
+    writingAppSettings: false,
+    VESCInfo: {
+      ...state.VESCInfo,
+      app: appSettings
+    }
+  }))
 );

@@ -16,7 +16,7 @@ import {
   setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
-import { catchError, delay, map, mapTo, switchMap, tap, timeout } from 'rxjs/operators';
+import { catchError, delay, map, mapTo, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
@@ -34,8 +34,9 @@ export class VESCEffects {
     switchMap((socket: WebSocketSubject<any>): Observable<Action> => {
       socket.next({ event: 'connect' });
       return socket.pipe(
-        map(info => connectToVESCSuccess({ info })),
+        take(1),
         timeout(2500),
+        map(info => connectToVESCSuccess({ info })),
         catchError(error => of(connectToVESCFail({ error })))
       );
     })

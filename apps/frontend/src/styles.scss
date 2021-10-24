@@ -10,6 +10,9 @@
 .toast-error {
   background: variables.$red;
 }
+.toast-success {
+  background: variables.$green;
+}
 .toast-title{
   margin-bottom: variables.$spacer-sm;
   display: block;

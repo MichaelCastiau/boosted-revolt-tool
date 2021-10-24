@@ -28,8 +28,8 @@ export class SocketGateway {
     }
 
     return from(this.vesc.connect()).pipe(
-      timeout(2000),
       switchMap(() => this.vesc.getFirmwareVersion()),
+      timeout(2000),
       catchError(err => {
         client.close();
         return of(undefined);

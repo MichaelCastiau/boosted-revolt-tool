@@ -6,7 +6,7 @@ import { PortInfo } from 'serialport';
 import { Observable, Observer, Subject } from 'rxjs';
 import { crc16xmodem } from 'crc';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { filter, map, scan, share, skipWhile, tap } from 'rxjs/operators';
+import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
 
 @Injectable()
 export class SerialPortService {
@@ -40,7 +40,6 @@ export class SerialPortService {
     return new Promise<Subject<Buffer>>(async (resolve, reject) => {
       const observable = new Observable<Buffer>((observer: Observer<Buffer>) => {
         this.port.on('data', data => {
-          console.log('data', data);
           observer.next(data);
         });
         this.port.on('error', error => {
@@ -65,7 +64,6 @@ export class SerialPortService {
             this.port?.close();
           },
           next: async (data: Buffer) => {
-            console.log('sendoing', data);
             await this.write(data);
           }
         }, observable.pipe(
@@ -75,15 +73,14 @@ export class SerialPortService {
             return buffer.length > 6;
           }),
           skipWhile(buffer => {
-            if(buffer.length < 5)
+            if (buffer.length < 5)
               return true;
 
-            if(buffer.length === 5){
-              return false; //We don't have a payload
-            }
+            if (buffer.length === 5)
+              return false;
 
             return (buffer.readUInt8(0) === SerialPortService.SHORT_PACKET && buffer.length < (buffer.readUInt8(1) + 5))
-                || (buffer.readUInt8(0) === SerialPortService.LONG_PACKET && buffer.length < (buffer.readUInt16BE(1) + 6));
+              || (buffer.readUInt8(0) === SerialPortService.LONG_PACKET && buffer.length < (buffer.readUInt16BE(1) + 6));
           }),
           map(buffer => buffer.readUInt8(0) === SerialPortService.SHORT_PACKET ? buffer.slice(2) : buffer.slice(3)),
           share()
