@@ -7,8 +7,18 @@ It also provides firmware updates for Boosted ReVOLT! products.
 ![screenshot](./screenshots/home.png)
 
 ## Download
+### Windows
+You can download the latest installer in the [Releases](/releases). Follow the installer
+instructions. Windows will show a 'we protected your PC' dialog when running the tool 
+for the first time. Click on 'more...' and 'Run Anyway' to run this tool.
 
-Under construction, come back later!
+### Mac
+Download the latest `.dmg` package for mac from the [Releases](/releases).
+
+Just drag the program into  the Applications folder to install it.
+When running the tool for the first time, Mac will show a warning this developer is unknown.
+
+Go to 'System Preferences' > 'Security' and click on 'Open Anyway' to run the tool.
 
 ## Products
 ### Boosted ReVOLT! Dashboard
