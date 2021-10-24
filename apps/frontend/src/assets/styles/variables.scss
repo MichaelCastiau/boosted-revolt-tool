@@ -1,6 +1,7 @@
 @use "sass:math";
 
 $brand-primary: #e43a15;
+$red: $brand-primary;
 $font-title: 'Open Sans', sans-serif;
 $font-small: 9pt;
 
@@ -18,4 +19,5 @@ $layer-top: 100;
 
 $button-min-width: 150px;
 $hero-img-width: $button-min-width;
+$icon-size: $spacer * 4;
 $menu-bar-height: 30px;

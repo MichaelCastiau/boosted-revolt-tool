@@ -1,5 +1,8 @@
 @use "variables";
 
+a.a-button {
+  text-decoration: none;
+}
 .a-button {
   color: white;
   background: variables.$brand-primary;
@@ -8,12 +11,14 @@
   text-transform: uppercase;
   min-width: variables.$button-min-width;
   height: variables.$spacer * 2;
-  padding: variables.$spacer-xs;
   box-sizing: content-box;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 500ms ease-in-out;
+  text-decoration: none;
+  font-size: 0.9em;
+  padding: variables.$spacer-xs;
 
   &:hover {
     cursor: pointer;

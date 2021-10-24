@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { IAppData } from '../../../vesc/app-data';
 import { Store } from '@ngrx/store';
-import { selectAppSettings, selectWritingAppSettings } from '../../../vesc/store/vesc.selectors';
+import {
+  selectAppSettings,
+  selectConfiguringVESCError,
+  selectWritingAppSettings
+} from '../../../vesc/store/vesc.selectors';
 import { IAppState } from '../../../store/store';
 import { selectVESCIsConfiguredForDashboard } from '../../store/dashboard.selectors';
 import { configureVESC } from '../../../vesc/store/vesc.actions';
+import { takeUntil, tap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-vesc-settings',
   templateUrl: './vesc-settings.component.html',
   styleUrls: ['./vesc-settings.component.scss']
 })
-export class VescSettingsComponent implements OnInit {
+export class VescSettingsComponent implements OnInit, OnDestroy {
   appSettings$: Observable<IAppData>;
   configurationValid$: Observable<boolean>;
   isWritingAppSettings$: Observable<boolean>;
 
-  constructor(private store: Store<IAppState>) {
+  private destroy$ = new Subject();
+
+  constructor(private store: Store<IAppState>,
+              private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -26,10 +35,20 @@ export class VescSettingsComponent implements OnInit {
       selectVESCIsConfiguredForDashboard
     );
     this.isWritingAppSettings$ = this.store.pipe(selectWritingAppSettings);
+
+    this.store.pipe(
+      selectConfiguringVESCError,
+      takeUntil(this.destroy$),
+      tap(() => this.toastr.error('We failed to configure your VESC. Please make sure your VESC is switched on and connected through USB', 'Configuring VESC Fail'))
+    ).subscribe();
   }
 
   configure() {
     this.store.dispatch(configureVESC());
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

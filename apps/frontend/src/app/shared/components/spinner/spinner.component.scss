@@ -38,7 +38,7 @@ $bullet-size: 10px;
 
 .lds-ellipsis div {
   position: absolute;
-  top: math.div($height, 2) - ($bullet-size / 2);
+  top: math.div($height, 2) - math.div($bullet-size, 2);
   width: $bullet-size;
   height: $bullet-size;
   border-radius: $bullet-size;

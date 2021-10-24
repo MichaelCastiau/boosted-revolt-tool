@@ -1,10 +1,10 @@
 import { OperatorFunction } from 'rxjs';
 import { IAppState } from '../../store/store';
-import { selectVESCState } from './store';
+import { IVESCInfo, selectVESCState } from './store';
 import { select } from '@ngrx/store';
-import { IVESCInfo } from '../vesc-types';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { IAppData } from '../app-data';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export const selectIsConnecting: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
@@ -23,7 +23,7 @@ export const selectIsConnected: OperatorFunction<IAppState, boolean> = state$ =>
 
 export const selectVESCInfo: OperatorFunction<IAppState, IVESCInfo> = state$ => state$.pipe(
   select(selectVESCState),
-  select(state => state.vescInfo)
+  select(state => state.VESCInfo)
 );
 
 export const selectDashboardBatteryConfiguration: OperatorFunction<IAppState, number> = state$ => state$.pipe(
@@ -38,9 +38,20 @@ export const selectDashboardMetricSystem: OperatorFunction<IAppState, 'kmh' | 'm
 
 export const selectAppSettings: OperatorFunction<IAppState, IAppData> = state$ => state$.pipe(
   select(selectVESCState),
-  map(state => state.vescInfo?.app)
+  map(state => state.VESCInfo?.app)
 );
 export const selectWritingAppSettings: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
   select(state => state.writingAppSettings)
+);
+
+export const selectConfiguringDashboardError: OperatorFunction<IAppState, Error | HttpErrorResponse> = state$ => state$.pipe(
+  select(selectVESCState),
+  select(state => state.errorConfiguringDashboard),
+  filter(error => !!error)
+);
+export const selectConfiguringVESCError: OperatorFunction<IAppState, HttpErrorResponse> = state$ => state$.pipe(
+  select(selectVESCState),
+  select(state => state.errorConfiguringVESC),
+  filter(error => !!error)
 );

@@ -86,7 +86,6 @@ export class VESCService {
 
   getAppSettings(): Observable<IAppData> {
     return this.getAppSettingsRawBuffer().pipe(
-      map(buffer => buffer.slice(1)),
       map(buffer => deserializeAppData(buffer))
     );
   }
@@ -96,6 +95,7 @@ export class VESCService {
       doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_GET_APPCONF]))),
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
+      map(buffer => buffer.slice(1)),
       timeout(700)
     );
   }

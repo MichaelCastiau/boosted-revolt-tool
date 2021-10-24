@@ -2,7 +2,19 @@
 @use "assets/styles/variables";
 @import "assets/styles/button.scss";
 @import "assets/styles/fonts.scss";
+@import "~ngx-toastr/toastr.css";
 
+.toast-container .ngx-toastr {
+  border-radius: 2px;
+}
+.toast-error {
+  background: variables.$red;
+}
+.toast-title{
+  margin-bottom: variables.$spacer-sm;
+  display: block;
+  font-family: variables.$font-title;
+}
 
 html, body {
   margin: 0 auto;
@@ -24,7 +36,7 @@ h1, h2, h3 {
   display: flex;
   width: 100%;
 
-  p {
+  p, h2 {
     flex: 1;
     display: block;
     margin-right: variables.$spacer;
@@ -33,8 +45,8 @@ h1, h2, h3 {
 
 .u-button-bar {
   display: flex;
-  margin: variables.$spacer;
   flex-wrap: wrap;
+  margin: variables.$spacer 0 variables.$spacer variables.$spacer;
 
   button {
     margin: 0;

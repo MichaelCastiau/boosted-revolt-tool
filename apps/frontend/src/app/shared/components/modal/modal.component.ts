@@ -20,4 +20,8 @@ export class ModalComponent implements OnChanges {
     }
   }
 
+  closeModal(){
+    (this.isVisible$ as BehaviorSubject<boolean>).next(false);
+  }
+
 }

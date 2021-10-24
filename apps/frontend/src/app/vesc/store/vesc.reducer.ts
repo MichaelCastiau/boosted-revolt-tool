@@ -4,12 +4,15 @@ import {
   configureVESC,
   configureVESCFail,
   configureVESCSuccess,
+  configuringDashboardError,
   connectionLost,
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
   getAppSettingsSuccess,
+  setBatteryConfiguration,
   setBatteryConfigurationSuccess,
+  setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
 
@@ -36,6 +39,14 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
     isConnecting: false,
     errorConnecting: null
   })),
+  on(configuringDashboardError, (state, { error }) => ({
+    ...state,
+    errorConfiguringDashboard: error
+  })),
+  on(setBatteryConfiguration, (state) => ({
+    ...state,
+    errorConfiguringDashboard: null
+  })),
   on(setBatteryConfigurationSuccess, (state, { configuration }) => {
     return {
       ...state,
@@ -45,6 +56,10 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
       }
     };
   }),
+  on(setMetricSystem, (state) => ({
+    ...state,
+    errorConfiguringDashboard: null
+  })),
   on(setMetricSystemSuccess, (state, { system }) => {
     return {
       ...state,
@@ -57,13 +72,13 @@ export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isCo
   on(getAppSettingsSuccess, (state, { appSettings }) => {
     return {
       ...state,
-      vescInfo: {
-        ...state.vescInfo,
+      VESCInfo: {
+        ...state.VESCInfo,
         app: appSettings
       }
     };
   }),
-  on(configureVESC, (state) => ({ ...state, writingAppSettings: true })),
-  on(configureVESCFail, (state, { error }) => ({ ...state, writingAppSettings: false })),
+  on(configureVESC, (state) => ({ ...state, writingAppSettings: true, errorConfiguringVESC: null })),
+  on(configureVESCFail, (state, { error }) => ({ ...state, writingAppSettings: false, errorConfiguringVESC: error })),
   on(configureVESCSuccess, (state) => ({ ...state, writingAppSettings: false }))
 );

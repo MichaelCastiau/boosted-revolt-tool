@@ -22,12 +22,19 @@
   }
 
   padding: variables.$spacer;
-  margin: -(variables.$spacer);
   margin-top: variables.$spacer;
   margin-bottom: variables.$spacer * 2;
   background: variables.$brand-primary;
-  border-radius: variables.$spacer;
+  border-radius: 2px;
   color: white;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    img {
+      max-width: variables.$icon-size;
+    }
+  }
 }
 
 table {

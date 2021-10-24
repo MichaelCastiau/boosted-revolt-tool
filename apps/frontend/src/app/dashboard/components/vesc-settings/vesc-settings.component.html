@@ -2,7 +2,10 @@
   <h2>VESC Settingss</h2>
   <div class='a-wrong-settings' *ngIf='!(configurationValid$ | async)'>
     <h3>Configuration Problem</h3>
-    We've detected that your VESC is not properly configured to make use of the Boosted ReVOLT! Dashboard.
+    <div>
+      <img src='assets/images/cogs.svg' alt='Cogs'/>
+      <span>We've detected that your VESC is not properly configured to make use of the Boosted ReVOLT! Dashboard.</span>
+    </div>
   </div>
   <div class='u-columns'>
     <p>
@@ -28,8 +31,12 @@
       ADC center voltage: 2.3V
     </p>
   </div>
-  <p>
-    Hi there
-    {{ json}}
-  </p>
+  <div class='u-light u-small'>
+    <h3>Keep having trouble configuring your VESC?</h3>
+    <p>
+      If configuring your VESC keeps failing it may be you have to connect your VESC through the official VESC Tool software.
+      You will have to manually set the settings necessary for the Boosted ReVOLT! Dashboard to work with your VESC.
+      The settings necessary can be found in the user manual of the Dashboard.
+    </p>
+  </div>
 </div>

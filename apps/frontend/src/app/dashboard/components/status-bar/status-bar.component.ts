@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
 import { selectIsConnected, selectVESCInfo } from '../../../vesc/store/vesc.selectors';
 import { connectToVESC } from '../../../vesc/store/vesc.actions';
-import { IVESCInfo } from '../../../vesc/vesc-types';
+import { IVESCInfo } from '../../../vesc/store/store';
 
 @Component({
   selector: 'app-status-bar',

@@ -4,6 +4,7 @@ import {
   configureVESC,
   configureVESCFail,
   configureVESCSuccess,
+  configuringDashboardError,
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
@@ -15,13 +16,14 @@ import {
   setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
-import { catchError, delay, map, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, mapTo, switchMap, tap, timeout } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
 import { Action } from '@ngrx/store';
 import { WebSocketSubject } from 'rxjs/webSocket';
 import { IAppData } from '../app-data';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class VESCEffects {
@@ -33,6 +35,7 @@ export class VESCEffects {
       socket.next({ event: 'connect' });
       return socket.pipe(
         map(info => connectToVESCSuccess({ info })),
+        timeout(2500),
         catchError(error => of(connectToVESCFail({ error })))
       );
     })
@@ -54,14 +57,18 @@ export class VESCEffects {
   setBatteryConfiguration = createEffect(() => this.actions$.pipe(
     ofType(setBatteryConfiguration),
     switchMap((action) => this.api.setBatteryConfiguration(action.configuration).pipe(
-      map(() => setBatteryConfigurationSuccess({ configuration: action.configuration }))
+      map(() => setBatteryConfigurationSuccess({ configuration: action.configuration })),
+      tap(() => this.toastr.success('The settings are successfully saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
     ))
   ));
 
   setMetricSystem = createEffect(() => this.actions$.pipe(
     ofType(setMetricSystem),
     switchMap(action => this.api.setMetricSystem({ system: action.system }).pipe(
-      map(() => setMetricSystemSuccess({ system: action.system }))
+      map(() => setMetricSystemSuccess({ system: action.system })),
+      tap(() => this.toastr.success('The settings are successfully saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
     ))
   ));
 
@@ -69,10 +76,14 @@ export class VESCEffects {
     ofType(configureVESC),
     switchMap(() => this.api.configureVESC().pipe(
       map((appSettings: IAppData) => configureVESCSuccess({ appSettings })),
+      tap(() => this.toastr.success('The settings are successfully saved in your VESC', 'VESC Configured')),
       catchError(error => of(configureVESCFail({ error })))
     ))
   ));
 
-  constructor(private actions$: Actions, private api: VESCService, private socket: WebsocketService) {
+  constructor(private actions$: Actions,
+              private api: VESCService,
+              private socket: WebsocketService,
+              private toastr: ToastrService) {
   }
 }
