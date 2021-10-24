@@ -15,7 +15,11 @@
     "icon": "apps/electron/src/assets/icons/icon.ico"
   },
   "nsis": {
-    "createDesktopShortcut": true
+    "createDesktopShortcut": true,
+    "artifactName": "${productName}-setup-windows.${ext}"
+  },
+  "dmg": {
+    "artifactName": "${productName}-mac.${ext}"
   },
   "publish": {
     "provider": "github",
