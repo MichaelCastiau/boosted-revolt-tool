@@ -8,7 +8,7 @@ It also provides firmware updates for Boosted ReVOLT! products.
 
 ## Download
 ### Windows
-You can download the latest installer in the [Releases](https://github.com/MichaelCastiau/boosted-revolt-tool/releases). Follow the installer
+You can download the latest `.exe` installer in the [Releases](https://github.com/MichaelCastiau/boosted-revolt-tool/releases). Follow the installer
 instructions. Windows will show a 'we protected your PC' dialog when running the tool 
 for the first time. Click on 'more...' and 'Run Anyway' to run this tool.
 
