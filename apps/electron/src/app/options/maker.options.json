@@ -20,6 +20,9 @@
   "publish": {
     "provider": "github",
     "owner": "MichaelCastiau",
-    "vPrefixedTagName": false
-  }
+    "vPrefixedTagName": false,
+    "private": false
+  },
+  "npmRebuild": true,
+  "buildDependenciesFromSource": true
 }
