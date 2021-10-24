@@ -3,6 +3,7 @@
   "appId": "com.michaelcastiau.boosted-revolt-tool",
   "productName": "Boosted ReVOLT!",
   "copyright": "Copyright © 2021 Michael Castiau",
+  "artifactName": "${productName}-${os}.${ext}",
   "mac": {
     "target": "dmg",
     "darkModeSupport": false,
@@ -14,7 +15,6 @@
     "icon": "apps/electron/src/assets/icons/icon.ico"
   },
   "nsis": {
-    "artifactName": "${productName} Setup.${ext}",
     "createDesktopShortcut": true
   },
   "publish": {
