@@ -4,17 +4,14 @@ import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
 import { Observable, Observer, Subject } from 'rxjs';
-import { crc16xmodem } from 'crc';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
+import { serializeCommandBuffer } from '../helpers/serializer.helper';
+import { PACKET_LONG, PACKET_SHORT } from '../vesc/models/datatypes';
 
 @Injectable()
 export class SerialPortService {
   private port: SerialPort;
-
-  public static readonly STOP_BYTE = 3;
-  public static readonly SHORT_PACKET = 2;
-  public static readonly LONG_PACKET = 3;
 
   constructor(@Inject(serialPortToken) private serial,
               private eventEmitter: EventEmitter2) {
@@ -37,7 +34,7 @@ export class SerialPortService {
     });
 
 
-    return new Promise<Subject<Buffer>>(async (resolve, reject) => {
+    return new Promise<Subject<Buffer>>((resolve, reject) => {
       const observable = new Observable<Buffer>((observer: Observer<Buffer>) => {
         this.port.on('data', data => {
           observer.next(data);
@@ -79,36 +76,25 @@ export class SerialPortService {
             if (buffer.length === 5)
               return false;
 
-            return (buffer.readUInt8(0) === SerialPortService.SHORT_PACKET && buffer.length < (buffer.readUInt8(1) + 5))
-              || (buffer.readUInt8(0) === SerialPortService.LONG_PACKET && buffer.length < (buffer.readUInt16BE(1) + 6));
+            return (buffer.readUInt8(0) === PACKET_SHORT && buffer.length < (buffer.readUInt8(1) + 5))
+              || (buffer.readUInt8(0) === PACKET_LONG && buffer.length < (buffer.readUInt16BE(1) + 6));
           }),
-          map(buffer => buffer.readUInt8(0) === SerialPortService.SHORT_PACKET ? buffer.slice(2) : buffer.slice(3)),
+          map(buffer => buffer.readUInt8(0) === PACKET_SHORT ? buffer.slice(2) : buffer.slice(3)),
           share()
         )));
       });
     });
   }
 
+  isConnected() {
+    return this.port && this.port.isOpen;
+  }
+
   private async write(payload: Buffer = Buffer.alloc(0)): Promise<void> {
     if (!this.port || !this.port.isOpen) {
       throw new BadRequestException('Cannot write to serial port, port not open');
     }
-    const crcByte = crc16xmodem(Buffer.from([...payload]));
-    const lengthBytes = payload.length > 255 ? Buffer.alloc(2)
-      : Buffer.alloc(1);
-    payload.length > 255 ? lengthBytes.writeUInt16BE(payload.length) : lengthBytes.writeUInt8(payload.length);
-    const data = Buffer.from([
-      payload.length > 255 ? SerialPortService.LONG_PACKET : SerialPortService.SHORT_PACKET,
-      ...lengthBytes,
-      ...payload,
-      (crcByte) >> 8,
-      (crcByte) & 0xff,
-      SerialPortService.STOP_BYTE
-    ]);
+    const data = serializeCommandBuffer(payload);
     await new Promise<void>((resolve, reject) => this.port.write(data, (err?) => err ? reject(err) : resolve()));
-  }
-
-  isConnected() {
-    return this.port && this.port.isOpen;
   }
 }

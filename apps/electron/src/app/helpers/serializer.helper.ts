@@ -1,5 +1,23 @@
 import { IAppData } from '../vesc/models/app-data';
-import { ICustomVESCConfig } from '../vesc/models/datatypes';
+import { ICustomVESCConfig, PACKET_LONG, PACKET_SHORT, PACKET_STOP_BYTE } from '../vesc/models/datatypes';
+import { crc16xmodem } from 'crc';
+
+export const serializeCommandBuffer = (payload: Buffer = Buffer.from([])): Buffer => {
+  const crcByte = crc16xmodem(Buffer.from([...payload]));
+  const lengthBytes = payload.length > 255 ? Buffer.alloc(2)
+    : Buffer.alloc(1);
+  payload.length > 255 ? lengthBytes.writeUInt16BE(payload.length) : lengthBytes.writeUInt8(payload.length);
+  const data = Buffer.from([
+    payload.length > 255 ? PACKET_LONG : PACKET_SHORT,
+    ...lengthBytes,
+    ...payload,
+    (crcByte) >> 8,
+    (crcByte) & 0xff,
+    PACKET_STOP_BYTE
+  ]);
+
+  return data;
+};
 
 export function deserializeAppData(buffer: Buffer): IAppData {
   let index = -1;

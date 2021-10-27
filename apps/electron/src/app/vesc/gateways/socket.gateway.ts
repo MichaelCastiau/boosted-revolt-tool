@@ -23,10 +23,6 @@ export class SocketGateway {
               @ConnectedSocket() client): Observable<any> {
     this.socket = client;
 
-    if(this.vesc.isConnected()){
-      return this.vesc.getFirmwareVersion();
-    }
-
     return from(this.vesc.connect()).pipe(
       switchMap(() => this.vesc.getFirmwareVersion()),
       timeout(2000),

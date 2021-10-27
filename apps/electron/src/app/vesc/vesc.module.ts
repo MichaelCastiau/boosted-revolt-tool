@@ -4,6 +4,9 @@ import { VESCService } from './services/vesc.service';
 import { SerialPortModule } from '../serial-port/serial-port.module';
 import { SocketGateway } from './gateways/socket.gateway';
 import { SocketModule } from '@nestjs/websockets/socket-module';
+import { SerialPortAdapter } from '../serial-port/serial-port.adapter';
+import { BleAdapter } from '../ble/ble.adapter';
+import { BleModule } from '../ble/ble.module';
 
 @Module({
   controllers: [
@@ -11,11 +14,16 @@ import { SocketModule } from '@nestjs/websockets/socket-module';
   ],
   imports: [
     SerialPortModule,
+    BleModule,
     SocketModule
   ],
   providers: [
     VESCService,
-    SocketGateway
+    SocketGateway,
+    {
+      provide: 'VESCAdapter',
+      useClass: BleAdapter, //SerialPortAdapter
+    }
   ]
 })
 export class VESCModule {
