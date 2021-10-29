@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { provideNobleToken } from './noble.provider';
 import { from, Observable, Observer } from 'rxjs';
 import { Peripheral } from '@abandonware/noble';
-import { first, switchMap, timeout } from 'rxjs/operators';
+import { catchError, first, switchMap, timeout } from 'rxjs/operators';
 import { doOnSubscribe } from '../helpers/onsubscribe.helper';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
@@ -86,7 +86,11 @@ export class BLEService {
       doOnSubscribe(() => this.noble.startScanningAsync([environment.BLE.service.uuid])),
       switchMap((device: Peripheral) => from(this.noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
       first(),
-      timeout(10000)
+      timeout(10000),
+      catchError((err) => {
+        this.noble.stopScanningAsync();
+        throw err;
+      })
     ).toPromise();
   }
 }

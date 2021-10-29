@@ -9,7 +9,7 @@
         USB
         <img src='assets/images/usb.svg' alt='USB'/>
       </button>
-      <button class='a-button' (click)='connectViaBLE()'>
+      <button class='a-button' (click)='connectViaBLE()' *ngIf='!isWindows()'>
         Bluetooth
         <img src='assets/images/ble.svg' alt='Bluetooth'/>
       </button>
