@@ -27,5 +27,4 @@ export class BleAdapter implements IVESCAdapter {
   disconnect(): Promise<void> {
     return this.ble.disconnect();
   }
-
 }
