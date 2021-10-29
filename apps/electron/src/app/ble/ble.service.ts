@@ -6,10 +6,15 @@ import { first, switchMap, timeout } from 'rxjs/operators';
 import { doOnSubscribe } from '../helpers/onsubscribe.helper';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
+import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class BLEService {
-  constructor(@Inject(provideNobleToken) private noble) {
+  private device: Peripheral;
+
+  constructor(@Inject(provideNobleToken) private noble,
+              private eventEmitter: EventEmitter2) {
   }
 
   async findDevice(): Promise<Peripheral> {
@@ -21,39 +26,57 @@ export class BLEService {
   }
 
   async connect(device: Peripheral) {
+    this.device = device;
     await device.connectAsync();
 
-    const { characteristics: [txCharacteristic, rxCharachteristic] } = await device.discoverSomeServicesAndCharacteristicsAsync([
+    const { characteristics: [rxCharachteristic, txCharacteristic] } = await device.discoverSomeServicesAndCharacteristicsAsync([
       environment.BLE.service.uuid
     ], [
       environment.BLE.service.characteristics.tx,
       environment.BLE.service.characteristics.rx
     ]);
 
+    await txCharacteristic.subscribeAsync();
+
+    const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
+      txCharacteristic.on('data', data => observer.next(data));
+      device.on('disconnect', () => {
+        this.eventEmitter.emit('serial:closed');
+        observer.complete();
+      });
+    });
+
 
     return new AnonymousSubject({
       next: async (payload: Buffer) => {
-        //Payload for BLE should not get CRC'd , this happens by the module itself
-        await txCharacteristic.writeAsync(payload, false);
+        let data = serializeCommandBuffer(payload);
+        if (data.length <= 20) {
+          await rxCharachteristic.writeAsync(data, true);
+        } else {
+          while (data.length > 20) {
+            const chunk: Buffer = data.slice(0, 20);
+            data = data.slice(20);
+            await rxCharachteristic.writeAsync(chunk, true);
+          }
+          await rxCharachteristic.writeAsync(data, true);
+        }
       },
       error: (error) => {
         console.error(error);
         this.disconnect();
       },
       complete: () => this.disconnect()
-    }, new Observable<Buffer>((observer: Observer<Buffer>) => {
-      rxCharachteristic.on('data', (data, is) => {
-        rxCharachteristic.read((error, data) => {
-          console.log('data', data);
-        });
-      });
-
-      rxCharachteristic.subscribe();
-    }));
+    }, observable.pipe(
+      deserializeResponse
+    ));
   }
 
-  disconnect() {
+  disconnect(): Promise<void> {
+    if (this.device) {
+      return this.device.disconnectAsync();
+    }
 
+    return Promise.resolve();
   }
 
   private startScanningAndFindDevice(): Promise<Peripheral> {

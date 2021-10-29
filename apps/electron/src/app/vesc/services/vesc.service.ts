@@ -114,7 +114,7 @@ export class VESCService {
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
       map(buffer => deserializeAppData(buffer.slice(1))),
-      timeout(2500)
+      timeout(10000)
     );
   }
 
@@ -124,7 +124,7 @@ export class VESCService {
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
       map(buffer => buffer.slice(1)), //Command is removed
-      timeout(700)
+      timeout(5000)
     );
   }
 }

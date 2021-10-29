@@ -24,6 +24,6 @@ export class StatusBarComponent implements OnInit {
   }
 
   connect() {
-    this.store.dispatch(connectToVESC());
+    this.store.dispatch(connectToVESC({}));
   }
 }

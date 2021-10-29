@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
 import { BLEService } from './ble.service';
+import { Peripheral } from '@abandonware/noble';
 
 @Injectable()
 export class BleAdapter implements IVESCAdapter {
+
   constructor(private ble: BLEService) {
   }
 
@@ -13,12 +15,17 @@ export class BleAdapter implements IVESCAdapter {
   }
 
   async connect(): Promise<Subject<Buffer>> {
-    const device = await this.ble.findDevice();
-    return this.ble.connect(device);
+    const device: Peripheral = await this.ble.findDevice();
+    try {
+      return await this.ble.connect(device);
+    } catch (error) {
+      await device.disconnectAsync();
+      throw error;
+    }
   }
 
   disconnect(): Promise<void> {
-    return Promise.resolve(undefined);
+    return this.ble.disconnect();
   }
 
 }

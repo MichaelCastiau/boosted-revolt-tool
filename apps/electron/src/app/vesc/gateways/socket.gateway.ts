@@ -25,7 +25,7 @@ export class SocketGateway {
     this.socket = client;
 
     return from(
-      this.vesc.setConnectionMethod(data.way)
+      data?.way ? this.vesc.setConnectionMethod(data.way) : Promise.resolve()
     ).pipe(
       switchMap(() => from(this.vesc.connect())),
       switchMap(() => this.vesc.getFirmwareVersion()),

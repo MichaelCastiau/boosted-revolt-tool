@@ -5,9 +5,7 @@ import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
 import { Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
-import { serializeCommandBuffer } from '../helpers/serializer.helper';
-import { PACKET_LONG, PACKET_SHORT } from '../vesc/models/datatypes';
+import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 
 @Injectable()
 export class SerialPortService {
@@ -51,7 +49,6 @@ export class SerialPortService {
       });
 
       this.port.on('open', () => {
-        console.log('openened');
         resolve(new AnonymousSubject({
           error: (error) => {
             console.error(error);
@@ -63,25 +60,7 @@ export class SerialPortService {
           next: async (data: Buffer) => {
             await this.write(data);
           }
-        }, observable.pipe(
-          filter(b => !!b),
-          scan((acc: Buffer, current: Buffer) => Buffer.from([...acc, ...current])),
-          filter(buffer => {
-            return buffer.length > 6;
-          }),
-          skipWhile(buffer => {
-            if (buffer.length < 5)
-              return true;
-
-            if (buffer.length === 5)
-              return false;
-
-            return (buffer.readUInt8(0) === PACKET_SHORT && buffer.length < (buffer.readUInt8(1) + 5))
-              || (buffer.readUInt8(0) === PACKET_LONG && buffer.length < (buffer.readUInt16BE(1) + 6));
-          }),
-          map(buffer => buffer.readUInt8(0) === PACKET_SHORT ? buffer.slice(2) : buffer.slice(3)),
-          share()
-        )));
+        }, observable.pipe(deserializeResponse)));
       });
     });
   }
