@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   ADCControlType,
   AppUse,
@@ -16,6 +16,8 @@ import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
 import { deserializeAppData, setVescConfig } from '../../helpers/serializer.helper';
 import { IAppData } from '../models/app-data';
 import { IVESCAdapter } from '../adapter/vesc.adapter';
+import { BleAdapter } from '../../ble/ble.adapter';
+import { SerialPortAdapter } from '../../serial-port/serial-port.adapter';
 
 @Injectable()
 export class VESCService {
@@ -35,11 +37,29 @@ export class VESCService {
     }
   };
   private socket: Subject<Buffer>;
+  private adapter: IVESCAdapter;
 
-  constructor(@Inject('VESCAdapter') private adapter: IVESCAdapter) {
+  constructor(private bleAdapter: BleAdapter,
+              private usbAdapter: SerialPortAdapter) {
+    this.adapter = usbAdapter;
   }
 
-  async connect(): Promise<Observable<any>> {
+  async setConnectionMethod(method: 'usb' | 'ble') {
+    if (this.adapter) {
+      await this.adapter.disconnect();
+    }
+    switch (method) {
+      case 'ble':
+        this.adapter = this.bleAdapter;
+        break;
+      case 'usb':
+      default:
+        this.adapter = this.usbAdapter;
+        break;
+    }
+  }
+
+  async connect(): Promise<Observable<Buffer>> {
     if (!this.adapter.isConnected()) {
       // First find the port the vesc is connected to
       this.socket = await this.adapter.connect();

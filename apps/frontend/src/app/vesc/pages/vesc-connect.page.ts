@@ -4,7 +4,6 @@ import { IAppState } from '../../store/store';
 import { connectToVESC } from '../store/vesc.actions';
 import { Observable, Subject } from 'rxjs';
 import { selectConnectionError, selectIsConnected, selectIsConnecting } from '../store/vesc.selectors';
-import { HttpErrorResponse } from '@angular/common/http';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -19,6 +18,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   isConnected$: Observable<boolean>;
 
   private destroy$ = new Subject();
+  private lastConnectionWay: 'usb' | 'ble' = 'usb';
 
   constructor(private store: Store<IAppState>,
               private router: Router) {
@@ -36,11 +36,21 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
       tap(() => this.router.navigate(['/', 'home']))
     ).subscribe();
 
-    this.store.dispatch(connectToVESC());
+  }
+
+  connectViaUSB() {
+    this.lastConnectionWay = 'usb';
+    this.store.dispatch(connectToVESC({ way: 'usb' }));
+
+  }
+
+  connectViaBLE() {
+    this.lastConnectionWay = 'ble';
+    this.store.dispatch(connectToVESC({ way: 'ble' }));
   }
 
   retry() {
-    this.store.dispatch(connectToVESC());
+    this.store.dispatch(connectToVESC({ way: this.lastConnectionWay }));
   }
 
   ngOnDestroy() {

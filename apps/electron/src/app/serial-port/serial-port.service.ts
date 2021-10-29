@@ -90,6 +90,13 @@ export class SerialPortService {
     return this.port && this.port.isOpen;
   }
 
+  disconnect() {
+    if (!this.port)
+      return Promise.resolve();
+
+    return new Promise<void>(resolve => this.port.close(() => resolve()));
+  }
+
   private async write(payload: Buffer = Buffer.alloc(0)): Promise<void> {
     if (!this.port || !this.port.isOpen) {
       throw new BadRequestException('Cannot write to serial port, port not open');

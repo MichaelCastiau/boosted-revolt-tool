@@ -21,4 +21,8 @@ export class SerialPortAdapter implements IVESCAdapter {
     return this.serial.isConnected();
   }
 
+  disconnect(): Promise<void> {
+    return this.serial.disconnect();
+  }
+
 }

@@ -1,10 +1,25 @@
 <div class="o-connect">
   <div class="m-connect-wrapper">
     <h1>Connect to your VESC</h1>
-    <img src="assets/images/dashboard.svg" alt="Logo"/>
-    <app-spinner>Connecting...</app-spinner>
     <p>
-      Please make sure your VESC is switched on and connected through USB to this device.
+      Choose how you want to connect to your VESC
+    </p>
+    <div class='m-connect-options'>
+      <button class='a-button' (click)='connectViaUSB()'>
+        USB
+        <img src='assets/images/usb.svg' alt='USB'/>
+      </button>
+      <button class='a-button' (click)='connectViaBLE()'>
+        Bluetooth
+        <img src='assets/images/ble.svg' alt='Bluetooth'/>
+      </button>
+    </div>
+    <div class='m-loader' [class.is-visible]='isConnecting$ | async'>
+      <app-spinner>Connecting...</app-spinner>
+    </div>
+    <p class='u-light'>
+      Please make sure your VESC is switched on and connected through cabled USB connection
+      if you want to connect via USB to this device.
       The ReVOLT! dashboard should be switched on and connected through the CAN bus to the VESC.
     </p>
   </div>
