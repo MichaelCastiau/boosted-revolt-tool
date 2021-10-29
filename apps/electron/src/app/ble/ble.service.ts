@@ -6,7 +6,6 @@ import { first, switchMap, timeout } from 'rxjs/operators';
 import { doOnSubscribe } from '../helpers/onsubscribe.helper';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { serializeCommandBuffer } from '../helpers/serializer.helper';
 
 @Injectable()
 export class BLEService {
@@ -34,8 +33,8 @@ export class BLEService {
 
     return new AnonymousSubject({
       next: async (payload: Buffer) => {
-        const data = serializeCommandBuffer(payload);
-        await txCharacteristic.writeAsync(data, false);
+        //Payload for BLE should not get CRC'd , this happens by the module itself
+        await txCharacteristic.writeAsync(payload, false);
       },
       error: (error) => {
         console.error(error);
@@ -44,10 +43,10 @@ export class BLEService {
       complete: () => this.disconnect()
     }, new Observable<Buffer>((observer: Observer<Buffer>) => {
       rxCharachteristic.on('data', (data, is) => {
-       rxCharachteristic.read((error, data) => {
-         console.log('data' , data);
-       });
-      })
+        rxCharachteristic.read((error, data) => {
+          console.log('data', data);
+        });
+      });
 
       rxCharachteristic.subscribe();
     }));
