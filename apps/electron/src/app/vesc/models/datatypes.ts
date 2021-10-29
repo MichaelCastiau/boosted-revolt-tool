@@ -211,7 +211,3 @@ export interface IVESCFirmwareInfo {
   version: string;
   name: string;
 }
-
-export const PACKET_LONG = 0x03;
-export const PACKET_SHORT = 0x02;
-export const PACKET_STOP_BYTE = 0x03;

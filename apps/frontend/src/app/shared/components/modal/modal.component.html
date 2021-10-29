@@ -1,9 +1,7 @@
 <div class='o-modal' [class.is-visible]='(isVisible$ | async) === true' [class.is-hidden]='(isVisible$ | async) === false'>
   <div class='a-backdrop'></div>
   <div class='m-modal'>
-    <div class='a-close-button' (click)='closeModal()'>
-      <img src='assets/images/cross.svg' alt='Close'/>
-    </div>
+    <div class='a-close-button' (click)='closeModal()'></div>
     <div class='m-header'>
       <span class='a-title'><ng-content select='[modal-title]'></ng-content> </span>
       <ng-content select='p'></ng-content>

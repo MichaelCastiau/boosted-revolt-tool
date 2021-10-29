@@ -1,43 +1,5 @@
 import { IAppData } from '../vesc/models/app-data';
-import { ICustomVESCConfig, PACKET_LONG, PACKET_SHORT, PACKET_STOP_BYTE } from '../vesc/models/datatypes';
-import { crc16xmodem } from 'crc';
-import { OperatorFunction } from 'rxjs';
-import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
-
-export const serializeCommandBuffer = (payload: Buffer = Buffer.from([])): Buffer => {
-  const crcByte = crc16xmodem(Buffer.from([...payload]));
-  const lengthBytes = payload.length > 255 ? Buffer.alloc(2)
-    : Buffer.alloc(1);
-  payload.length > 255 ? lengthBytes.writeUInt16BE(payload.length) : lengthBytes.writeUInt8(payload.length);
-  return Buffer.from([
-    payload.length > 255 ? PACKET_LONG : PACKET_SHORT,
-    ...lengthBytes,
-    ...payload,
-    (crcByte) >> 8,
-    (crcByte) & 0xff,
-    PACKET_STOP_BYTE
-  ]);
-};
-
-export const deserializeResponse: OperatorFunction<Buffer, Buffer> = response$ => response$.pipe(
-  filter(b => !!b),
-  scan((acc: Buffer, current: Buffer) => Buffer.from([...acc, ...current])),
-  filter(buffer => {
-    return buffer.length > 6;
-  }),
-  skipWhile(buffer => {
-    if (buffer.length < 5)
-      return true;
-
-    if (buffer.length === 5)
-      return false;
-
-    return (buffer.readUInt8(0) === PACKET_SHORT && buffer.length < (buffer.readUInt8(1) + 5))
-      || (buffer.readUInt8(0) === PACKET_LONG && buffer.length < (buffer.readUInt16BE(1) + 6));
-  }),
-  map(buffer => buffer.readUInt8(0) === PACKET_SHORT ? buffer.slice(2) : buffer.slice(3)),
-  share()
-);
+import { ICustomVESCConfig } from '../vesc/models/datatypes';
 
 export function deserializeAppData(buffer: Buffer): IAppData {
   let index = -1;
