@@ -21,6 +21,7 @@ import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../services/websocket.service';
 import { Action } from '@ngrx/store';
+import { WebSocketSubject } from 'rxjs/webSocket';
 import { IAppData } from '../app-data';
 import { ToastrService } from 'ngx-toastr';
 
@@ -29,12 +30,12 @@ export class VESCEffects {
   connectToVESC$ = createEffect(() => this.actions$.pipe(
     ofType(connectToVESC),
     delay(700),
-    switchMap((action): Observable<Action> => {
-      const socket = this.socket.openSocket();
-      socket.next({ event: 'connect', data: { way: action.way } });
+    map(() => this.socket.openSocket()),
+    switchMap((socket: WebSocketSubject<any>): Observable<Action> => {
+      socket.next({ event: 'connect' });
       return socket.pipe(
         take(1),
-        timeout(5000),
+        timeout(2500),
         map(info => connectToVESCSuccess({ info })),
         catchError(error => of(connectToVESCFail({ error })))
       );

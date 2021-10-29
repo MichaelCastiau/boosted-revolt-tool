@@ -46,7 +46,7 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
   }
 
   connect() {
-    this.store.dispatch(connectToVESC({}));
+    this.store.dispatch(connectToVESC());
   }
 
   setConfiguration(configuration: number) {

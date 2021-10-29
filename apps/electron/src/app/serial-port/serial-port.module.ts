@@ -1,16 +1,13 @@
-import { Module } from '@nestjs/common';
-import { SerialPortService } from './serial-port.service';
-import { serialPortProvider } from './serial-port.provider';
-import { SerialPortAdapter } from './serial-port.adapter';
+import {Module} from '@nestjs/common';
+import {SerialPortService} from './serial-port.service';
+import {serialPortProvider} from './serial-port.provider';
 
 @Module({
   providers: [
     SerialPortService,
-    serialPortProvider,
-    SerialPortAdapter
+    serialPortProvider
   ],
   exports: [
-    SerialPortAdapter,
     SerialPortService
   ]
 })

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
 import { selectConnectionError } from '../../../vesc/store/vesc.selectors';
@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit {
     this.errorConnecting$ = this.store.pipe(selectConnectionError);
   }
 
-  retry() {
-    this.store.dispatch(connectToVESC({}));
+  retry(){
+    this.store.dispatch(connectToVESC());
   }
 }
