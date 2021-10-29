@@ -34,9 +34,7 @@
   }
 
   .a-close-button {
-    display: block;
-    width: variables.$spacer-xl;
-    height: variables.$spacer-xl;
+    padding: variables.$spacer-xs;
     background: white;
     position: absolute;
     top: 0;
@@ -45,23 +43,13 @@
     border-radius: 50%;
     box-shadow: 0 0 5px 1px #333;
     cursor: pointer;
+    display: flex;
+    align-content: center;
+    justify-content: center;
 
-    &::before, &::after {
-      content: ' ';
-      display: block;
-      width: variables.$spacer;
-      border: 1px solid black;
-      position: absolute;
-      top: variables.$spacer;
-      left: math.div(variables.$spacer, 2);
-    }
-
-    &::before {
-      transform: rotate(45deg);
-    }
-
-    &::after {
-      transform: rotate(-45Deg);
+    img {
+      height: variables.$spacer * 1.5;
+      width: variables.$spacer * 1.5;
     }
   }
 
