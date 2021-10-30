@@ -1,17 +1,21 @@
 import { Module } from '@nestjs/common';
-import { BleAdapter } from './ble.adapter';
-import { nobleProvider } from './noble.provider';
+import { BLEAdapter } from './ble.adapter';
 import { BLEService } from './ble.service';
+import { BLEWindowsAdapter } from './ble.win.adapter';
+import { BLEWindowsService } from './ble-win.service';
 
 @Module({
   providers: [
-    BleAdapter,
-    nobleProvider,
-    BLEService
+    BLEAdapter,
+    BLEService,
+    BLEWindowsAdapter,
+    BLEWindowsService
   ],
   exports: [
-    BleAdapter,
-    BLEService
+    BLEAdapter,
+    BLEService,
+    BLEWindowsAdapter,
+    BLEWindowsService
   ]
 })
 export class BleModule {

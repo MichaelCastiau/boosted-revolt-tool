@@ -38,11 +38,6 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
 
   }
 
-  isWindows() {
-    //BLE functionality doesn't work on Windows
-    return navigator.platform === 'Win32' || navigator.platform === 'Win64';
-  }
-
   connectViaUSB() {
     this.lastConnectionWay = 'usb';
     this.store.dispatch(connectToVESC({ way: 'usb' }));

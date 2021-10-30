@@ -34,7 +34,7 @@ export class VESCEffects {
       socket.next({ event: 'connect', data: { way: action.way } });
       return socket.pipe(
         take(1),
-        timeout(5000),
+        timeout(10000),
         map(info => connectToVESCSuccess({ info })),
         catchError(error => of(connectToVESCFail({ error })))
       );

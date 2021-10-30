@@ -5,6 +5,7 @@ import { SerialPortModule } from '../serial-port/serial-port.module';
 import { SocketGateway } from './gateways/socket.gateway';
 import { SocketModule } from '@nestjs/websockets/socket-module';
 import { BleModule } from '../ble/ble.module';
+import { VescAdapterFactory } from './adapter/vesc-adapter.factory';
 
 @Module({
   controllers: [
@@ -17,7 +18,8 @@ import { BleModule } from '../ble/ble.module';
   ],
   providers: [
     VESCService,
-    SocketGateway
+    SocketGateway,
+    VescAdapterFactory
   ]
 })
 export class VESCModule {

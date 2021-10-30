@@ -15,9 +15,8 @@ import { environment } from '../../../environments/environment';
 import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
 import { deserializeAppData, setVescConfig } from '../../helpers/serializer.helper';
 import { IAppData } from '../models/app-data';
-import { IVESCAdapter } from '../adapter/vesc.adapter';
-import { BleAdapter } from '../../ble/ble.adapter';
-import { SerialPortAdapter } from '../../serial-port/serial-port.adapter';
+import { ConnectionMethod, IVESCAdapter } from '../adapter/vesc.adapter';
+import { VescAdapterFactory } from '../adapter/vesc-adapter.factory';
 
 @Injectable()
 export class VESCService {
@@ -39,24 +38,15 @@ export class VESCService {
   private socket: Subject<Buffer>;
   private adapter: IVESCAdapter;
 
-  constructor(private bleAdapter: BleAdapter,
-              private usbAdapter: SerialPortAdapter) {
-    this.adapter = usbAdapter;
+  constructor(private factory: VescAdapterFactory) {
+    this.adapter = this.factory.provideVESCAdapter('usb');
   }
 
-  async setConnectionMethod(method: 'usb' | 'ble') {
+  async setConnectionMethod(method: ConnectionMethod) {
     if (this.adapter) {
       await this.adapter.disconnect();
     }
-    switch (method) {
-      case 'ble':
-        this.adapter = this.bleAdapter;
-        break;
-      case 'usb':
-      default:
-        this.adapter = this.usbAdapter;
-        break;
-    }
+    this.adapter = this.factory.provideVESCAdapter(method);
   }
 
   async connect(): Promise<Observable<Buffer>> {
@@ -124,7 +114,7 @@ export class VESCService {
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
       map(buffer => buffer.slice(1)), //Command is removed
-      timeout(5000)
+      timeout(10000)
     );
   }
 }

@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { Subject } from 'rxjs';
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
-import { BLEService } from './ble.service';
-import { Peripheral } from '@abandonware/noble';
+import { Subject } from 'rxjs';
+import { Peripheral } from 'noble';
+import { Injectable } from '@nestjs/common';
+import { BLEWindowsService } from './ble-win.service';
 
 @Injectable()
-export class BLEAdapter implements IVESCAdapter {
-
-  constructor(private ble: BLEService) {
+export class BLEWindowsAdapter implements IVESCAdapter {
+  constructor(private ble: BLEWindowsService) {
   }
 
   isConnected(): boolean {
@@ -27,4 +26,5 @@ export class BLEAdapter implements IVESCAdapter {
   disconnect(): Promise<void> {
     return this.ble.disconnect();
   }
+
 }

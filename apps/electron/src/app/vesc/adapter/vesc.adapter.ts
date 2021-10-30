@@ -7,3 +7,5 @@ export interface IVESCAdapter {
 
   disconnect(): Promise<void>;
 }
+
+export type ConnectionMethod = 'usb' | 'ble';

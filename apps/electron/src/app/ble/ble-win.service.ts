@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { from, Observable, Observer } from 'rxjs';
-import * as noble from '@abandonware/noble';
-import { Peripheral } from '@abandonware/noble';
-import { catchError, first, switchMap, timeout } from 'rxjs/operators';
+import { Observable, Observer } from 'rxjs';
+import * as noble from 'noble-winrt';
+import { Characteristic, Peripheral } from 'noble';
+import { catchError, first, tap, timeout } from 'rxjs/operators';
 import { doOnSubscribe } from '../helpers/onsubscribe.helper';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
-import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 
 @Injectable()
-export class BLEService {
+export class BLEWindowsService {
   private device: Peripheral;
 
   constructor(private eventEmitter: EventEmitter2) {
@@ -26,16 +26,26 @@ export class BLEService {
 
   async connect(device: Peripheral) {
     this.device = device;
-    await device.connectAsync();
+    await new Promise<void>((resolve, reject) => device.connect(err => err ? reject(err) : resolve()));
 
-    const { characteristics: [rxCharachteristic, txCharacteristic] } = await device.discoverSomeServicesAndCharacteristicsAsync([
+    console.info('Device connected through BLE');
+
+    const [rxCharacteristic, txCharacteristic] = await new Promise<Characteristic[]>((resolve, reject) => device.discoverSomeServicesAndCharacteristics([
       environment.BLE.service.uuid
     ], [
       environment.BLE.service.characteristics.tx,
       environment.BLE.service.characteristics.rx
-    ]);
+    ], (err, services, characteristics) => {
+      err ? reject(err) : resolve([
+        characteristics.find(c => c.uuid === environment.BLE.service.characteristics.rx),
+        characteristics.find(c => c.uuid === environment.BLE.service.characteristics.tx)
+      ]);
+    }));
 
-    await txCharacteristic.subscribeAsync();
+    if (!rxCharacteristic || !txCharacteristic) {
+      throw new NotFoundException('Could not find required charachteristics');
+    }
+    await new Promise<void>((resolve, reject) => txCharacteristic.subscribe(err => err ? reject(err) : resolve()));
 
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
       txCharacteristic.on('data', data => observer.next(data));
@@ -50,14 +60,15 @@ export class BLEService {
       next: async (payload: Buffer) => {
         let data = serializeCommandBuffer(payload);
         if (data.length <= 20) {
-          await rxCharachteristic.writeAsync(data, true);
+          await new Promise<void>((resolve, reject) => rxCharacteristic.write(data, true, err => err ? reject(err) : resolve()));
         } else {
           while (data.length > 20) {
             const chunk: Buffer = data.slice(0, 20);
             data = data.slice(20);
-            await rxCharachteristic.writeAsync(chunk, true);
+            await new Promise<void>((resolve, reject) => rxCharacteristic.write(chunk, true, err => err ? reject(err) : resolve()));
+
           }
-          await rxCharachteristic.writeAsync(data, true);
+          await new Promise<void>((resolve, reject) => rxCharacteristic.write(data, true, err => err ? reject(err) : resolve()));
         }
       },
       error: (error) => {
@@ -72,7 +83,7 @@ export class BLEService {
 
   disconnect(): Promise<void> {
     if (this.device) {
-      return this.device.disconnectAsync();
+      return new Promise((resolve) => this.device.disconnect(() => resolve()));
     }
 
     return Promise.resolve();
@@ -80,14 +91,20 @@ export class BLEService {
 
   private startScanningAndFindDevice(): Promise<Peripheral> {
     return new Observable<Peripheral>((observer: Observer<Peripheral>) => {
-      noble.on('discover', (device: Peripheral) => observer.next(device));
+      noble.on('discover', (device: Peripheral) => {
+        if (device.advertisement.localName == 'STORMCORE') {
+          observer.next(device);
+          observer.complete();
+        }
+      });
     }).pipe(
-      doOnSubscribe(() => noble.startScanningAsync([environment.BLE.service.uuid])),
-      switchMap((device: Peripheral) => from(noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
+      doOnSubscribe(() => noble.startScanning(environment.BLE.service.uuid)),
+      tap(() => noble.stopScanning()),
       first(),
       timeout(10000),
       catchError(async (err) => {
-        await noble.stopScanningAsync();
+        console.log(err);
+        await new Promise(resolve => noble.stopScanning(resolve));
         throw err;
       })
     ).toPromise();

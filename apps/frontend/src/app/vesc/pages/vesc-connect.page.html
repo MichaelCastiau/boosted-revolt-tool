@@ -9,7 +9,7 @@
         USB
         <img src='assets/images/usb.svg' alt='USB'/>
       </button>
-      <button class='a-button' (click)='connectViaBLE()' *ngIf='!isWindows()'>
+      <button class='a-button' (click)='connectViaBLE()'>
         Bluetooth
         <img src='assets/images/ble.svg' alt='Bluetooth'/>
       </button>
@@ -21,6 +21,7 @@
       Please make sure your VESC is switched on and connected through cabled USB connection
       if you want to connect via USB to this device.
       The ReVOLT! dashboard should be switched on and connected through the CAN bus to the VESC.
+      Bluetooth support is limited to Stormcore devices.
     </p>
   </div>
 
