@@ -22,7 +22,7 @@ export class SocketGateway {
 
   @SubscribeMessage('connect')
   connectToDevice(@MessageBody() data: { connectionType: 'usb' | 'ble', deviceId?: string },
-                  @ConnectedSocket() client): Observable<IVESCFirmwareInfo | undefined> {
+                  @ConnectedSocket() client): Observable<{ event: 'vesc:info', data: { info: IVESCFirmwareInfo | undefined } }> {
     this.socket = client;
 
     console.log('Attempting to connect to device', data.deviceId, 'via', data.connectionType);
@@ -32,6 +32,7 @@ export class SocketGateway {
     ).pipe(
       switchMap(() => from(this.vesc.connect(data?.deviceId))),
       switchMap(() => this.vesc.getFirmwareVersion()),
+      map(info => ({ event: 'vesc:info', data: { info } })),
       timeout(10000),
       catchError((err) => {
         console.error(err);

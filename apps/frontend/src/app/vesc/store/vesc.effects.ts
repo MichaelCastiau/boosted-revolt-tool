@@ -51,7 +51,7 @@ export class VESCEffects {
       return socket.pipe(
         take(1),
         timeout(10000),
-        map(info => connectToVESCSuccess({ info })),
+        map((message) => connectToVESCSuccess({ info: message.data.info })),
         catchError(error => of(connectToVESCFail({ error })))
       );
     })

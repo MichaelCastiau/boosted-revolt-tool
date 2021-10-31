@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Observable, Observer } from 'rxjs';
-import * as noble from 'noble-winrt';
+import * as noble from '@abandonware/noble';
 import { Characteristic, Peripheral } from 'noble';
 import { catchError, first, tap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -98,13 +98,13 @@ export class BLEWindowsService {
         }
       });
     }).pipe(
-      doOnSubscribe(() => noble.startScanning(environment.BLE.service.uuid)),
+      doOnSubscribe(() => noble.startScanning([environment.BLE.service.uuid])),
       tap(() => noble.stopScanning()),
       first(),
       timeout(10000),
       catchError(async (err) => {
         console.log(err);
-        await new Promise(resolve => noble.stopScanning(resolve));
+        await new Promise<void>(resolve => noble.stopScanning(resolve));
         throw err;
       })
     ).toPromise();

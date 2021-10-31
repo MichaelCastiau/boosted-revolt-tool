@@ -9,12 +9,12 @@ import { Subject } from 'rxjs';
 @Injectable()
 export class WebsocketService {
   newConnection$ = new Subject();
-  socket: WebSocketSubject<{ event: string, data: any }>;
+  socket: WebSocketSubject<{ event: string, data?: any }>;
 
   constructor(private store: Store<IAppState>) {
   }
 
-  openSocket(): WebSocketSubject<{ event: string, data: any }> {
+  openSocket(): WebSocketSubject<{ event: string, data?: any }> {
     if (!this.socket || this.socket.isStopped) {
       this.newConnection$.next();
       this.newConnection$.complete();
