@@ -22,6 +22,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   isScanning$: Observable<boolean>;
 
   connectingViaBLE$ = new Subject<boolean>();
+  windowsWarning$ = new Subject<boolean>();
   foundBLEDevices$: Observable<Array<IDeviceInfo>>;
 
   private destroy$ = new Subject();
@@ -51,6 +52,9 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   }
 
   startScanning() {
+    if (window.navigator.platform === 'win32') {
+      return this.windowsWarning$.next(true);
+    }
     this.connectingViaBLE$.next(true);
     this.store.dispatch(startScanning());
   }
@@ -64,9 +68,19 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(connectToVESCViaBLE({ deviceId: device.id }));
   }
 
+  closeHere() {
+    alert('hi');
+  }
+
   goBack() {
     this.store.dispatch(stopScanning());
     this.connectingViaBLE$.next(false);
+  }
+
+  proceed() {
+    this.windowsWarning$.next(false);
+    this.connectingViaBLE$.next(true);
+    this.store.dispatch(startScanning());
   }
 
   ngOnDestroy() {

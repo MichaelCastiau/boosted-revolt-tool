@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BeforeApplicationShutdown, Injectable } from '@nestjs/common';
 import { from, Observable, Observer } from 'rxjs';
 import * as noble from '@abandonware/noble';
 import { Peripheral } from '@abandonware/noble';
@@ -10,10 +10,16 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { doOnSubscribe } from '@shared/doOnSubscribe';
 
 @Injectable()
-export class BLEService {
+export class BLEService implements BeforeApplicationShutdown {
   private device: Peripheral;
 
   constructor(private eventEmitter: EventEmitter2) {
+  }
+
+  async beforeApplicationShutdown(signal?: string) {
+    await this.disconnect();
+    await noble.stopScanningAsync();
+    noble.removeAllListeners();
   }
 
   findDevice(deviceId: string): Promise<Peripheral> {
@@ -78,6 +84,7 @@ export class BLEService {
 
   async disconnect(): Promise<void> {
     if (this.device) {
+      console.log('INFO: disconnecting from BLE device');
       await this.device.disconnectAsync();
     }
     this.device = null;

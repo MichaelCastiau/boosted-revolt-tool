@@ -61,9 +61,7 @@
   }
 
   .m-cta {
-    position: absolute;
-    bottom: variables.$spacer-xl;
-    left: variables.$spacer-xl;
+    margin-top: variables.$spacer;
   }
 
   &.is-visible {

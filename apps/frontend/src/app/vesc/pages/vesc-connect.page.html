@@ -43,8 +43,7 @@
       </div>
     </div>
     <p class='a-note'>
-      Please make sure your VESC is switched on and connected through cabled USB connection
-      if you want to connect via USB to this device.
+      Please make sure your VESC is switched on.
       The ReVOLT! dashboard should be switched on and connected through the CAN bus to the VESC.
     </p>
   </div>
@@ -53,9 +52,21 @@
   <span modal-title>Could not connect</span>
   <p>
     We couldn't find your VESC Motor Controller. Make sure your VESC is switched on and connected via USB to this
-    device.
+    device or discoverable via Bluetooth.
   </p>
   <div cta>
     <button class='a-button' (click)='retry()'>Retry</button>
+  </div>
+</app-modal>
+<app-modal [visible]='windowsWarning$ | async' (closed)='windowsWarning$.next(false)'>
+  <span modal-title>You are on Windows</span>
+  <p>
+    Connecting via Bluetooth on Windows has known issues and caveats due to the poor
+    Bluetooth stack support on Windows.
+    An USB connection is preferred.
+    If you would like to proceed to Bluetooth connectivity, you might need a Bluetooth 4.0 dongle.
+  </p>
+  <div cta>
+    <button class='a-button' (click)='proceed()'>I Understand</button>
   </div>
 </app-modal>

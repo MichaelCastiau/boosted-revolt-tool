@@ -1,10 +1,15 @@
-import {BrowserWindow, screen, shell} from 'electron';
-import {rendererAppName, rendererAppPort} from './app/constants';
-import {environment} from './environments/environment';
+import { BrowserWindow, screen, shell } from 'electron';
+import { rendererAppName, rendererAppPort } from './app/constants';
+import { environment } from './environments/environment';
 import * as path from 'path';
-import {join} from 'path';
-import {format} from 'url';
-import bootstrapNest from './app/server';
+import { join } from 'path';
+import { format } from 'url';
+import { NestApplication, NestFactory } from '@nestjs/core';
+import { AppModule } from './app/app.module';
+import { WsAdapter } from '@nestjs/platform-ws';
+import { Logger } from '@nestjs/common';
+
+let nestApp: NestApplication;
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -21,7 +26,35 @@ export default class App {
     return isEnvironmentSet ? getFromEnvironment : !environment.production;
   }
 
-  private static onWindowAllClosed() {
+  static async main(electronApp: Electron.App, browserWindow: typeof BrowserWindow) {
+    // we pass the Electron.App object and the
+    // Electron.BrowserWindow into this function
+    // so this class has no dependencies. This
+    // makes the code easier to write tests for
+
+    App.BrowserWindow = browserWindow;
+    App.application = electronApp;
+
+    App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
+    App.application.on('ready', App.onReady); // App is ready to load data
+    App.application.on('activate', App.onActivate); // App is activated
+
+    nestApp = await NestFactory.create(AppModule);
+    const globalPrefix = 'api';
+    nestApp.setGlobalPrefix(globalPrefix);
+    nestApp.useWebSocketAdapter(new WsAdapter(nestApp));
+    nestApp.enableCors();
+
+    const port = process.env.PORT || 3333;
+    await nestApp.listen(port, () => {
+      Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
+    });
+  }
+
+  private static async onWindowAllClosed() {
+    if (nestApp) {
+      await nestApp.close();
+    }
     if (process.platform !== 'darwin') {
       App.application.quit();
     }
@@ -71,7 +104,7 @@ export default class App {
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: false,
-        preload: join(__dirname, 'preload.js'),
+        preload: join(__dirname, 'preload.js')
       },
       icon: path.join(__dirname, 'app/icon.ico')
     });
@@ -107,25 +140,9 @@ export default class App {
         format({
           pathname: join(__dirname, '..', rendererAppName, 'index.html'),
           protocol: 'file:',
-          slashes: true,
+          slashes: true
         })
       );
     }
-  }
-
-  static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-    // we pass the Electron.App object and the
-    // Electron.BrowserWindow into this function
-    // so this class has no dependencies. This
-    // makes the code easier to write tests for
-
-    App.BrowserWindow = browserWindow;
-    App.application = app;
-
-    App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
-    App.application.on('ready', App.onReady); // App is ready to load data
-    App.application.on('activate', App.onActivate); // App is activated
-
-    bootstrapNest();
   }
 }

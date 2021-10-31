@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -11,6 +11,9 @@ export class ModalComponent implements OnChanges {
   visible = false;
   isVisible$: Observable<boolean> = new BehaviorSubject(null);
 
+  @Output()
+  closed = new Subject<boolean>();
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.visible.previousValue != changes.visible.currentValue) {
       if ((this.isVisible$ as BehaviorSubject<boolean>).value === null && changes.visible.currentValue === false) {
@@ -20,8 +23,9 @@ export class ModalComponent implements OnChanges {
     }
   }
 
-  closeModal(){
+  closeModal() {
     (this.isVisible$ as BehaviorSubject<boolean>).next(false);
+    this.closed.next();
   }
 
 }
