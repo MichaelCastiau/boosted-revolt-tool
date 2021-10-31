@@ -12,6 +12,15 @@ You can download the latest `.exe` installer in the [Releases](https://github.co
 instructions. Windows will show a 'we protected your PC' dialog when running the tool 
 for the first time. Click on 'more...' and 'Run Anyway' to run this tool.
 
+> ### A note on Bluetooth connectivity
+> Windows has known issues with connecting via Bluetooth. This is because of limitations
+> of the Windows Bluetooth Stack itself.
+> On Windows, a USB connection is preferred.
+> 
+> If you would like to connect via Bluetooth either way, please refer to this article:
+> [https://github.com/abandonware/noble](https://github.com/abandonware/noble#windows).
+> You will have to install a WinUSB driver, or use a separate dongle to make use of Bluetooth functionality.
+
 ### Mac
 Download the latest `.dmg` package for mac from the [Releases](https://github.com/MichaelCastiau/boosted-revolt-tool/releases).
 
