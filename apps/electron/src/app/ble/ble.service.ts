@@ -18,8 +18,6 @@ export class BLEService implements BeforeApplicationShutdown {
 
   async beforeApplicationShutdown(signal?: string) {
     await this.disconnect();
-    await noble.stopScanningAsync();
-    noble.removeAllListeners();
   }
 
   findDevice(deviceId: string): Promise<Peripheral> {
