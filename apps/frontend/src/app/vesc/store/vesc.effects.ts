@@ -19,7 +19,7 @@ import {
 import { catchError, delay, map, mapTo, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
-import { WebsocketService } from '../services/websocket.service';
+import { WebsocketService } from '../../shared/services/websocket.service';
 import { Action } from '@ngrx/store';
 import { IAppData } from '../app-data';
 import { ToastrService } from 'ngx-toastr';

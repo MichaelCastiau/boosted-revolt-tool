@@ -8,23 +8,22 @@ import { VESCService } from './services/vesc.service';
 import { HttpClientModule } from '@angular/common/http';
 import { vescReducer } from './store/vesc.reducer';
 import { CommonModule } from '@angular/common';
-import { WebsocketService } from './services/websocket.service';
-import { BleEffects } from './store/ble.effects';
+import { BLEModule } from '../ble/ble.module';
 
 @NgModule({
   imports: [
     SharedModule,
     StoreModule.forFeature('vesc', vescReducer),
-    EffectsModule.forFeature([VESCEffects, BleEffects]),
+    EffectsModule.forFeature([VESCEffects]),
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    BLEModule
   ],
   declarations: [
     VescConnectPageComponent
   ],
   providers: [
-    VESCService,
-    WebsocketService
+    VESCService
   ]
 })
 export class VESCModule {

@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { from, Observable, Observer } from 'rxjs';
 import * as noble from '@abandonware/noble';
 import { Peripheral } from '@abandonware/noble';
-import { catchError, first, switchMap, take, timeout } from 'rxjs/operators';
+import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
@@ -72,13 +72,10 @@ export class BLEService {
 
   startScanningAndFindDevice(): Observable<Peripheral> {
     return new Observable<Peripheral>((observer: Observer<Peripheral>) => {
-      noble.on('discover', (device: Peripheral) => {
-        console.log('device', device);
-        observer.next(device)
-      });
+      noble.on('discover', (device: Peripheral) => observer.next(device));
     }).pipe(
       doOnSubscribe(() => noble.startScanningAsync([
-        environment.BLE.service.uuid,
+        environment.BLE.service.uuid
       ], false)),
       switchMap((device: Peripheral) => from(noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
       timeout(25000),

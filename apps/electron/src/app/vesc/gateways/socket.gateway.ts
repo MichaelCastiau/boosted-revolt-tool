@@ -40,15 +40,20 @@ export class SocketGateway {
   }
 
   @SubscribeMessage('scan:start')
-  startScan(@ConnectedSocket() client): Observable<IDeviceInfo> {
+  startScan(@ConnectedSocket() client): Observable<{ event: string, data: { device: IDeviceInfo } }> {
     // Start BLE scan
     return from(this.vesc.setConnectionMethod('ble')).pipe(
       switchMap(() => this.vesc.searchForDevices()),
       map(device => {
         return {
-          name: device.advertisement?.localName,
-          id: device.id,
-          uuid: device.uuid
+          event: 'scan:device-found',
+          data: {
+            device: {
+              name: device.advertisement?.localName,
+              id: device.id,
+              uuid: device.uuid
+            }
+          }
         };
       })
     );

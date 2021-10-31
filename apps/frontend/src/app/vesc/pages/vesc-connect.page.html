@@ -27,9 +27,9 @@
         </p>
         <div class='m-devices'>
           <ul>
-            <li>
-              <span class='a-device-name'>STORMCORE</span>
-              <span class='a-device-id'>wsdfj--sfmjhsqdfhhjk</span>
+            <li *ngFor='let device of (foundBLEDevices$ | async)'>
+              <span class='a-device-name'>{{ device.name }}</span>
+              <span class='a-device-id'>{{ device.id }}</span>
             </li>
           </ul>
           <app-spinner>Searching for devices...</app-spinner>

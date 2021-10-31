@@ -3,7 +3,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/store';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { connectionLost } from '../store/vesc.actions';
+import { connectionLost } from '../../vesc/store/vesc.actions';
 import { Subject } from 'rxjs';
 
 @Injectable()

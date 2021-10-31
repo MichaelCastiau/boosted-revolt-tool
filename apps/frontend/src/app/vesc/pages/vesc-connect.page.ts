@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/store';
-import { connectToVESC, startScanning } from '../store/vesc.actions';
+import { connectToVESC } from '../store/vesc.actions';
 import { Observable, Subject } from 'rxjs';
 import { selectConnectionError, selectIsConnected, selectIsConnecting } from '../store/vesc.selectors';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { startScanning } from '../../ble/store/ble.actions';
+import { IDeviceInfo } from '@shared/device';
+import { selectFoundBLEDevices } from '../../ble/store/ble.selectors';
 
 @Component({
   selector: 'app-vesc-connect',
@@ -18,6 +21,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   isConnected$: Observable<boolean>;
 
   connectingViaBLE$ = new Subject<boolean>();
+  foundBLEDevices$: Observable<Array<IDeviceInfo>>;
 
   private destroy$ = new Subject();
   private lastConnectionWay: 'usb' | 'ble' = 'usb';
@@ -30,6 +34,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
     this.isConnecting$ = this.store.pipe(selectIsConnecting);
     this.connectionError$ = this.store.pipe(selectConnectionError);
     this.isConnected$ = this.store.pipe(selectIsConnected);
+    this.foundBLEDevices$ = this.store.pipe(selectFoundBLEDevices);
 
     this.isConnected$.pipe(
       takeUntil(this.destroy$),

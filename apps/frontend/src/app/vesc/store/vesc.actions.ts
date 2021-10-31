@@ -7,7 +7,6 @@ export const connectToVESC = createAction('[VESC] Connect', props<{ way?: 'usb' 
 export const connectToVESCFail = createAction('[VESC] Connect Fail', props<{ error: HttpErrorResponse }>());
 export const connectToVESCSuccess = createAction('[VESC] Connect Success', props<{ info: IVESCInfo }>());
 
-export const startScanning = createAction('[BLE] Start scanning');
 
 export const connectionLost = createAction('[VESC] Connection lost', props<{ error?: Error }>());
 
