@@ -9,12 +9,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { vescReducer } from './store/vesc.reducer';
 import { CommonModule } from '@angular/common';
 import { WebsocketService } from './services/websocket.service';
+import { BleEffects } from './store/ble.effects';
 
 @NgModule({
   imports: [
     SharedModule,
     StoreModule.forFeature('vesc', vescReducer),
-    EffectsModule.forFeature([VESCEffects]),
+    EffectsModule.forFeature([VESCEffects, BleEffects]),
     HttpClientModule,
     CommonModule
   ],

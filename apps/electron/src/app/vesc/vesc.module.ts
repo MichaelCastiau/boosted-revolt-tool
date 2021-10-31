@@ -5,7 +5,7 @@ import { SerialPortModule } from '../serial-port/serial-port.module';
 import { SocketGateway } from './gateways/socket.gateway';
 import { SocketModule } from '@nestjs/websockets/socket-module';
 import { BleModule } from '../ble/ble.module';
-import { VescAdapterFactory } from './adapter/vesc-adapter.factory';
+import { VESCAdapterFactory } from './adapter/vesc-adapter.factory';
 
 @Module({
   controllers: [
@@ -13,13 +13,13 @@ import { VescAdapterFactory } from './adapter/vesc-adapter.factory';
   ],
   imports: [
     SerialPortModule,
-    BleModule,
+    process.platform === 'win32' ? BleModule.forWindows() : BleModule.forUnix(),
     SocketModule
   ],
   providers: [
     VESCService,
     SocketGateway,
-    VescAdapterFactory
+    VESCAdapterFactory
   ]
 })
 export class VESCModule {

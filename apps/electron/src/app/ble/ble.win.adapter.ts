@@ -1,5 +1,5 @@
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Peripheral } from 'noble';
 import { Injectable } from '@nestjs/common';
 import { BLEWindowsService } from './ble-win.service';
@@ -25,6 +25,10 @@ export class BLEWindowsAdapter implements IVESCAdapter {
 
   disconnect(): Promise<void> {
     return this.ble.disconnect();
+  }
+
+  searchForDevices(): Observable<Peripheral> {
+    return undefined;
   }
 
 }

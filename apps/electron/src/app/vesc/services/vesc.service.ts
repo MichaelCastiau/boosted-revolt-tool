@@ -12,11 +12,12 @@ import {
 import { filter, first, map, switchMap, timeout } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { doOnSubscribe } from '../../helpers/onsubscribe.helper';
+import { doOnSubscribe } from '@shared/doOnSubscribe';
 import { deserializeAppData, setVescConfig } from '../../helpers/serializer.helper';
 import { IAppData } from '../models/app-data';
 import { ConnectionMethod, IVESCAdapter } from '../adapter/vesc.adapter';
-import { VescAdapterFactory } from '../adapter/vesc-adapter.factory';
+import { VESCAdapterFactory } from '../adapter/vesc-adapter.factory';
+import { Peripheral } from 'noble';
 
 @Injectable()
 export class VESCService {
@@ -38,15 +39,16 @@ export class VESCService {
   private socket: Subject<Buffer>;
   private adapter: IVESCAdapter;
 
-  constructor(private factory: VescAdapterFactory) {
-    this.adapter = this.factory.provideVESCAdapter('usb');
+  constructor(private factory: VESCAdapterFactory) {
+    this.factory.provideVESCAdapter('usb')
+      .then(adapter => this.adapter = adapter);
   }
 
   async setConnectionMethod(method: ConnectionMethod) {
     if (this.adapter) {
       await this.adapter.disconnect();
     }
-    this.adapter = this.factory.provideVESCAdapter(method);
+    this.adapter = await this.factory.provideVESCAdapter(method);
   }
 
   async connect(): Promise<Observable<Buffer>> {
@@ -116,5 +118,9 @@ export class VESCService {
       map(buffer => buffer.slice(1)), //Command is removed
       timeout(10000)
     );
+  }
+
+  searchForDevices(): Observable<Peripheral> {
+    return this.adapter.searchForDevices();
   }
 }

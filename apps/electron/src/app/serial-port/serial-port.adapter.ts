@@ -1,8 +1,9 @@
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
 import { SerialPortService } from './serial-port.service';
 import { PortNotFoundException } from '../exceptions/port-not-found.exception';
-import { Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Injectable } from '@nestjs/common';
+import { Peripheral } from 'noble';
 
 @Injectable()
 export class SerialPortAdapter implements IVESCAdapter {
@@ -23,6 +24,10 @@ export class SerialPortAdapter implements IVESCAdapter {
 
   disconnect(): Promise<void> {
     return this.serial.disconnect();
+  }
+
+  searchForDevices(): Observable<Peripheral> {
+    return of(null);
   }
 
 }

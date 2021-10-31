@@ -2,26 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { from, Observable, Observer } from 'rxjs';
 import * as noble from '@abandonware/noble';
 import { Peripheral } from '@abandonware/noble';
-import { catchError, first, switchMap, timeout } from 'rxjs/operators';
-import { doOnSubscribe } from '../helpers/onsubscribe.helper';
+import { catchError, first, switchMap, take, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { doOnSubscribe } from '@shared/doOnSubscribe';
 
 @Injectable()
 export class BLEService {
   private device: Peripheral;
 
   constructor(private eventEmitter: EventEmitter2) {
-  }
-
-  async findDevice(): Promise<Peripheral> {
-    const device = await this.startScanningAndFindDevice();
-    if (!device) {
-      throw new NotFoundException('BLE VESC Device not found or timeout reached');
-    }
-    return device;
   }
 
   async connect(device: Peripheral) {
@@ -78,18 +70,22 @@ export class BLEService {
     return Promise.resolve();
   }
 
-  private startScanningAndFindDevice(): Promise<Peripheral> {
+  startScanningAndFindDevice(): Observable<Peripheral> {
     return new Observable<Peripheral>((observer: Observer<Peripheral>) => {
-      noble.on('discover', (device: Peripheral) => observer.next(device));
+      noble.on('discover', (device: Peripheral) => {
+        console.log('device', device);
+        observer.next(device)
+      });
     }).pipe(
-      doOnSubscribe(() => noble.startScanningAsync([environment.BLE.service.uuid])),
+      doOnSubscribe(() => noble.startScanningAsync([
+        environment.BLE.service.uuid,
+      ], false)),
       switchMap((device: Peripheral) => from(noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
-      first(),
-      timeout(10000),
+      timeout(25000),
       catchError(async (err) => {
         await noble.stopScanningAsync();
         throw err;
       })
-    ).toPromise();
+    );
   }
 }

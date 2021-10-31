@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/store';
-import { connectToVESC } from '../store/vesc.actions';
+import { connectToVESC, startScanning } from '../store/vesc.actions';
 import { Observable, Subject } from 'rxjs';
 import { selectConnectionError, selectIsConnected, selectIsConnecting } from '../store/vesc.selectors';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
@@ -16,6 +16,8 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   isConnecting$: Observable<boolean>;
   connectionError$: Observable<Error>;
   isConnected$: Observable<boolean>;
+
+  connectingViaBLE$ = new Subject<boolean>();
 
   private destroy$ = new Subject();
   private lastConnectionWay: 'usb' | 'ble' = 'usb';
@@ -41,7 +43,11 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   connectViaUSB() {
     this.lastConnectionWay = 'usb';
     this.store.dispatch(connectToVESC({ way: 'usb' }));
+  }
 
+  startScanning() {
+    this.connectingViaBLE$.next(true);
+    this.store.dispatch(startScanning());
   }
 
   connectViaBLE() {

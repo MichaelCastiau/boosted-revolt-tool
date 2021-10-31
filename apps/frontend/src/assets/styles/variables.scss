@@ -12,6 +12,7 @@ $font-large: 14pt;
 $spacer: 15px;
 $spacer-sm: math.div($spacer, 1.2);
 $spacer-xs: math.div($spacer, 2);
+$spacer-md: $spacer*1.5;
 $spacer-xl: $spacer*2;
 $spacer-xxl: $spacer* 3;
 

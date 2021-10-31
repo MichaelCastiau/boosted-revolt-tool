@@ -1,35 +1,56 @@
-<div class="o-connect">
-  <div class="m-connect-wrapper">
-    <h1>Connect to your VESC</h1>
-    <p>
-      Choose how you want to connect to your VESC
-    </p>
-    <div class='m-connect-options'>
-      <button class='a-button' (click)='connectViaUSB()'>
-        USB
-        <img src='assets/images/usb.svg' alt='USB'/>
-      </button>
-      <button class='a-button' (click)='connectViaBLE()'>
-        Bluetooth
-        <img src='assets/images/ble.svg' alt='Bluetooth'/>
-      </button>
+<div class='o-connect'>
+  <div class='m-connect-wrapper'>
+    <div class='m-slides-wrapper'>
+      <div class='o-slide' [class.is-active]='!(connectingViaBLE$ | async)'>
+        <h1>Connect to your VESC</h1>
+        <p>
+          Choose how you want to connect to your VESC
+        </p>
+        <div class='m-connect-options'>
+          <button class='a-button' (click)='connectViaUSB()'>
+            USB
+            <img src='assets/images/usb.svg' alt='USB' />
+          </button>
+          <button class='a-button' (click)='startScanning()'>
+            Bluetooth
+            <img src='assets/images/ble.svg' alt='Bluetooth' />
+          </button>
+        </div>
+        <div class='m-loader' [class.is-visible]='isConnecting$ | async'>
+          <app-spinner>Connecting...</app-spinner>
+        </div>
+      </div>
+      <div class='o-slide' [class.is-active]='connectingViaBLE$ | async'>
+        <h2>Connect via Bluetooth</h2>
+        <p>
+          Please select your VESC device listed hereunder. Make sure your VESC is switched on.
+        </p>
+        <div class='m-devices'>
+          <ul>
+            <li>
+              <span class='a-device-name'>STORMCORE</span>
+              <span class='a-device-id'>wsdfj--sfmjhsqdfhhjk</span>
+            </li>
+          </ul>
+          <app-spinner>Searching for devices...</app-spinner>
+        </div>
+        <div class='m-cta'>
+          <button class='a-button' (click)='connectingViaBLE$.next(false)'>Go Back</button>
+        </div>
+      </div>
     </div>
-    <div class='m-loader' [class.is-visible]='isConnecting$ | async'>
-      <app-spinner>Connecting...</app-spinner>
-    </div>
-    <p class='u-light'>
+    <p class='a-note'>
       Please make sure your VESC is switched on and connected through cabled USB connection
       if you want to connect via USB to this device.
       The ReVOLT! dashboard should be switched on and connected through the CAN bus to the VESC.
-      Bluetooth support is limited to Stormcore devices.
     </p>
   </div>
-
 </div>
 <app-modal [visible]='!!(connectionError$ | async)'>
   <span modal-title>Could not connect</span>
   <p>
-    We couldn't find your VESC Motor Controller. Make sure your VESC is switched on and connected via USB to this device.
+    We couldn't find your VESC Motor Controller. Make sure your VESC is switched on and connected via USB to this
+    device.
   </p>
   <div cta>
     <button class='a-button' (click)='retry()'>Retry</button>

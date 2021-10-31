@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
 import { BLEService } from './ble.service';
 import { Peripheral } from '@abandonware/noble';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class BLEAdapter implements IVESCAdapter {
@@ -15,16 +16,25 @@ export class BLEAdapter implements IVESCAdapter {
   }
 
   async connect(): Promise<Subject<Buffer>> {
-    const device: Peripheral = await this.ble.findDevice();
-    try {
-      return await this.ble.connect(device);
-    } catch (error) {
-      await this.ble.disconnect();
-      throw error;
-    }
+    //   const device: Peripheral = await this.ble.findDevice();
+    /*   try {
+         return await this.ble.connect(device);
+       } catch (error) {
+         await this.ble.disconnect();
+         throw error;
+       }*/
+    return null;
   }
 
   disconnect(): Promise<void> {
     return this.ble.disconnect();
   }
+
+  searchForDevices(): Observable<Peripheral> {
+    return this.ble.startScanningAndFindDevice().pipe(
+      tap(console.log)
+    );
+  }
+
+
 }

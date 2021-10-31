@@ -8,7 +8,7 @@ export const environment = {
   },
   BLE: {
     service: {
-      uuid: '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
+      uuid: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
       characteristics: {
         rx: '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
         tx: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'

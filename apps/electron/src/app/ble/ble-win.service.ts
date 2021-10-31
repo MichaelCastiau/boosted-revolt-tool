@@ -3,11 +3,11 @@ import { Observable, Observer } from 'rxjs';
 import * as noble from 'noble-winrt';
 import { Characteristic, Peripheral } from 'noble';
 import { catchError, first, tap, timeout } from 'rxjs/operators';
-import { doOnSubscribe } from '../helpers/onsubscribe.helper';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
+import { doOnSubscribe } from '@shared/doOnSubscribe';
 
 @Injectable()
 export class BLEWindowsService {
