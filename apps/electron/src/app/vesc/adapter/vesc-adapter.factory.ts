@@ -1,12 +1,12 @@
 import { IVESCAdapter } from './vesc.adapter';
 import { SerialPortAdapter } from '../../serial-port/serial-port.adapter';
-import { Inject, Injectable } from '@nestjs/common';
-import { PROVIDE_BLE_ADAPTER } from '../../ble/ble.providers';
+import { Injectable } from '@nestjs/common';
 import { ConnectionMethod } from '@shared/types';
+import { BLEAdapter } from '../../ble/ble.adapter';
 
 @Injectable()
 export class VESCAdapterFactory {
-  constructor(@Inject(PROVIDE_BLE_ADAPTER) private bleAdapter: IVESCAdapter,
+  constructor(private bleAdapter: BLEAdapter,
               private serialAdapter: SerialPortAdapter) {
   }
 

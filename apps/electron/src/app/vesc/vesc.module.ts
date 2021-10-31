@@ -13,7 +13,7 @@ import { VESCAdapterFactory } from './adapter/vesc-adapter.factory';
   ],
   imports: [
     SerialPortModule,
-    process.platform === 'win32' ? BleModule.forWindows() : BleModule.forUnix(),
+    BleModule,
     SocketModule
   ],
   providers: [
