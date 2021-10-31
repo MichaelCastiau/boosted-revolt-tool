@@ -3,7 +3,6 @@ import { Observable, Subject } from 'rxjs';
 import { IVESCAdapter } from '../vesc/adapter/vesc.adapter';
 import { BLEService } from './ble.service';
 import { Peripheral } from '@abandonware/noble';
-import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class BLEAdapter implements IVESCAdapter {
@@ -12,18 +11,17 @@ export class BLEAdapter implements IVESCAdapter {
   }
 
   isConnected(): boolean {
-    return false;
+    return this.ble.isConnected();
   }
 
-  async connect(): Promise<Subject<Buffer>> {
-    //   const device: Peripheral = await this.ble.findDevice();
-    /*   try {
-         return await this.ble.connect(device);
-       } catch (error) {
-         await this.ble.disconnect();
-         throw error;
-       }*/
-    return null;
+  async connect(deviceId?: string): Promise<Subject<Buffer>> {
+    const device: Peripheral = await this.ble.findDevice(deviceId);
+    try {
+      return await this.ble.connect(device);
+    } catch (error) {
+      await this.ble.disconnect();
+      throw error;
+    }
   }
 
   disconnect(): Promise<void> {
@@ -31,10 +29,10 @@ export class BLEAdapter implements IVESCAdapter {
   }
 
   searchForDevices(): Observable<Peripheral> {
-    return this.ble.startScanningAndFindDevice().pipe(
-      tap(console.log)
-    );
+    return this.ble.startScanningAndFindDevice();
   }
 
-
+  stopSearching(): Promise<void> {
+    return this.ble.stopScanning();
+  }
 }

@@ -31,4 +31,8 @@ export class BLEWindowsAdapter implements IVESCAdapter {
     return undefined;
   }
 
+  stopSearching(): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
 }

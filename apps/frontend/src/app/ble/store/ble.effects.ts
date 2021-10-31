@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { connectToVESC, connectToVESCFail } from '../../vesc/store/vesc.actions';
-import { catchError, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { connectToVESCFail } from '../../vesc/store/vesc.actions';
+import { catchError, filter, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { WebsocketService } from '../../shared/services/websocket.service';
 import { doOnSubscribe } from '@shared/doOnSubscribe';
-import { foundBLEDevice, startScanning } from './ble.actions';
+import { foundBLEDevice, startScanning, stopScanning } from './ble.actions';
 import { of } from 'rxjs';
+import { BLEService } from '../ble.service';
 
 @Injectable()
 export class BleEffects {
@@ -15,7 +16,7 @@ export class BleEffects {
       const socket = this.socket.openSocket();
       return socket.pipe(
         doOnSubscribe(() => socket.next({ event: 'scan:start' })),
-        takeUntil(this.actions$.pipe(ofType(connectToVESC, connectToVESCFail)))
+        takeUntil(this.actions$.pipe(ofType(stopScanning)))
       );
     }),
     filter(message => message.event === 'scan:device-found'),
@@ -23,7 +24,13 @@ export class BleEffects {
     catchError(error => of(connectToVESCFail({ error })))
   ));
 
+  stopScanning$ = createEffect(() => this.actions$.pipe(
+    ofType(stopScanning),
+    switchMap(() => this.api.stopScanning())
+  ), { dispatch: false });
+
   constructor(private actions$: Actions,
-              private socket: WebsocketService) {
+              private socket: WebsocketService,
+              private api: BLEService) {
   }
 }

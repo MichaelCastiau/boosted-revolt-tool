@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
 import { selectIsConnected, selectVESCInfo } from '../../../vesc/store/vesc.selectors';
-import { connectToVESC } from '../../../vesc/store/vesc.actions';
 import { IVESCInfo } from '../../../vesc/store/store';
+import { connectToVESC } from '../../../vesc/store/vesc.actions';
 
 @Component({
   selector: 'app-status-bar',
@@ -24,6 +24,6 @@ export class StatusBarComponent implements OnInit {
   }
 
   connect() {
-    this.store.dispatch(connectToVESC({}));
+    this.store.dispatch(connectToVESC());
   }
 }

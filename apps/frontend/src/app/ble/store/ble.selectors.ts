@@ -8,3 +8,7 @@ export const selectFoundBLEDevices: OperatorFunction<IAppState, IDeviceInfo[]> =
   select(selectBLEState),
   select(state => state.devicesFound || [])
 );
+export const selectIsScanning: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
+  select(selectBLEState),
+  select(state => state.isScanning)
+);

@@ -22,6 +22,6 @@ export class HomePageComponent implements OnInit {
   }
 
   retry() {
-    this.store.dispatch(connectToVESC({}));
+    this.store.dispatch(connectToVESC());
   }
 }

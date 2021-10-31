@@ -9,14 +9,23 @@ import {
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
+  connectToVESCViaUSB,
   getAppSettingsSuccess,
   setBatteryConfiguration,
   setBatteryConfigurationSuccess,
   setMetricSystem,
   setMetricSystemSuccess
 } from './vesc.actions';
+import { connectToVESCViaBLE } from '../../ble/store/ble.actions';
 
-export const vescReducer = createReducer<IVESCState>({ isConnecting: false, isConnected: false, dashboardConfig: {} },
+export const vescReducer = createReducer<IVESCState>({
+    isConnecting: false,
+    isConnected: false,
+    dashboardConfig: {},
+    connectionType: 'usb'
+  },
+  on(connectToVESCViaUSB, (state) => ({ ...state, connectionType: 'usb' })),
+  on(connectToVESCViaBLE, (state) => ({ ...state, connectionType: 'ble' })),
   on(connectToVESC, (state) => ({ ...state, isConnecting: true, errorConnecting: null })),
   on(connectToVESCFail, (state, { error }) => ({
     ...state,

@@ -31,4 +31,8 @@ export class VESCService {
       switchMap(() => this.getAppSettings())
     );
   }
+
+  disconnect() {
+    return this.http.get('/api/ble/disconnect');
+  }
 }

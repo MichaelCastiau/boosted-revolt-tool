@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/store';
-import { connectToVESC } from '../store/vesc.actions';
+import { connectToVESC, connectToVESCViaUSB } from '../store/vesc.actions';
 import { Observable, Subject } from 'rxjs';
 import { selectConnectionError, selectIsConnected, selectIsConnecting } from '../store/vesc.selectors';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { startScanning } from '../../ble/store/ble.actions';
+import { connectToVESCViaBLE, startScanning, stopScanning } from '../../ble/store/ble.actions';
 import { IDeviceInfo } from '@shared/device';
-import { selectFoundBLEDevices } from '../../ble/store/ble.selectors';
+import { selectFoundBLEDevices, selectIsScanning } from '../../ble/store/ble.selectors';
 
 @Component({
   selector: 'app-vesc-connect',
@@ -19,12 +19,12 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   isConnecting$: Observable<boolean>;
   connectionError$: Observable<Error>;
   isConnected$: Observable<boolean>;
+  isScanning$: Observable<boolean>;
 
   connectingViaBLE$ = new Subject<boolean>();
   foundBLEDevices$: Observable<Array<IDeviceInfo>>;
 
   private destroy$ = new Subject();
-  private lastConnectionWay: 'usb' | 'ble' = 'usb';
 
   constructor(private store: Store<IAppState>,
               private router: Router) {
@@ -35,6 +35,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
     this.connectionError$ = this.store.pipe(selectConnectionError);
     this.isConnected$ = this.store.pipe(selectIsConnected);
     this.foundBLEDevices$ = this.store.pipe(selectFoundBLEDevices);
+    this.isScanning$ = this.store.pipe(selectIsScanning);
 
     this.isConnected$.pipe(
       takeUntil(this.destroy$),
@@ -46,8 +47,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   }
 
   connectViaUSB() {
-    this.lastConnectionWay = 'usb';
-    this.store.dispatch(connectToVESC({ way: 'usb' }));
+    this.store.dispatch(connectToVESCViaUSB());
   }
 
   startScanning() {
@@ -55,13 +55,18 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(startScanning());
   }
 
-  connectViaBLE() {
-    this.lastConnectionWay = 'ble';
-    this.store.dispatch(connectToVESC({ way: 'ble' }));
+  retry() {
+    this.store.dispatch(connectToVESC());
   }
 
-  retry() {
-    this.store.dispatch(connectToVESC({ way: this.lastConnectionWay }));
+  connectViaBLE(device: IDeviceInfo) {
+    this.store.dispatch(stopScanning());
+    this.store.dispatch(connectToVESCViaBLE({ deviceId: device.id }));
+  }
+
+  goBack() {
+    this.store.dispatch(stopScanning());
+    this.connectingViaBLE$.next(false);
   }
 
   ngOnDestroy() {

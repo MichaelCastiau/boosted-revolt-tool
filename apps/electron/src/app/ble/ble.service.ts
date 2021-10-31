@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { from, Observable, Observer } from 'rxjs';
 import * as noble from '@abandonware/noble';
 import { Peripheral } from '@abandonware/noble';
-import { catchError, switchMap, timeout } from 'rxjs/operators';
+import { catchError, filter, finalize, first, switchMap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
@@ -14,6 +14,19 @@ export class BLEService {
   private device: Peripheral;
 
   constructor(private eventEmitter: EventEmitter2) {
+  }
+
+  findDevice(deviceId: string): Promise<Peripheral> {
+    return this.startScanningAndFindDevice().pipe(
+      filter(device => device.id === deviceId),
+      timeout(10000),
+      first(),
+      finalize(() => this.stopScanning())
+    ).toPromise();
+  }
+
+  isConnected() {
+    return !!this.device;
   }
 
   async connect(device: Peripheral) {
@@ -32,6 +45,7 @@ export class BLEService {
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
       txCharacteristic.on('data', data => observer.next(data));
       device.on('disconnect', () => {
+        this.device = null;
         this.eventEmitter.emit('serial:closed');
         observer.complete();
       });
@@ -62,12 +76,11 @@ export class BLEService {
     ));
   }
 
-  disconnect(): Promise<void> {
+  async disconnect(): Promise<void> {
     if (this.device) {
-      return this.device.disconnectAsync();
+      await this.device.disconnectAsync();
     }
-
-    return Promise.resolve();
+    this.device = null;
   }
 
   startScanningAndFindDevice(): Observable<Peripheral> {
@@ -84,5 +97,9 @@ export class BLEService {
         throw err;
       })
     );
+  }
+
+  stopScanning() {
+    return noble.stopScanningAsync();
   }
 }

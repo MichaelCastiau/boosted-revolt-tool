@@ -9,20 +9,24 @@ import { Subject } from 'rxjs';
 @Injectable()
 export class WebsocketService {
   newConnection$ = new Subject();
+  socket: WebSocketSubject<{ event: string, data: any }>;
 
   constructor(private store: Store<IAppState>) {
   }
 
-  openSocket(): WebSocketSubject<any> {
-    this.newConnection$.next();
-    this.newConnection$.complete();
+  openSocket(): WebSocketSubject<{ event: string, data: any }> {
+    if (!this.socket || this.socket.isStopped) {
+      this.newConnection$.next();
+      this.newConnection$.complete();
+    }
+
 
     this.newConnection$ = new Subject<void>();
-    const socket = webSocket('ws://localhost:3333');
-    socket.pipe(
+    this.socket = webSocket('ws://localhost:3333');
+    this.socket.pipe(
       takeUntil(this.newConnection$),
       finalize(() => this.store.dispatch(connectionLost({})))
     ).subscribe();
-    return socket;
+    return this.socket;
   }
 }

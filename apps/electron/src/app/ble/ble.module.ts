@@ -1,9 +1,11 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { PROVIDE_BLE_ADAPTER, PROVIDE_BLE_SERVICE } from './ble.providers';
 import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
+import { BLEController } from './ble.controller';
 
 @Module({
-  imports: [EventEmitterModule]
+  imports: [EventEmitterModule],
+  controllers: [BLEController]
 })
 export class BleModule {
   static forUnix(): DynamicModule {

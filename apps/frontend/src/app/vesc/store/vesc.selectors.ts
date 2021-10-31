@@ -1,10 +1,12 @@
-import { OperatorFunction } from 'rxjs';
+import { combineLatest, OperatorFunction } from 'rxjs';
 import { IAppState } from '../../store/store';
 import { IVESCInfo, selectVESCState } from './store';
 import { select } from '@ngrx/store';
-import { filter, map } from 'rxjs/operators';
+import { filter, first, map } from 'rxjs/operators';
 import { IAppData } from '../app-data';
 import { HttpErrorResponse } from '@angular/common/http';
+import { selectBLEState } from '../../ble/store/ble.store';
+import { ConnectionMethod } from '@shared/types';
 
 export const selectIsConnecting: OperatorFunction<IAppState, boolean> = state$ => state$.pipe(
   select(selectVESCState),
@@ -54,4 +56,18 @@ export const selectConfiguringVESCError: OperatorFunction<IAppState, HttpErrorRe
   select(selectVESCState),
   select(state => state.errorConfiguringVESC),
   filter(error => !!error)
+);
+
+export const selectConnectionProps: OperatorFunction<IAppState, { connectionType: ConnectionMethod, deviceId?: string }> = state$ => combineLatest([
+  state$.pipe(
+    select(selectBLEState),
+    select(state => state.connectingToDeviceId)
+  ),
+  state$.pipe(
+    select(selectVESCState),
+    select(state => state.connectionType)
+  )
+]).pipe(
+  map(([deviceId, connectionType]) => ({ connectionType, deviceId })),
+  first()
 );

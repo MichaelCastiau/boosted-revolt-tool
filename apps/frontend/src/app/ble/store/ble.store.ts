@@ -5,6 +5,7 @@ import { IAppState } from '../../store/store';
 export interface IBLEState {
   isScanning?: boolean;
   devicesFound?: Array<IDeviceInfo>;
+  connectingToDeviceId?: string;
 }
 
 export const selectBLEState = createFeatureSelector<IAppState, IBLEState>('ble');

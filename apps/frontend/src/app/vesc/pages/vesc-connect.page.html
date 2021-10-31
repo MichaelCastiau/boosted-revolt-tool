@@ -27,15 +27,18 @@
         </p>
         <div class='m-devices'>
           <ul>
-            <li *ngFor='let device of (foundBLEDevices$ | async)'>
+            <li *ngFor='let device of (foundBLEDevices$ | async)' (click)='connectViaBLE(device)'>
               <span class='a-device-name'>{{ device.name }}</span>
               <span class='a-device-id'>{{ device.id }}</span>
             </li>
           </ul>
-          <app-spinner>Searching for devices...</app-spinner>
+          <app-spinner>
+            <span *ngIf='(isScanning$ | async)'>Searching for devices...</span>
+            <span *ngIf='(isConnecting$ | async)'>Connecting...</span>
+          </app-spinner>
         </div>
         <div class='m-cta'>
-          <button class='a-button' (click)='connectingViaBLE$.next(false)'>Go Back</button>
+          <button class='a-button' (click)='goBack()'>Go Back</button>
         </div>
       </div>
     </div>

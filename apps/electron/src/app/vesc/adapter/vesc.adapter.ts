@@ -4,11 +4,11 @@ import { Peripheral } from 'noble';
 export interface IVESCAdapter {
   isConnected(): boolean;
 
-  connect(): Promise<Subject<Buffer>>;
+  connect(deviceId?: string): Promise<Subject<Buffer>>;
 
   disconnect(): Promise<void>;
 
   searchForDevices(): Observable<Peripheral>;
-}
 
-export type ConnectionMethod = 'usb' | 'ble';
+  stopSearching(): Promise<void>;
+}

@@ -3,10 +3,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { IAppData } from '../app-data';
 import { IVESCInfo } from './store';
 
-export const connectToVESC = createAction('[VESC] Connect', props<{ way?: 'usb' | 'ble' }>());
+export const connectToVESC = createAction('[VESC] Connect');
 export const connectToVESCFail = createAction('[VESC] Connect Fail', props<{ error: HttpErrorResponse }>());
 export const connectToVESCSuccess = createAction('[VESC] Connect Success', props<{ info: IVESCInfo }>());
 
+export const connectToVESCViaUSB = createAction('[VESC] Connect USB');
+export const disconnect = createAction('[VESC] disconnect');
 
 export const connectionLost = createAction('[VESC] Connection lost', props<{ error?: Error }>());
 

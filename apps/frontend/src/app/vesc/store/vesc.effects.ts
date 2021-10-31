@@ -8,6 +8,8 @@ import {
   connectToVESC,
   connectToVESCFail,
   connectToVESCSuccess,
+  connectToVESCViaUSB,
+  disconnect,
   getAppSettings,
   getAppSettingsFail,
   getAppSettingsSuccess,
@@ -20,18 +22,32 @@ import { catchError, delay, map, mapTo, switchMap, take, tap, timeout } from 'rx
 import { VESCService } from '../services/vesc.service';
 import { Observable, of } from 'rxjs';
 import { WebsocketService } from '../../shared/services/websocket.service';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { IAppData } from '../app-data';
 import { ToastrService } from 'ngx-toastr';
+import { connectToVESCViaBLE } from '../../ble/store/ble.actions';
+import { selectConnectionProps } from './vesc.selectors';
+import { IAppState } from '../../store/store';
 
 @Injectable()
 export class VESCEffects {
+  connectViaBLE$ = createEffect(() => this.actions$.pipe(
+    ofType(connectToVESCViaBLE),
+    mapTo(connectToVESC())
+  ));
+
+  connectViaUSB$ = createEffect(() => this.actions$.pipe(
+    ofType(connectToVESCViaUSB),
+    mapTo(connectToVESC())
+  ));
+
   connectToVESC$ = createEffect(() => this.actions$.pipe(
     ofType(connectToVESC),
     delay(700),
-    switchMap((action): Observable<Action> => {
+    switchMap(() => this.store.pipe(selectConnectionProps)),
+    switchMap((props): Observable<Action> => {
       const socket = this.socket.openSocket();
-      socket.next({ event: 'connect', data: { way: action.way } });
+      socket.next({ event: 'connect', data: props });
       return socket.pipe(
         take(1),
         timeout(10000),
@@ -81,8 +97,14 @@ export class VESCEffects {
     ))
   ));
 
+  disconnect$ = createEffect(() => this.actions$.pipe(
+    ofType(disconnect),
+    switchMap(() => this.api.disconnect())
+  ), { dispatch: false });
+
   constructor(private actions$: Actions,
               private api: VESCService,
+              private store: Store<IAppState>,
               private socket: WebsocketService,
               private toastr: ToastrService) {
   }

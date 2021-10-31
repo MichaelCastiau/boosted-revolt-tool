@@ -21,16 +21,18 @@ export class SocketGateway {
 
 
   @SubscribeMessage('connect')
-  connectToDevice(@MessageBody() data: { way: 'usb' | 'ble' },
+  connectToDevice(@MessageBody() data: { connectionType: 'usb' | 'ble', deviceId?: string },
                   @ConnectedSocket() client): Observable<IVESCFirmwareInfo | undefined> {
     this.socket = client;
 
+    console.log('Attempting to connect to device', data.deviceId, 'via', data.connectionType);
+
     return from(
-      data?.way ? this.vesc.setConnectionMethod(data.way) : Promise.resolve()
+      data?.connectionType ? this.vesc.setConnectionMethod(data.connectionType) : Promise.resolve()
     ).pipe(
-      switchMap(() => from(this.vesc.connect())),
+      switchMap(() => from(this.vesc.connect(data?.deviceId))),
       switchMap(() => this.vesc.getFirmwareVersion()),
-      timeout(2000),
+      timeout(10000),
       catchError((err) => {
         console.error(err);
         client.close();
@@ -40,7 +42,7 @@ export class SocketGateway {
   }
 
   @SubscribeMessage('scan:start')
-  startScan(@ConnectedSocket() client): Observable<{ event: string, data: { device: IDeviceInfo } }> {
+  startScan(): Observable<{ event: string, data: { device: IDeviceInfo } }> {
     // Start BLE scan
     return from(this.vesc.setConnectionMethod('ble')).pipe(
       switchMap(() => this.vesc.searchForDevices()),

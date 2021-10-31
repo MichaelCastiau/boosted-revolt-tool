@@ -30,4 +30,8 @@ export class SerialPortAdapter implements IVESCAdapter {
     return of(null);
   }
 
+  stopSearching(): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
 }
