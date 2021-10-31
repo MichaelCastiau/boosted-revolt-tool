@@ -52,7 +52,7 @@ export class VescConnectPageComponent implements OnInit, OnDestroy {
   }
 
   startScanning() {
-    if (window.navigator.platform === 'win32') {
+    if (window.navigator.platform?.toLowerCase() == 'win32') {
       return this.windowsWarning$.next(true);
     }
     this.connectingViaBLE$.next(true);
