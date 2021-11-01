@@ -32,7 +32,7 @@
               <span class='a-device-id'>{{ device.id }}</span>
             </li>
           </ul>
-          <app-spinner>
+          <app-spinner *ngIf='!(connectionError$ | async)'>
             <span *ngIf='(isScanning$ | async)'>Searching for devices...</span>
             <span *ngIf='(isConnecting$ | async)'>Connecting...</span>
           </app-spinner>

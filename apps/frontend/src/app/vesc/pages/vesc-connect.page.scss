@@ -129,7 +129,7 @@
       transition-duration: 150ms;
 
       &:hover {
-        box-shadow: 0 0 10px 3px #222;
+        box-shadow: 0 0 8px 3px darken(variables.$red, 30%);
       }
 
       img {
