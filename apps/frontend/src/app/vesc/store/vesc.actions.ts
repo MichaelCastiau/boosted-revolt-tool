@@ -18,7 +18,7 @@ export const setBatteryConfigurationSuccess = createAction('[Dashboard] set batt
 export const setMetricSystem = createAction('[Dashboard] Set metric system', props<{ system: 'kmh' | 'mph' }>());
 export const setMetricSystemSuccess = createAction('[Dashboard] Set metric system success', props<{ system: 'kmh' | 'mph' }>());
 
-export const configuringDashboardError = createAction('[Dashboard] configuring dashboard error', props<{ error: HttpErrorResponse | Error }>());
+export const configuringDashboardError = createAction('[Dashboard] configuring dashboard error', props<{error: HttpErrorResponse | Error}>());
 
 export const getAppSettings = createAction('[VESC] Get app settings');
 export const getAppSettingsFail = createAction('[VESC] Get app settings fail', props<{ error: HttpErrorResponse }>());
