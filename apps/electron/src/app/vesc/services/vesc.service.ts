@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import {
   ADCControlType,
   AppUse,
@@ -9,11 +9,10 @@ import {
   IVESCFirmwareInfo,
   VESCCommands
 } from '../models/datatypes';
-import { filter, first, map, switchMap, timeout } from 'rxjs/operators';
+import { filter, first, last, map, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { doOnSubscribe } from '@shared/doOnSubscribe';
-import { deserializeAppData, setVescConfig } from '../../helpers/serializer.helper';
+import { deserializeAppData, setCANMode, setVescConfig } from '../../helpers/serializer.helper';
 import { IAppData } from '../models/app-data';
 import { IVESCAdapter } from '../adapter/vesc.adapter';
 import { VESCAdapterFactory } from '../adapter/vesc-adapter.factory';
@@ -23,7 +22,7 @@ import { ConnectionMethod } from '@shared/types';
 @Injectable()
 export class VESCService {
 
-  public static VESC_DEFAULT_CONFIG: ICustomVESCConfig = {
+  public static readonly VESC_DEFAULT_CONFIG: ICustomVESCConfig = {
     appToUse: AppUse.APP_ADC_UART,
     canMode: CANMode.CAN_MODE_VESC,
     canStatusMode: CANStatusMode.CAN_STATUS_1_2_3_4_5,
@@ -37,6 +36,7 @@ export class VESCService {
       maxVoltage: 3.1
     }
   };
+  public static readonly VESC_SIGN = 3264926020;
   private socket: Subject<Buffer>;
   private adapter: IVESCAdapter;
 
@@ -62,6 +62,9 @@ export class VESCService {
   }
 
   getFirmwareVersion(): Observable<IVESCFirmwareInfo> {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
     return this.socket.pipe(
       filter(data => data?.readUInt8(0) === VESCCommands.COMM_FW_VERSION),
       first(),
@@ -79,32 +82,46 @@ export class VESCService {
     return this.adapter.isConnected();
   }
 
-  async forwardCANMessage(config: {
+  forwardCANMessage<T>(config: {
     extendedId: number,
-    data: Buffer
+    data: Buffer,
+    readReply?: boolean
   }) {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
     /*
     CAN COMMAND,
     extended id (4 bytes)
     is extended? (1 byte)
+    8 bytes frame
      */
-    const command = Buffer.from([0, 0, 0, environment.CAN.extendedId, 1, ...config.data]);
-    return this.socket.next(Buffer.from([VESCCommands.COMM_CAN_FWD_FRAME, ...command]));
+    const command = Buffer.from([0, 0, 0, 0, 1, ...config.data]);
+    command.writeUInt32BE(config.extendedId, 0);
+    this.socket.next(Buffer.from([VESCCommands.COMM_CAN_FWD_FRAME, ...command]));
   }
 
   getAppSettings(): Observable<IAppData> {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
     return this.getAppSettingsRawBuffer().pipe(
-      map(buffer => deserializeAppData(buffer))
+      map(buffer => deserializeAppData(buffer)),
+      tap(d => console.log(d.general))
     );
   }
 
   configureForDashboard(): Observable<IAppData> {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
     return this.getAppSettingsRawBuffer().pipe(
-      map((data: Buffer) => setVescConfig(3264926020, VESCService.VESC_DEFAULT_CONFIG, data)),
-      map(data => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data]))),
-      switchMap(() => this.socket),
+      map((data: Buffer) => setVescConfig(VESCService.VESC_SIGN, VESCService.VESC_DEFAULT_CONFIG, data)),
+      switchMap((data: Buffer) => this.socket.pipe(
+        doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data])))
+      )),
       //Wait for response, response meaning write was successful
-      filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
+      filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_SET_APPCONF),
       first(),
       map(buffer => deserializeAppData(buffer.slice(1))),
       timeout(10000)
@@ -113,6 +130,41 @@ export class VESCService {
 
   searchForDevices(): Observable<Peripheral> {
     return this.adapter.searchForDevices();
+  }
+
+  enableCANBridgeMode() {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
+    return this.setCANBrigeMode(true);
+  }
+
+  disableCANBrigeMode() {
+    if (!this.isConnected()) {
+      throw new InternalServerErrorException('VESC not connected');
+    }
+    return this.setCANBrigeMode(false);
+  }
+
+  private setCANBrigeMode(enabled = false) {
+    const settings = enabled ? {
+      canMode: CANMode.CAN_MODE_COMM_BRIDGE,
+      canBaud: CANBaud.CAN_BAUD_125K
+    } : {
+      canMode: CANMode.CAN_MODE_VESC,
+      canBaud: CANBaud.CAN_BAUD_500K
+    };
+    return this.getAppSettingsRawBuffer().pipe(
+      map(buffer => setCANMode(VESCService.VESC_SIGN, settings, buffer)),
+      switchMap((buffer) => this.socket.pipe(
+        doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...buffer])))
+      )),
+      filter(buffer => buffer?.readUInt8(0) === VESCCommands.COMM_SET_APPCONF),
+      take(3),
+      last(),
+      first(),
+      timeout(5000)
+    );
   }
 
   private getAppSettingsRawBuffer(): Observable<Buffer> {

@@ -1,7 +1,4 @@
-import { Component, HostListener } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { IAppState } from './store/store';
-import { disconnect } from './vesc/store/vesc.actions';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +6,4 @@ import { disconnect } from './vesc/store/vesc.actions';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
-
-  constructor(private store: Store<IAppState>) {
-  }
-
-  @HostListener('window:beforeunload')
-  beforeUnload() {
-    this.store.dispatch(disconnect());
-  }
 }

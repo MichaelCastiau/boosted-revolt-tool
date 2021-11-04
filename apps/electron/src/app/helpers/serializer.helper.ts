@@ -1,8 +1,15 @@
 import { IAppData } from '../vesc/models/app-data';
-import { ICustomVESCConfig, PACKET_LONG, PACKET_SHORT, PACKET_STOP_BYTE } from '../vesc/models/datatypes';
+import {
+  CANBaud,
+  CANMode,
+  ICustomVESCConfig,
+  PACKET_LONG,
+  PACKET_SHORT,
+  PACKET_STOP_BYTE
+} from '../vesc/models/datatypes';
 import { crc16xmodem } from 'crc';
 import { OperatorFunction } from 'rxjs';
-import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
+import { filter, map, scan, skipWhile } from 'rxjs/operators';
 
 export const serializeCommandBuffer = (payload: Buffer = Buffer.from([])): Buffer => {
   const crcByte = crc16xmodem(Buffer.from([...payload]));
@@ -23,7 +30,7 @@ export const deserializeResponse: OperatorFunction<Buffer, Buffer> = response$ =
   filter(b => !!b),
   scan((acc: Buffer, current: Buffer) => Buffer.from([...acc, ...current])),
   filter(buffer => {
-    return buffer.length > 6;
+    return buffer.length >= 5;
   }),
   skipWhile(buffer => {
     if (buffer.length < 5)
@@ -32,11 +39,11 @@ export const deserializeResponse: OperatorFunction<Buffer, Buffer> = response$ =
     if (buffer.length === 5)
       return false;
 
+
     return (buffer.readUInt8(0) === PACKET_SHORT && buffer.length < (buffer.readUInt8(1) + 5))
       || (buffer.readUInt8(0) === PACKET_LONG && buffer.length < (buffer.readUInt16BE(1) + 6));
   }),
-  map(buffer => buffer.readUInt8(0) === PACKET_SHORT ? buffer.slice(2) : buffer.slice(3)),
-  share()
+  map(buffer => buffer.readUInt8(0) === PACKET_SHORT ? buffer.slice(2) : buffer.slice(3))
 );
 
 export function deserializeAppData(buffer: Buffer): IAppData {
@@ -235,5 +242,12 @@ export function setVescConfig(signature: number, config: ICustomVESCConfig, data
   data.writeFloatBE(config.adc.minVoltage, 87);
   data.writeFloatBE(config.adc.maxVoltage, 91);
   data.writeFloatBE(config.adc.centerVoltage, 95);
+  return data;
+}
+
+export function setCANMode(signature: number, settings: { canMode: CANMode, canBaud: CANBaud }, data: Buffer): Buffer {
+  data.writeUInt32BE(signature, 0);
+  data.writeInt8(settings.canBaud, 16);
+  data.writeInt8(settings.canMode, 20);
   return data;
 }

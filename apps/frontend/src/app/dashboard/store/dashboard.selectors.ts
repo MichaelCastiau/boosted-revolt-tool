@@ -3,7 +3,7 @@ import { IAppState } from '../../store/store';
 import { select } from '@ngrx/store';
 import { selectDashboardState } from './store';
 import { selectAppSettings } from '../../vesc/store/vesc.selectors';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { IAppData } from '../../vesc/app-data';
 import { AppUse, CANBaud, CANMode, CANStatusMode } from '../../../../../electron/src/app/vesc/models/datatypes';
 
@@ -22,10 +22,10 @@ export const selectVESCIsConfiguredForDashboard: OperatorFunction<IAppState, boo
   filter(settings => !!settings),
   map((settings: IAppData) => {
     return (settings.general.appToUse === AppUse.APP_ADC
-      || settings.general.appToUse === AppUse.APP_ADC_UART
-      || settings.general.appToUse === AppUse.APP_ADC_PAS)
+        || settings.general.appToUse === AppUse.APP_ADC_UART
+        || settings.general.appToUse === AppUse.APP_ADC_PAS)
       && settings.general.canBaudRate === CANBaud.CAN_BAUD_500K
-      && (settings.general.canMode === CANMode.CAN_MODE_COMM_BRIDGE || settings.general.canMode === CANMode.CAN_MODE_VESC)
+      && (settings.general.canMode === CANMode.CAN_MODE_VESC)
       && settings.general.sendCanStatus === CANStatusMode.CAN_STATUS_1_2_3_4_5
       && (settings.general.controllerId === 22 || settings.general.controllerId === 23)
       && (settings.general.canStatusRateHz >= 5 && settings.general.canStatusRateHz <= 100);

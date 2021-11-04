@@ -1,13 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { VESCService } from '../services/vesc.service';
-import { CanMessageDto, MetricSystemDto } from '../dto/can-message.dto';
-import { environment } from '../../../environments/environment';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { VESCService } from '../vesc/services/vesc.service';
+import { CanMessageDto, MetricSystemDto } from './dto/can-message.dto';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { IAppData } from '../models/app-data';
+import { IAppData } from '../vesc/models/app-data';
 
 @Controller('vesc')
 export class VESCController {
-  constructor(private vesc: VESCService) {
+  constructor(@Inject(VESCService) private vesc: VESCService) {
   }
 
   @Get('app-settings')

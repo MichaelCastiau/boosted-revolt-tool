@@ -11,6 +11,7 @@ import {
 import { connectToVESC, setBatteryConfiguration, setMetricSystem } from '../../../vesc/store/vesc.actions';
 import { takeUntil, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { getDashboardFirmwareVersion } from '../../store/dashboard.actions';
 
 @Component({
   selector: 'app-dashboard-settings',
@@ -59,6 +60,10 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
 
   setKilometersPerHour() {
     this.store.dispatch(setMetricSystem({ system: 'kmh' }));
+  }
+
+  checkFirmwareVersion() {
+    this.store.dispatch(getDashboardFirmwareVersion());
   }
 
   ngOnDestroy() {

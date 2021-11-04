@@ -47,7 +47,9 @@ export class BLEService implements BeforeApplicationShutdown {
     await txCharacteristic.subscribeAsync();
 
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
-      txCharacteristic.on('data', data => observer.next(data));
+      txCharacteristic.on('data', data => {
+        observer.next(data)
+      });
       device.on('disconnect', () => {
         this.device = null;
         this.eventEmitter.emit('serial:closed');

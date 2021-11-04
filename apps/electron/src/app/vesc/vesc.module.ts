@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { VESCController } from './controllers/vesc.controller';
 import { VESCService } from './services/vesc.service';
 import { SerialPortModule } from '../serial-port/serial-port.module';
 import { SocketGateway } from './gateways/socket.gateway';
@@ -8,9 +7,6 @@ import { BleModule } from '../ble/ble.module';
 import { VESCAdapterFactory } from './adapter/vesc-adapter.factory';
 
 @Module({
-  controllers: [
-    VESCController
-  ],
   imports: [
     SerialPortModule,
     BleModule,
@@ -20,6 +16,10 @@ import { VESCAdapterFactory } from './adapter/vesc-adapter.factory';
     VESCService,
     SocketGateway,
     VESCAdapterFactory
+  ],
+  exports: [
+    VESCService,
+    SocketGateway
   ]
 })
 export class VESCModule {

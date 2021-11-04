@@ -10,6 +10,9 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { StoreModule } from '@ngrx/store';
 import { dashboardReducer } from './store/dashboard.reducer';
 import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.component';
+import { EffectsModule } from '@ngrx/effects';
+import { DashboardEffects } from './store/dashboard.effects';
+import { DashboardService } from './services/dashboard.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,7 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
     MenuBarComponent,
     DashboardSettingsComponent,
     LoadingComponent,
-    VescSettingsComponent,
+    VescSettingsComponent
   ],
   imports: [
     RouterModule.forChild([{
@@ -28,7 +31,11 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
     StoreModule.forFeature('dashboard', dashboardReducer),
     CommonModule,
     SharedModule,
-    CommonModule
+    CommonModule,
+    EffectsModule.forFeature([DashboardEffects])
+  ],
+  providers: [
+    DashboardService
   ]
 })
 export class DashboardModule {

@@ -8,6 +8,7 @@ import { NestApplication, NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { Logger } from '@nestjs/common';
+import { HttpExceptionFilter } from './exception.filter';
 
 let nestApp: NestApplication;
 
@@ -44,6 +45,7 @@ export default class App {
     nestApp.setGlobalPrefix(globalPrefix);
     nestApp.useWebSocketAdapter(new WsAdapter(nestApp));
     nestApp.enableCors();
+    nestApp.useGlobalFilters(new HttpExceptionFilter());
 
     const port = process.env.PORT || 3333;
     await nestApp.listen(port, () => {
