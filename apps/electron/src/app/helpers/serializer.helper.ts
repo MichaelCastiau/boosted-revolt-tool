@@ -2,7 +2,7 @@ import { IAppData } from '../vesc/models/app-data';
 import { ICustomVESCConfig, PACKET_LONG, PACKET_SHORT, PACKET_STOP_BYTE } from '../vesc/models/datatypes';
 import { crc16xmodem } from 'crc';
 import { OperatorFunction } from 'rxjs';
-import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
+import { filter, map, scan, share, skipWhile, tap } from 'rxjs/operators';
 
 export const serializeCommandBuffer = (payload: Buffer = Buffer.from([])): Buffer => {
   const crcByte = crc16xmodem(Buffer.from([...payload]));
@@ -23,7 +23,7 @@ export const deserializeResponse: OperatorFunction<Buffer, Buffer> = response$ =
   filter(b => !!b),
   scan((acc: Buffer, current: Buffer) => Buffer.from([...acc, ...current])),
   filter(buffer => {
-    return buffer.length > 6;
+    return buffer.length >= 5;
   }),
   skipWhile(buffer => {
     if (buffer.length < 5)

@@ -8,10 +8,12 @@ import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { doOnSubscribe } from '@shared/doOnSubscribe';
+import { Characteristic } from 'noble';
 
 @Injectable()
 export class BLEService implements BeforeApplicationShutdown {
   private device: Peripheral;
+  private txCharacteristic: Characteristic;
 
   constructor(private eventEmitter: EventEmitter2) {
   }
@@ -44,6 +46,7 @@ export class BLEService implements BeforeApplicationShutdown {
       environment.BLE.service.characteristics.rx
     ]);
 
+    this.txCharacteristic = txCharacteristic;
     await txCharacteristic.subscribeAsync();
 
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
@@ -84,8 +87,10 @@ export class BLEService implements BeforeApplicationShutdown {
     if (this.device) {
       console.log('INFO: disconnecting from BLE device');
       await this.device.disconnectAsync();
+      this.txCharacteristic.removeAllListeners();
     }
     this.device = null;
+    this.txCharacteristic = null;
   }
 
   startScanningAndFindDevice(): Observable<Peripheral> {

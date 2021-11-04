@@ -101,8 +101,9 @@ export class VESCService {
   configureForDashboard(): Observable<IAppData> {
     return this.getAppSettingsRawBuffer().pipe(
       map((data: Buffer) => setVescConfig(3264926020, VESCService.VESC_DEFAULT_CONFIG, data)),
-      map(data => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data]))),
-      switchMap(() => this.socket),
+      switchMap((data) => this.socket.pipe(
+        doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data])))
+      )),
       //Wait for response, response meaning write was successful
       filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
