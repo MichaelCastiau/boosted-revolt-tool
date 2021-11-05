@@ -28,6 +28,12 @@ export class WebsocketService {
 
     this.newConnection$ = new Subject<void>();
     this.socket = webSocket('ws://localhost:3333');
+
+    interval(5000).pipe(
+      takeUntil(this.newConnection$),
+      tap(() => this.socket.next({event: 'keep-alive'}))
+    ).subscribe();
+
     this.socket.pipe(
       takeUntil(this.newConnection$),
       finalize(() => this.store.dispatch(connectionLost({})))

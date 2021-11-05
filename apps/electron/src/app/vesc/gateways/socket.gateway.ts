@@ -58,8 +58,7 @@ export class SocketGateway {
             }
           }
         };
-      })
+      }),
     );
-
   }
 }

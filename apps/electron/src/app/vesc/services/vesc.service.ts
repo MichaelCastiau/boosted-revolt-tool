@@ -121,7 +121,7 @@ export class VESCService {
         doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...data])))
       )),
       //Wait for response, response meaning write was successful
-      filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_SET_APPCONF),
+      filter(buffer => buffer.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
       map(buffer => deserializeAppData(buffer.slice(1))),
       timeout(10000)

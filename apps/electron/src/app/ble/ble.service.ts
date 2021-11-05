@@ -30,7 +30,7 @@ export class BLEService implements BeforeApplicationShutdown {
   }
 
   isConnected() {
-    return !!this.device;
+    return !!this.device && this.device.state === 'connected';
   }
 
   async connect(device: Peripheral) {
@@ -47,10 +47,10 @@ export class BLEService implements BeforeApplicationShutdown {
     await txCharacteristic.subscribeAsync();
 
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
-      txCharacteristic.on('data', data => {
-        observer.next(data)
-      });
-      device.on('disconnect', () => {
+      txCharacteristic.on('data', data => observer.next(data));
+      device.on('disconnect', async () => {
+        await txCharacteristic.unsubscribeAsync();
+        txCharacteristic.removeAllListeners();
         this.device = null;
         this.eventEmitter.emit('serial:closed');
         observer.complete();
@@ -91,12 +91,22 @@ export class BLEService implements BeforeApplicationShutdown {
   }
 
   startScanningAndFindDevice(): Observable<Peripheral> {
-    return new Observable<Peripheral>((observer: Observer<Peripheral>) => {
-      noble.on('discover', (device: Peripheral) => observer.next(device));
+    //Wait for state to be powered on
+    const state$ = new Observable<string>(observer => {
+      noble.on('stateChange', (state) => observer.next(state));
+      observer.next(noble.state);
     }).pipe(
-      doOnSubscribe(() => noble.startScanningAsync([
+      filter(state => state === 'poweredOn'),
+      timeout(10000)
+    );
+    return state$.pipe(
+      first(),
+      switchMap(() => from(noble.startScanningAsync([
         environment.BLE.service.uuid
-      ], false)),
+      ], false))),
+      switchMap(() => new Observable<Peripheral>((observer: Observer<Peripheral>) => {
+        noble.on('discover', (device: Peripheral) => observer.next(device));
+      })),
       switchMap((device: Peripheral) => from(noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
       timeout(25000),
       catchError(async (err) => {
