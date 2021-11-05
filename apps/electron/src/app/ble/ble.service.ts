@@ -96,7 +96,7 @@ export class BLEService implements BeforeApplicationShutdown {
       observer.next(noble.state);
     }).pipe(
       filter(state => state === 'poweredOn'),
-      timeout(500)
+      timeout(10000)
     );
     return state$.pipe(
       first(),
