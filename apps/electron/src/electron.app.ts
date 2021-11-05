@@ -9,8 +9,6 @@ import { AppModule } from './app/app.module';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { Logger } from '@nestjs/common';
 
-let nestApp: NestApplication;
-
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
@@ -35,15 +33,19 @@ export default class App {
     App.BrowserWindow = browserWindow;
     App.application = electronApp;
 
-    App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated
 
-    nestApp = await NestFactory.create(AppModule);
+    const nestApp = await NestFactory.create(AppModule);
     const globalPrefix = 'api';
     nestApp.setGlobalPrefix(globalPrefix);
     nestApp.useWebSocketAdapter(new WsAdapter(nestApp));
     nestApp.enableCors();
+
+    App.application.on('window-all-closed', () => {
+      App.onWindowAllClosed();
+      nestApp.close();
+    }); // Quit when all windows are closed.
 
     const port = process.env.PORT || 3333;
     await nestApp.listen(port, () => {
@@ -52,9 +54,6 @@ export default class App {
   }
 
   private static async onWindowAllClosed() {
-    if (nestApp) {
-      await nestApp.close();
-    }
     if (process.platform !== 'darwin') {
       App.application.quit();
     }

@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/store';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil, tap } from 'rxjs/operators';
 import { connectionLost } from '../../vesc/store/vesc.actions';
-import { Subject } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 
 @Injectable()
 export class WebsocketService {
@@ -23,6 +23,12 @@ export class WebsocketService {
 
     this.newConnection$ = new Subject<void>();
     this.socket = webSocket('ws://localhost:3333');
+
+    interval(5000).pipe(
+      takeUntil(this.newConnection$),
+      tap(() => this.socket.next({event: 'keep-alive'}))
+    ).subscribe();
+
     this.socket.pipe(
       takeUntil(this.newConnection$),
       finalize(() => this.store.dispatch(connectionLost({})))

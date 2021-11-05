@@ -7,13 +7,10 @@ import { environment } from '../../environments/environment';
 import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { doOnSubscribe } from '@shared/doOnSubscribe';
-import { Characteristic } from 'noble';
 
 @Injectable()
 export class BLEService implements BeforeApplicationShutdown {
   private device: Peripheral;
-  private txCharacteristic: Characteristic;
 
   constructor(private eventEmitter: EventEmitter2) {
   }
@@ -32,7 +29,7 @@ export class BLEService implements BeforeApplicationShutdown {
   }
 
   isConnected() {
-    return !!this.device;
+    return !!this.device && this.device.state === 'connected';
   }
 
   async connect(device: Peripheral) {
@@ -46,12 +43,13 @@ export class BLEService implements BeforeApplicationShutdown {
       environment.BLE.service.characteristics.rx
     ]);
 
-    this.txCharacteristic = txCharacteristic;
     await txCharacteristic.subscribeAsync();
 
     const observable: Observable<Buffer> = new Observable<Buffer>((observer: Observer<Buffer>) => {
       txCharacteristic.on('data', data => observer.next(data));
-      device.on('disconnect', () => {
+      device.on('disconnect', async () => {
+        await txCharacteristic.unsubscribeAsync();
+        txCharacteristic.removeAllListeners();
         this.device = null;
         this.eventEmitter.emit('serial:closed');
         observer.complete();
@@ -87,19 +85,27 @@ export class BLEService implements BeforeApplicationShutdown {
     if (this.device) {
       console.log('INFO: disconnecting from BLE device');
       await this.device.disconnectAsync();
-      this.txCharacteristic.removeAllListeners();
     }
     this.device = null;
-    this.txCharacteristic = null;
   }
 
   startScanningAndFindDevice(): Observable<Peripheral> {
-    return new Observable<Peripheral>((observer: Observer<Peripheral>) => {
-      noble.on('discover', (device: Peripheral) => observer.next(device));
+    //Wait for state to be powered on
+    const state$ = new Observable<string>(observer => {
+      noble.on('stateChange', (state) => observer.next(state));
+      observer.next(noble.state);
     }).pipe(
-      doOnSubscribe(() => noble.startScanningAsync([
+      filter(state => state === 'poweredOn'),
+      timeout(500)
+    );
+    return state$.pipe(
+      first(),
+      switchMap(() => from(noble.startScanningAsync([
         environment.BLE.service.uuid
-      ], false)),
+      ], false))),
+      switchMap(() => new Observable<Peripheral>((observer: Observer<Peripheral>) => {
+        noble.on('discover', (device: Peripheral) => observer.next(device));
+      })),
       switchMap((device: Peripheral) => from(noble.stopScanningAsync().then(() => device)) as Observable<Peripheral>),
       timeout(25000),
       catchError(async (err) => {
