@@ -1,12 +1,12 @@
 import { IDashboardAdapter } from './dashboard.adapter';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { VESCService } from '../vesc/services/vesc.service';
-import { delay, finalize, mapTo, tap } from 'rxjs/operators';
+import { catchError, delay, mapTo, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { BootloaderCommands, ENTER_BOOTLOADER } from './dashboard.datatypes';
 import { MeasurementSystem } from '@shared/types';
 import { Injectable } from '@nestjs/common';
-import { doOnSubscribe } from '@shared/doOnSubscribe';
+import { CANBaud, CANStatusMode } from '../vesc/models/datatypes';
 
 @Injectable()
 export class RevoltDashboardService implements IDashboardAdapter {
@@ -18,12 +18,21 @@ export class RevoltDashboardService implements IDashboardAdapter {
   }
 
   getFirmwareVersion(): Observable<string> {
-    return this.vesc.enableCANBridgeMode().pipe(
+    console.log('getting firmware version');
+
+
+    return this.vesc.changeCANOperationMode({
+      canBaud: CANBaud.CAN_BAUD_500K,
+      statusMode: CANStatusMode.CAN_STATUS_DISABLED
+    }).pipe(
+      tap(() => this.enterBootloader()),
+      tap(() => console.log('bootloader entered')),
+      switchMap(() => this.vesc.setCanBaud(CANBaud.CAN_BAUD_125K)),
+      delay(1500),
       tap(() => this.sendCommandToBootloader(BootloaderCommands.COMM_GET_VERSION)),
-      delay(5000),
-      finalize(() => this.vesc.disableCANBrigeMode().subscribe()),
-      mapTo('1.0.0'),
-      doOnSubscribe(() => this.enterBootloader())
+    //  switchMap(() => this.vesc.resumeNormalCANOperation()),
+      catchError(error => this.vesc.resumeNormalCANOperation().pipe(switchMap(() => throwError(error)))),
+      mapTo('1.0.0')
     );
   }
 

@@ -1,7 +1,7 @@
 import { IAppData } from '../vesc/models/app-data';
 import {
   CANBaud,
-  CANMode,
+  CANStatusMode,
   ICustomVESCConfig,
   PACKET_LONG,
   PACKET_SHORT,
@@ -9,7 +9,7 @@ import {
 } from '../vesc/models/datatypes';
 import { crc16xmodem } from 'crc';
 import { OperatorFunction } from 'rxjs';
-import { filter, map, scan, share, skipWhile, tap } from 'rxjs/operators';
+import { filter, map, scan, share, skipWhile } from 'rxjs/operators';
 
 export const serializeCommandBuffer = (payload: Buffer = Buffer.from([])): Buffer => {
   const crcByte = crc16xmodem(Buffer.from([...payload]));
@@ -245,9 +245,16 @@ export function setVescConfig(signature: number, config: ICustomVESCConfig, data
   return data;
 }
 
-export function setCANMode(signature: number, settings: { canMode: CANMode, canBaud: CANBaud }, data: Buffer): Buffer {
+export function setCANMode(signature: number, settings: {
+  canBaud?: CANBaud,
+  statusMode?: CANStatusMode
+}, data: Buffer): Buffer {
   data.writeUInt32BE(signature, 0);
-  data.writeInt8(settings.canBaud, 16);
-  data.writeInt8(settings.canMode, 20);
+  if (settings.statusMode !== undefined) {
+    data.writeUInt8(settings.statusMode, 13);
+  }
+  if (settings.canBaud !== undefined) {
+    data.writeInt8(settings.canBaud, 16);
+  }
   return data;
 }

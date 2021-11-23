@@ -9,7 +9,7 @@ import {
   IVESCFirmwareInfo,
   VESCCommands
 } from '../models/datatypes';
-import { filter, first, last, map, switchMap, take, tap, timeout } from 'rxjs/operators';
+import { filter, first, map, mapTo, switchMap, timeout } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { doOnSubscribe } from '@shared/doOnSubscribe';
 import { deserializeAppData, setCANMode, setVescConfig } from '../../helpers/serializer.helper';
@@ -106,8 +106,7 @@ export class VESCService {
       throw new InternalServerErrorException('VESC not connected');
     }
     return this.getAppSettingsRawBuffer().pipe(
-      map(buffer => deserializeAppData(buffer)),
-      tap(d => console.log(d.general))
+      map(buffer => deserializeAppData(buffer))
     );
   }
 
@@ -132,38 +131,38 @@ export class VESCService {
     return this.adapter.searchForDevices();
   }
 
-  enableCANBridgeMode() {
-    if (!this.isConnected()) {
-      throw new InternalServerErrorException('VESC not connected');
-    }
-    return this.setCANBrigeMode(true);
+  setStatusMessages(enabled: boolean): Observable<void> {
+    return this.changeCANOperationMode({
+      statusMode: enabled ? CANStatusMode.CAN_STATUS_1_2_3_4_5 : CANStatusMode.CAN_STATUS_DISABLED
+    });
   }
 
-  disableCANBrigeMode() {
-    if (!this.isConnected()) {
-      throw new InternalServerErrorException('VESC not connected');
-    }
-    return this.setCANBrigeMode(false);
+  setCanBaud(baud: CANBaud): Observable<void> {
+    return this.changeCANOperationMode({
+      canBaud: baud
+    });
   }
 
-  private setCANBrigeMode(enabled = false) {
-    const settings = enabled ? {
-      canMode: CANMode.CAN_MODE_COMM_BRIDGE,
-      canBaud: CANBaud.CAN_BAUD_125K
-    } : {
-      canMode: CANMode.CAN_MODE_VESC,
-      canBaud: CANBaud.CAN_BAUD_500K
-    };
+  resumeNormalCANOperation(): Observable<void>{
+    return this.changeCANOperationMode({
+      canBaud: CANBaud.CAN_BAUD_500K,
+      statusMode: CANStatusMode.CAN_STATUS_1_2_3_4_5
+    })
+  }
+
+  changeCANOperationMode(settings: {
+    canBaud?: CANBaud,
+    statusMode?: CANStatusMode
+  }): Observable<void> {
     return this.getAppSettingsRawBuffer().pipe(
       map(buffer => setCANMode(VESCService.VESC_SIGN, settings, buffer)),
       switchMap((buffer) => this.socket.pipe(
         doOnSubscribe(() => this.socket.next(Buffer.from([VESCCommands.COMM_SET_APPCONF, ...buffer])))
       )),
-      filter(buffer => buffer?.readUInt8(0) === VESCCommands.COMM_SET_APPCONF),
-      take(3),
-      last(),
+      filter(buffer => buffer?.readUInt8(0) === VESCCommands.COMM_GET_APPCONF),
       first(),
-      timeout(5000)
+      timeout(5000),
+      mapTo(undefined)
     );
   }
 
