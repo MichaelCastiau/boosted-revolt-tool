@@ -16,7 +16,9 @@ import {
   setBatteryConfiguration,
   setBatteryConfigurationSuccess,
   setMetricSystem,
-  setMetricSystemSuccess
+  setMetricSystemSuccess,
+  setWheelCircumference,
+  setWheelCircumferenceSuccess
 } from './vesc.actions';
 import { catchError, delay, map, mapTo, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { VESCService } from '../services/vesc.service';
@@ -83,6 +85,15 @@ export class VESCEffects {
     ofType(setMetricSystem),
     switchMap(action => this.api.setMetricSystem({ system: action.system }).pipe(
       map(() => setMetricSystemSuccess({ system: action.system })),
+      tap(() => this.toastr.success('The settings are successfully saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
+    ))
+  ));
+
+  setWheelCircumference$ = createEffect(() => this.actions$.pipe(
+    ofType(setWheelCircumference),
+    switchMap(action => this.api.setWheelCircumference(action.circumferenceMM).pipe(
+      map(() => setWheelCircumferenceSuccess({ circumferenceMM: action.circumferenceMM })),
       tap(() => this.toastr.success('The settings are successfully saved in your dashboard', 'Dashboard Configured')),
       catchError(error => of(configuringDashboardError({ error })))
     ))

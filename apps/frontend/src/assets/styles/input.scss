@@ -1,0 +1,6 @@
+@use "variables";
+
+input.a-input {
+  padding: variables.$spacer-sm;
+  border: 1px solid #999;
+}

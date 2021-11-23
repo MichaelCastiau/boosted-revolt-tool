@@ -8,9 +8,15 @@ import {
   selectDashboardMetricSystem,
   selectIsConnected
 } from '../../../vesc/store/vesc.selectors';
-import { connectToVESC, setBatteryConfiguration, setMetricSystem } from '../../../vesc/store/vesc.actions';
+import {
+  connectToVESC,
+  setBatteryConfiguration,
+  setMetricSystem,
+  setWheelCircumference
+} from '../../../vesc/store/vesc.actions';
 import { takeUntil, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-settings',
@@ -23,6 +29,7 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
   readonly batteryConfigurations: Array<number> = [];
   activeConfiguration$: Observable<number>;
   metricSystem$: Observable<'kmh' | 'mph'>;
+  customTire = new FormControl();
 
   private destroy$ = new Subject();
 
@@ -59,6 +66,22 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
 
   setKilometersPerHour() {
     this.store.dispatch(setMetricSystem({ system: 'kmh' }));
+  }
+
+  setWheel(circumferenceMM: number) {
+    this.store.dispatch(setWheelCircumference({ circumferenceMM }));
+  }
+
+  useCustomTire() {
+    try {
+      const tireCircumference = parseInt(this.customTire.value);
+      if (isNaN(tireCircumference)) {
+        throw new Error('Not a number');
+      }
+      this.store.dispatch(setWheelCircumference({ circumferenceMM: tireCircumference }));
+    } catch (error) {
+      this.toastr.error('Please provide a valid tire circumference value, in mm', 'Wrong tire circumference');
+    }
   }
 
   ngOnDestroy() {

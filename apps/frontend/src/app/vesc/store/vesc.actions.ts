@@ -18,6 +18,9 @@ export const setBatteryConfigurationSuccess = createAction('[Dashboard] set batt
 export const setMetricSystem = createAction('[Dashboard] Set metric system', props<{ system: 'kmh' | 'mph' }>());
 export const setMetricSystemSuccess = createAction('[Dashboard] Set metric system success', props<{ system: 'kmh' | 'mph' }>());
 
+export const setWheelCircumference = createAction('[Dashboard] Set wheel circumference', props<{ circumferenceMM: number }>());
+export const setWheelCircumferenceSuccess = createAction('[Dashboard] Set wheel circumference success', props<{ circumferenceMM: number }>());
+
 export const configuringDashboardError = createAction('[Dashboard] configuring dashboard error', props<{ error: HttpErrorResponse | Error }>());
 
 export const getAppSettings = createAction('[VESC] Get app settings');

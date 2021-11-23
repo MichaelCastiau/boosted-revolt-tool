@@ -7,34 +7,21 @@
   flex-direction: column;
 }
 
-.m-connect {
-  display: flex;
+
+.m-settings-wrapper {
   flex: 1;
-  justify-content: center;
+  display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  padding: math.div(variables.$sidebar-item-height, 4) variables.$spacer-xxl variables.$spacer-xxl;
   width: 100%;
+}
 
-  .a-no-vesc {
-    display: flex;
-    flex-direction: column;
-  }
+.m-custom-tire {
+  display: flex;
+  gap: variables.$spacer;
 
-  .a-looking-for-dash {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-
-    img {
-      max-width: 100px;
-    }
-  }
-
-  .m-settings-wrapper {
+  input {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: math.div(variables.$sidebar-item-height, 4) variables.$spacer-xxl variables.$spacer-xxl;
-    width: 100%;
   }
 }
