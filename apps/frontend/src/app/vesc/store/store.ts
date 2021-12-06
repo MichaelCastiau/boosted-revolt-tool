@@ -24,6 +24,7 @@ export interface IVESCInfo {
 export interface IDashboardConfig {
   batteryConfiguration?: number;
   metricSystem?: 'kmh' | 'mph';
+  wheelCircumference?: number;
 }
 
 export const selectVESCState = createFeatureSelector<IVESCState>('vesc');

@@ -37,8 +37,8 @@
         Please choose which tire you are using
       </p>
       <div class='u-button-bar is-small'>
-        <button class='a-button' (click)='setWheel(690)'>9" Tire (default)</button>
-        <button class='a-button' (click)='setWheel(760)'>10" Tire</button>
+        <button class='a-button' [class.active]='(circumference$ | async) === 690' (click)='setWheel(690)'>9" Tire (default)</button>
+        <button class='a-button' [class.active]='(circumference$ | async) === 760' (click)='setWheel(760)'>10" Tire</button>
       </div>
     </div>
     <h3>Custom Tire</h3>

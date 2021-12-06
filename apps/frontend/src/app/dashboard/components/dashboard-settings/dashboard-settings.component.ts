@@ -5,7 +5,7 @@ import { IAppState } from '../../../store/store';
 import {
   selectConfiguringDashboardError,
   selectDashboardBatteryConfiguration,
-  selectDashboardMetricSystem,
+  selectDashboardMetricSystem, selectDashboardWheelCircumference,
   selectIsConnected
 } from '../../../vesc/store/vesc.selectors';
 import {
@@ -29,6 +29,7 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
   readonly batteryConfigurations: Array<number> = [];
   activeConfiguration$: Observable<number>;
   metricSystem$: Observable<'kmh' | 'mph'>;
+  circumference$: Observable<number>;
   customTire = new FormControl();
 
   private destroy$ = new Subject();
@@ -44,6 +45,7 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
     this.isConnected$ = this.store.pipe(selectIsConnected);
     this.activeConfiguration$ = this.store.pipe(selectDashboardBatteryConfiguration);
     this.metricSystem$ = this.store.pipe(selectDashboardMetricSystem);
+    this.circumference$ = this.store.pipe(selectDashboardWheelCircumference);
 
     this.store.pipe(
       selectConfiguringDashboardError,
