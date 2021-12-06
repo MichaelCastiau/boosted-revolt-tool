@@ -10,6 +10,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { StoreModule } from '@ngrx/store';
 import { dashboardReducer } from './store/dashboard.reducer';
 import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
     StoreModule.forFeature('dashboard', dashboardReducer),
     CommonModule,
     SharedModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ]
 })
 export class DashboardModule {

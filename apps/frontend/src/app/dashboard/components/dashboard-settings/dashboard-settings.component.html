@@ -1,58 +1,50 @@
 <div class='o-dashboard-settings'>
-  <div class='m-vesc-not-connected'>
-  </div>
-  <div class='m-connect'>
-    <!--
-    <div class='a-no-vesc' *ngIf="!(isConnected$ | async)">
-      <h2>VESC Disconnected</h2>
+  <div class='m-settings-wrapper'>
+    <h2>Measurement System</h2>
+    <div class='u-columns'>
       <p>
-        In order to find your dashboard, please connect to your VESC first.
+        Which speed indication would you like to use?
       </p>
-      <button class='a-button' (click)='connect()'>Connect To VESC</button>
+      <div class='u-button-bar'>
+        <button class='a-button' [class.active]='(metricSystem$ | async) === "mph"' (click)='setMilesPerHour()'>Mph
+        </button>
+        <button class='a-button' [class.active]='(metricSystem$ | async) === "kmh"' (click)='setKilometersPerHour()'>
+          Kmh
+        </button>
+      </div>
     </div>
-    -->
-    <!--
-    <div class='a-looking-for-dash' *ngIf='(isConnected$ | async)'>
-      <img src='assets/images/dashboard.svg' alt='Dashboard'/>
-      <app-spinner>
-        Searching for your dash
-      </app-spinner>
+    <h2>Battery Configuration</h2>
+    <div class='u-columns'>
       <p>
-        Make sure your dashboard is switched on and wired correctly to the CAN bus
-        of the VESC. We will attempt to automatically find your dashboard on your scooter.
+        Which battery configuration are you using?
       </p>
+      <div class='u-button-bar is-small'>
+        <button class='a-button' *ngFor='let b of batteryConfigurations'
+                [class.active]='(activeConfiguration$ | async) === b' (click)='setConfiguration(b)'>{{b}}S
+        </button>
+      </div>
     </div>
+    <!--
+    <h2>Software Updates</h2>
+    <p class='u-light'>
+      Check back in soon to find software updates for your dashboard here!
+    </p>
     -->
-
-    <div class='m-settings-wrapper'>
-      <h2>Metric System</h2>
-      <div class='u-columns'>
-        <p>
-          Which speed indication would you like to use?
-        </p>
-        <div class='u-button-bar'>
-          <button class='a-button' [class.active]='(metricSystem$ | async) === "mph"' (click)='setMilesPerHour()'>Mph
-          </button>
-          <button class='a-button' [class.active]='(metricSystem$ | async) === "kmh"' (click)='setKilometersPerHour()'>
-            Kmh
-          </button>
-        </div>
-      </div>
-      <h2>Battery Configuration</h2>
-      <div class='u-columns'>
-        <p>
-          Which battery configuration are you using?
-        </p>
-        <div class='u-button-bar is-small'>
-          <button class='a-button' *ngFor='let b of batteryConfigurations'
-                  [class.active]='(activeConfiguration$ | async) === b' (click)='setConfiguration(b)'>{{b}}S
-          </button>
-        </div>
-      </div>
-      <h2>Software Updates</h2>
-      <p class='u-light'>
-        Check back in soon to find software updates for your dashboard here!
+    <h2>Speed Settings</h2>
+    <div class='u-columns'>
+      <p>
+        The type of tires and wheel circumference used define the speed of your scooter.
+        Please choose which tire you are using
       </p>
+      <div class='u-button-bar is-small'>
+        <button class='a-button' [class.active]='(circumference$ | async) === 690' (click)='setWheel(690)'>9" Tire (default)</button>
+        <button class='a-button' [class.active]='(circumference$ | async) === 760' (click)='setWheel(760)'>10" Tire</button>
+      </div>
+    </div>
+    <h3>Custom Tire</h3>
+    <div class='u-columns m-custom-tire'>
+      <input type='number' class='a-input' placeholder='Tire circumference (in mm)' ngDefaultControl [formControl]='customTire'/>
+      <button class='a-button' (click)='useCustomTire()'>Use Custom Tire...</button>
     </div>
   </div>
 </div>
