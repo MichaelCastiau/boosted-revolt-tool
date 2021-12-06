@@ -38,6 +38,11 @@ export const selectDashboardMetricSystem: OperatorFunction<IAppState, 'kmh' | 'm
   map(state => state?.dashboardConfig?.metricSystem)
 );
 
+export const selectDashboardWheelCircumference: OperatorFunction<IAppState, number> = state$ => state$.pipe(
+  select(selectVESCState),
+  select(state => state?.dashboardConfig?.wheelCircumference)
+);
+
 export const selectAppSettings: OperatorFunction<IAppState, IAppData> = state$ => state$.pipe(
   select(selectVESCState),
   map(state => state.VESCInfo?.app)

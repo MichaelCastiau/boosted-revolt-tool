@@ -22,6 +22,12 @@ export class VESCService {
     });
   }
 
+  setWheelCircumference(circumference: number) {
+    return this.http.post('http://localhost:3333/api/vesc/wheel-circumference', {
+      circumference
+    });
+  }
+
   getAppSettings(): Observable<IAppData> {
     return this.http.get<IAppData>('http://localhost:3333/api/vesc/app-settings');
   }

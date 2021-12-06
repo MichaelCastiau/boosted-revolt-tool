@@ -4,10 +4,11 @@ import { CanMessageDto, MetricSystemDto } from './dto/can-message.dto';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { IAppData } from '../vesc/models/app-data';
+import { WheelCircumferenceDto } from '../dto/wheel-circumference.dto';
 
 @Controller('vesc')
 export class VESCController {
-  constructor(@Inject(VESCService) private vesc: VESCService) {
+  constructor(private vesc: VESCService) {
   }
 
   @Get('app-settings')
@@ -28,6 +29,21 @@ export class VESCController {
     return this.vesc.forwardCANMessage({
       extendedId: environment.CAN.extendedId,
       data: Buffer.from([body.system === 'kmh' ? 2 : 1])
+    });
+  }
+
+  @Post('wheel-circumference')
+  setWheelCircumference(@Body() body: WheelCircumferenceDto) {
+    const circumference = body.circumference;
+    return this.vesc.forwardCANMessage({
+      extendedId: environment.CAN.extendedId,
+      data: Buffer.from([
+        5,
+        (circumference >> 24) & 0xff,
+        (circumference >> 16) & 0xff,
+        (circumference >> 8) & 0xff,
+        (circumference) & 0xff
+      ])
     });
   }
 

@@ -13,6 +13,7 @@ import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.
 import { EffectsModule } from '@ngrx/effects';
 import { DashboardEffects } from './store/dashboard.effects';
 import { DashboardService } from './services/dashboard.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -32,10 +33,11 @@ import { DashboardService } from './services/dashboard.service';
     CommonModule,
     SharedModule,
     CommonModule,
+    ReactiveFormsModule,
     EffectsModule.forFeature([DashboardEffects])
   ],
   providers: [
-    DashboardService
+    DashboardService,
   ]
 })
 export class DashboardModule {

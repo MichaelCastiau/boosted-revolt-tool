@@ -14,7 +14,8 @@ import {
   setBatteryConfiguration,
   setBatteryConfigurationSuccess,
   setMetricSystem,
-  setMetricSystemSuccess
+  setMetricSystemSuccess,
+  setWheelCircumferenceSuccess
 } from './vesc.actions';
 import { connectToVESCViaBLE } from '../../ble/store/ble.actions';
 
@@ -78,6 +79,13 @@ export const vescReducer = createReducer<IVESCState>({
       }
     };
   }),
+  on(setWheelCircumferenceSuccess, (state, { circumferenceMM }) => ({
+    ...state,
+    dashboardConfig: {
+      ...state.dashboardConfig,
+      wheelCircumference: circumferenceMM
+    }
+  })),
   on(getAppSettingsSuccess, (state, { appSettings }) => {
     return {
       ...state,
