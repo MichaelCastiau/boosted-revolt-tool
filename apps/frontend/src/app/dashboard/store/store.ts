@@ -10,4 +10,4 @@ export interface IDashboardState {
   pid: PIDParameter;
 }
 
-export const selectDashboardState = createFeatureSelector<IAppState, IDashboardState>('dashboard');
+export const selectDashboardState = createFeatureSelector< IDashboardState>('dashboard');

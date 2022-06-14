@@ -8,4 +8,4 @@ export interface IBLEState {
   connectingToDeviceId?: string;
 }
 
-export const selectBLEState = createFeatureSelector<IAppState, IBLEState>('ble');
+export const selectBLEState = createFeatureSelector< IBLEState>('ble');

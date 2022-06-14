@@ -2,6 +2,7 @@
   "version": 1,
   "projects": {
     "electron": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "apps/electron",
       "sourceRoot": "apps/electron/src",
       "projectType": "application",
@@ -62,13 +63,15 @@
           "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/electron"],
           "options": {
-            "jestConfig": "apps/electron/jest.config.js",
+            "jestConfig": "apps/electron/jest.config.ts",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "frontend": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "application",
       "root": "apps/frontend",
       "sourceRoot": "apps/frontend/src",
@@ -159,13 +162,15 @@
           "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/frontend"],
           "options": {
-            "jestConfig": "apps/frontend/jest.config.js",
+            "jestConfig": "apps/frontend/jest.config.ts",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "frontend-e2e": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "apps/frontend-e2e",
       "sourceRoot": "apps/frontend-e2e/src",
       "projectType": "application",
@@ -190,40 +195,9 @@
             "lintFilePatterns": ["apps/frontend-e2e/**/*.{js,ts}"]
           }
         }
-      }
-    }
-  },
-  "cli": {
-    "analytics": false,
-    "defaultCollection": "@nrwl/angular",
-    "packageManager": "npm"
-  },
-  "schematics": {
-    "@nrwl/angular": {
-      "application": {
-        "linter": "eslint"
       },
-      "library": {
-        "linter": "eslint"
-      },
-      "storybook-configuration": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
+      "tags": [],
+      "implicitDependencies": ["frontend"]
     }
-  },
-  "defaultProject": "frontend"
+  }
 }

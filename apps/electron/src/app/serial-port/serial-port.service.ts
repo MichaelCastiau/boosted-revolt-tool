@@ -4,8 +4,8 @@ import { serialPortToken } from './serial-port.provider';
 import * as SerialPort from 'serialport';
 import { PortInfo } from 'serialport';
 import { Observable, Observer, Subject } from 'rxjs';
-import { AnonymousSubject } from 'rxjs/internal-compatibility';
 import { deserializeResponse, serializeCommandBuffer } from '../helpers/serializer.helper';
+import { AnonymousSubject } from 'rxjs/internal-compatibility';
 
 @Injectable()
 export class SerialPortService {

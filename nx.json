@@ -12,9 +12,11 @@
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "ODBlYzQyMWQtZDNjMC00OTQ5LTk4NjgtYTlmODUxYWUzZTg1fHJlYWQtd3JpdGU=",
+        "parallel": 1
       }
     }
   },
@@ -26,16 +28,37 @@
       }
     ]
   },
-  "projects": {
-    "electron": {
-      "tags": []
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "cli": {
+    "analytics": false,
+    "packageManager": "npm",
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "frontend",
+  "generators": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
     },
-    "frontend": {
-      "tags": []
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "frontend-e2e": {
-      "tags": [],
-      "implicitDependencies": ["frontend"]
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   }
 }

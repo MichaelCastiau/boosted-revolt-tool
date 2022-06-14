@@ -16,7 +16,7 @@ import {
 } from '../../../vesc/store/vesc.actions';
 import { takeUntil, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-settings',
@@ -30,7 +30,7 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
   activeConfiguration$: Observable<number>;
   metricSystem$: Observable<'kmh' | 'mph'>;
   circumference$: Observable<number>;
-  customTire = new FormControl();
+  customTire = new UntypedFormControl();
 
   private destroy$ = new Subject();
 

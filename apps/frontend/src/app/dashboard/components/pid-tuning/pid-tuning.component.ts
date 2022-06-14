@@ -4,7 +4,7 @@ import { PIDParameter } from '@shared/types';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../../store/store';
 import { selectADCEnabled, selectIsCurrentControl, selectPIDParameters } from '../../store/dashboard.selectors';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { takeUntil, tap } from 'rxjs/operators';
 import { setPID, setUseADCThrottle, setUseCurrentControl } from '../../../vesc/store/vesc.actions';
 import { selectConfiguringDashboardError } from '../../../vesc/store/vesc.selectors';
@@ -20,10 +20,10 @@ export class PidTuningComponent implements OnInit, OnDestroy {
   $adcIsEnabled: Observable<boolean>;
   $isCurrentControl: Observable<boolean>;
 
-  pidForm: FormGroup;
+  pidForm: UntypedFormGroup;
   private destroy$ = new Subject();
 
-  constructor(private store: Store<IAppState>, private formBuilder: FormBuilder, private toastr: ToastrService) {
+  constructor(private store: Store<IAppState>, private formBuilder: UntypedFormBuilder, private toastr: ToastrService) {
   }
 
   ngOnInit() {
