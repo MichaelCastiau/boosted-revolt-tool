@@ -42,7 +42,6 @@ export class DashboardSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isConnected$ = this.store.pipe(selectIsConnected);
     this.activeConfiguration$ = this.store.pipe(selectDashboardBatteryConfiguration);
     this.metricSystem$ = this.store.pipe(selectDashboardMetricSystem);
     this.circumference$ = this.store.pipe(selectDashboardWheelCircumference);

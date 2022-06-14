@@ -1,0 +1,31 @@
+@use "../../../../assets/styles/variables";
+@use "sass:math";
+
+.o-tuning-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.m-tuning-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: math.div(variables.$sidebar-item-height, 4) variables.$spacer-xxl variables.$spacer-xxl;
+  width: 100%;
+}
+
+.m-pid-values {
+  display: flex;
+  justify-content: space-between;
+}
+
+.m-bttn-pid {
+  width: 100%;
+  margin-top: variables.$spacer;
+
+  button {
+    float: right;
+  }
+}

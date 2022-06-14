@@ -1,0 +1,56 @@
+<div class='o-tuning-container'>
+  <div class='m-tuning-wrapper'>
+    <h2>PID Speed Tuning</h2>
+    <p>
+      This feature is only available to dashboards that have updated to firmware v. 2.0.1 or higher.
+    </p>
+    <h3>Throttle Control</h3>
+    <p>
+      Your dashboard may be configured to use the internal ADC to measure your throttle. This removes the need for a
+      long ADC blue wire to your VESC.
+    </p>
+    <div class='u-columns'>
+      <p>
+        ADC Used
+      </p>
+      <div class='u-button-bar'>
+        <button class='a-button' [class.active]='($adcIsEnabled | async) === false' (click)='enableDashADC(false)'>
+          VESC ADC
+        </button>
+        <button class='a-button' [class.active]='($adcIsEnabled | async)=== true' (click)='enableDashADC(true)'>
+          Dashboard ADC
+        </button>
+      </div>
+    </div>
+    <div class='u-columns'>
+      <p>
+        ADC Control Type
+      </p>
+      <div class='u-button-bar'>
+        <button class='a-button' [class.active]='($isCurrentControl | async)=== true' (click)='useCurrentControl(true)'>
+          Current Control
+        </button>
+        <button class='a-button' [class.active]='($isCurrentControl | async)=== false' (click)='useCurrentControl(false)'>
+          RPM Control
+        </button>
+      </div>
+    </div>
+    <h3>PID Parameters (only Current Control)</h3>
+    <form class='u-columns m-pid-values' [formGroup]='pidForm'>
+      <div>
+        <input type='number' class='a-input' placeholder='Kp' formControlName='kp' />
+      </div>
+      <div>
+        <input type='number' class='a-input' placeholder='Ki' formControlName='ki' />
+      </div>
+      <div>
+        <input type='number' class='a-input' placeholder='Kd' formControlName='kd' />
+      </div>
+    </form>
+    <div class='m-bttn-pid'>
+      <button class='a-button' (click)='applyPID()'>
+        Apply PID parameters
+      </button>
+    </div>
+  </div>
+</div>

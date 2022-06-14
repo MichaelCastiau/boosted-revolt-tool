@@ -17,6 +17,12 @@ import {
   setBatteryConfigurationSuccess,
   setMetricSystem,
   setMetricSystemSuccess,
+  setPID,
+  setPIDSuccess,
+  setUseADCThrottle,
+  setUseADCThrottleSuccess,
+  setUseCurrentControl,
+  setUseCurrentControlSuccess,
   setWheelCircumference,
   setWheelCircumferenceSuccess
 } from './vesc.actions';
@@ -95,6 +101,39 @@ export class VESCEffects {
     switchMap(action => this.api.setWheelCircumference(action.circumferenceMM).pipe(
       map(() => setWheelCircumferenceSuccess({ circumferenceMM: action.circumferenceMM })),
       tap(() => this.toastr.success('The settings are successfully saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
+    ))
+  ));
+
+  setUseADCThrottle$ = createEffect(() => this.actions$.pipe(
+    ofType(setUseADCThrottle),
+    switchMap((action) => this.api.setUseADCThrottle(action.useADCThrottle).pipe(
+      map(() => setUseADCThrottleSuccess({ useADCThrottle: action.useADCThrottle })),
+      tap(() => this.toastr.success('The ADC Throttle settings is saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
+    ))
+  ));
+
+  setUseCurrentControl$ = createEffect(() => this.actions$.pipe(
+    ofType(setUseCurrentControl),
+    switchMap((action) => this.api.setUseCurrentControl(action.useCurrentControl).pipe(
+      map(() => setUseCurrentControlSuccess({ useCurrentControl: action.useCurrentControl })),
+      tap(() => this.toastr.success('The Current Control settings is saved in your dashboard', 'Dashboard Configured')),
+      catchError(error => of(configuringDashboardError({ error })))
+    ))
+  ));
+
+  setPIDParameters$ = createEffect(() => this.actions$.pipe(
+    ofType(setPID),
+    switchMap((action) => this.api.setPIDParameters(action.pid).pipe(
+      map(() => setPIDSuccess({
+        pid: {
+          kp: action.pid.kp / 1e5,
+          ki: action.pid.ki / 1e5,
+          kd: action.pid.kd / 1e5
+        }
+      })),
+      tap(() => this.toastr.success('The PID parameters are saved in your dashboard', 'Dashboard Configured')),
       catchError(error => of(configuringDashboardError({ error })))
     ))
   ));

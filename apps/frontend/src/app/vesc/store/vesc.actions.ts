@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IAppData } from '../app-data';
 import { IVESCInfo } from './store';
+import { PIDParameter } from '@shared/types';
 
 export const connectToVESC = createAction('[VESC] Connect');
 export const connectToVESCFail = createAction('[VESC] Connect Fail', props<{ error: HttpErrorResponse }>());
@@ -20,6 +21,15 @@ export const setMetricSystemSuccess = createAction('[Dashboard] Set metric syste
 
 export const setWheelCircumference = createAction('[Dashboard] Set wheel circumference', props<{ circumferenceMM: number }>());
 export const setWheelCircumferenceSuccess = createAction('[Dashboard] Set wheel circumference success', props<{ circumferenceMM: number }>());
+
+export const setUseADCThrottle = createAction('[Dashboard] set use ADC throttle', props<{ useADCThrottle: boolean }>());
+export const setUseADCThrottleSuccess = createAction('[Dashboard] set use ADC throttle success', props<{useADCThrottle: boolean}>());
+
+export const setUseCurrentControl = createAction('[Dashboard] set use current control', props<{ useCurrentControl: boolean }>());
+export const setUseCurrentControlSuccess = createAction('[Dashboard] set use current control success', props<{useCurrentControl: boolean}>());
+
+export const setPID = createAction('[Dashboard] set PID parameters', props<{ pid: PIDParameter }>());
+export const setPIDSuccess = createAction('[Dashboard] set PID parameters success', props<{ pid: PIDParameter }>());
 
 export const configuringDashboardError = createAction('[Dashboard] configuring dashboard error', props<{ error: HttpErrorResponse | Error }>());
 

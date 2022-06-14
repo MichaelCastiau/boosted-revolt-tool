@@ -11,6 +11,7 @@ import { StoreModule } from '@ngrx/store';
 import { dashboardReducer } from './store/dashboard.reducer';
 import { VescSettingsComponent } from './components/vesc-settings/vesc-settings.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PidTuningComponent } from './components/pid-tuning/pid-tuning.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     DashboardSettingsComponent,
     LoadingComponent,
     VescSettingsComponent,
+    PidTuningComponent
   ],
   imports: [
     RouterModule.forChild([{

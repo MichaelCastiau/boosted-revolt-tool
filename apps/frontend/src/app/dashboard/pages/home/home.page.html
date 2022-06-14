@@ -8,7 +8,7 @@
             <span>
               VESC
               <BR/>
-              Electronics Speed Controller
+              Electronic Speed Controller
             </span>
           </li>
           <li [class.active]='(tab$ | async) === "dashboard"' (click)='tab$.next("dashboard")'>
@@ -16,6 +16,11 @@
                ReVOLT! Dashboard
             <br />
             1st generation
+            </span>
+          </li>
+          <li [class.active]='(tab$ | async) === "pid-tuning"' (click)='tab$.next("pid-tuning")'>
+            <span>
+               Speed PID Tuning
             </span>
           </li>
           <!--
@@ -35,6 +40,7 @@
       --->
       <app-dashboard-settings *ngIf='(tab$ | async) === "dashboard"'></app-dashboard-settings>
       <app-vesc-settings *ngIf='(tab$ | async) === "vesc"'></app-vesc-settings>
+      <app-pid-tuning *ngIf='(tab$ | async) === "pid-tuning"'></app-pid-tuning>
       <span class='a-copyright'>
         &copy; 2021 Michael Castiau
       </span>

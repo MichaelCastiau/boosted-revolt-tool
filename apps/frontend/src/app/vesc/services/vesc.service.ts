@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IAppData } from '../app-data';
 import { switchMap } from 'rxjs/operators';
+import { PIDParameter } from '@shared/types';
 
 @Injectable()
 export class VESCService {
@@ -26,6 +27,18 @@ export class VESCService {
     return this.http.post('http://localhost:3333/api/vesc/wheel-circumference', {
       circumference
     });
+  }
+
+  setUseADCThrottle(useADCThrottle: boolean) {
+    return this.http.post('http://localhost:3333/api/vesc/use-adc-throttle', { useADCThrottle });
+  }
+
+  setUseCurrentControl(useCurrentControl: boolean) {
+    return this.http.post('http://localhost:3333/api/vesc/use-current-control', { useCurrentControl });
+  }
+
+  setPIDParameters(pid: PIDParameter) {
+    return this.http.post('http://localhost:3333/api/vesc/pid', { pid });
   }
 
   getAppSettings(): Observable<IAppData> {

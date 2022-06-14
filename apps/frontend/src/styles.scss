@@ -8,13 +8,16 @@
 .toast-container .ngx-toastr {
   border-radius: 2px;
 }
+
 .toast-error {
   background: variables.$red;
 }
+
 .toast-success {
   background: variables.$green;
 }
-.toast-title{
+
+.toast-title {
   margin-bottom: variables.$spacer-sm;
   display: block;
   font-family: variables.$font-title;
@@ -42,8 +45,9 @@ h1, h2, h3 {
 
   p, h2 {
     flex: 1;
-    display: block;
     margin-right: variables.$spacer;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -78,12 +82,15 @@ h1, h2, h3 {
     min-width: 2em;
   }
 }
+
 .u-light {
   color: #aaa;
 }
+
 .u-small {
   font-size: 0.8em;
 }
+
 .u-margin-top {
   margin-top: variables.$spacer;
 }
